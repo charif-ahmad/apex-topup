@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const { Prisma } = require('@prisma/client');
 const prisma = require('../config/prisma');
 const env = require('../config/env');
 const ApiError = require('../utils/ApiError');
@@ -15,22 +16,25 @@ function publicUser(user) {
 }
 
 async function register({ name, email, password }) {
-  const existing = await prisma.user.findUnique({ where: { email } });
-  if (existing) {
-    throw ApiError.conflict('Email is already registered');
-  }
-
   const hashed = await bcrypt.hash(password, env.bcryptSaltRounds);
 
-  // Create user + wallet atomically.
-  const user = await prisma.user.create({
-    data: {
-      name,
-      email,
-      password: hashed,
-      wallet: { create: { balance: 0 } },
-    },
-  });
+  let user;
+  try {
+    // Create user + wallet atomically.
+    user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashed,
+        wallet: { create: { balance: 0 } },
+      },
+    });
+  } catch (err) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') {
+      throw ApiError.conflict('Email is already registered');
+    }
+    throw err;
+  }
 
   const token = signToken({ sub: user.id, role: user.role });
   return { user: publicUser(user), token };
