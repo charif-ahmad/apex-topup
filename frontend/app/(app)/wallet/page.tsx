@@ -2,12 +2,12 @@ import { getWalletAction } from '@/actions/wallet';
 import { WalletPageClient } from './WalletPageClient';
 
 export default async function WalletPage() {
-  let wallet = null;
+  let balance = 0;
   try {
-    wallet = await getWalletAction();
+    balance = await getWalletAction();
   } catch {
-    // wallet stays null, client shows 0 balance
+    // stays 0
   }
 
-  return <WalletPageClient initialBalance={wallet?.balance ?? 0} />;
+  return <WalletPageClient initialBalance={balance} />;
 }

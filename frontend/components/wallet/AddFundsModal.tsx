@@ -48,7 +48,14 @@ export function AddFundsModal({ onClose, onSuccess }: AddFundsModalProps) {
       return;
     }
     if (res.data) {
-      setResult({ reference: res.data.reference, newBalance: res.data.wallet.balance });
+      if (res.data.paymentStatus === 'failed') {
+        toast('Payment simulation failed. Please try again.', 'error');
+        return;
+      }
+      setResult({
+        reference: res.data.transaction.reference,
+        newBalance: res.data.balance ?? 0,
+      });
       toast(`MYR ${data.amount} added successfully!`, 'success');
       onSuccess();
     }

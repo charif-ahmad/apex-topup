@@ -14,7 +14,7 @@ export default async function DashboardPage() {
     listServicesAction(),
   ]);
 
-  const wallet = walletResult.status === 'fulfilled' ? walletResult.value : null;
+  const walletBalance = walletResult.status === 'fulfilled' ? walletResult.value : 0;
   const transactions = txResult.status === 'fulfilled' ? txResult.value.items : [];
   const services = svcResult.status === 'fulfilled' ? svcResult.value : [];
 
@@ -29,7 +29,7 @@ export default async function DashboardPage() {
       {/* Bento grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
         <div className="lg:col-span-7">
-          <WalletCard wallet={wallet} loading={false} />
+          <WalletCard balance={walletBalance} />
         </div>
 
         {/* Quick stats */}
@@ -106,7 +106,7 @@ export default async function DashboardPage() {
             <span className="material-symbols-outlined text-[var(--color-primary)] text-xl">bolt</span>
             Quick Top-up
           </h2>
-          <QuickTopupList services={services} walletBalance={wallet?.balance ?? 0} />
+          <QuickTopupList services={services} walletBalance={walletBalance} />
         </div>
 
         <div className="xl:col-span-8">

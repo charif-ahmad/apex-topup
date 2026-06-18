@@ -9,7 +9,7 @@ export default async function ServicesPage() {
   ]);
 
   const services = svcResult.status === 'fulfilled' ? svcResult.value : [];
-  const walletBalance = walletResult.status === 'fulfilled' ? walletResult.value.balance : 0;
+  const walletBalance = walletResult.status === 'fulfilled' ? walletResult.value : 0;
 
   return <ServicesClient initialServices={services} walletBalance={walletBalance} />;
 }

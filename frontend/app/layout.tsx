@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${outfit.variable} dark h-full`}>
+    <html lang="en" className={`${inter.variable} ${outfit.variable} dark h-full`} suppressHydrationWarning>
       <head>
         <link
           rel="stylesheet"

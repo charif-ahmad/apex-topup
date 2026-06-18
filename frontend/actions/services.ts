@@ -4,8 +4,8 @@ import { serverFetch } from '@/lib/server/client';
 import type { Service } from '@/types/models';
 
 export async function listServicesAction(): Promise<Service[]> {
-  const res = await serverFetch<Service[]>('/services');
-  return res.data;
+  const res = await serverFetch<{ services: Service[] }>('/services');
+  return res.data.services;
 }
 
 export interface ServicePayload {

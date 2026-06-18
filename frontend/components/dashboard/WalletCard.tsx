@@ -2,15 +2,12 @@
 
 import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils/formatCurrency';
-import { Skeleton } from '@/components/ui/Skeleton';
-import type { Wallet } from '@/types/models';
 
 interface WalletCardProps {
-  wallet: Wallet | null;
-  loading: boolean;
+  balance: number;
 }
 
-export function WalletCard({ wallet, loading }: WalletCardProps) {
+export function WalletCard({ balance }: WalletCardProps) {
   return (
     <div
       className="glass-card rounded-[var(--radius-lg)] p-6 relative overflow-hidden"
@@ -43,16 +40,25 @@ export function WalletCard({ wallet, loading }: WalletCardProps) {
                 account_balance_wallet
               </span>
             </div>
-            <span className="text-lg font-semibold text-[var(--color-on-surface)]" style={{ fontFamily: 'var(--font-outfit)' }}>
+            <span
+              className="text-lg font-semibold text-[var(--color-on-surface)]"
+              style={{ fontFamily: 'var(--font-outfit)' }}
+            >
               Main Wallet
             </span>
           </div>
           {/* Decorative chip */}
           <div
             className="w-14 h-9 rounded-[var(--radius-sm)] flex items-center justify-center overflow-hidden"
-            style={{ background: 'linear-gradient(135deg, var(--color-tertiary), var(--color-on-tertiary-container))' }}
+            style={{
+              background:
+                'linear-gradient(135deg, var(--color-tertiary), var(--color-on-tertiary-container))',
+            }}
           >
-            <div className="w-10 h-px rounded-full opacity-40" style={{ background: 'var(--color-tertiary-fixed-dim)' }} />
+            <div
+              className="w-10 h-px rounded-full opacity-40"
+              style={{ background: 'var(--color-tertiary-fixed-dim)' }}
+            />
           </div>
         </div>
 
@@ -61,18 +67,14 @@ export function WalletCard({ wallet, loading }: WalletCardProps) {
           <span className="text-xs font-semibold tracking-widest uppercase text-[var(--color-on-surface-variant)]">
             Available Balance
           </span>
-          {loading ? (
-            <Skeleton className="h-10 w-48 mt-2" />
-          ) : (
-            <div className="flex items-baseline gap-3 mt-2">
-              <span
-                className="text-[40px] leading-tight font-medium text-[var(--color-on-surface)]"
-                style={{ fontFamily: 'var(--font-outfit)', letterSpacing: '-0.01em' }}
-              >
-                {formatCurrency(wallet?.balance ?? 0)}
-              </span>
-            </div>
-          )}
+          <div className="flex items-baseline gap-3 mt-2">
+            <span
+              className="text-[40px] leading-tight font-medium text-[var(--color-on-surface)]"
+              style={{ fontFamily: 'var(--font-outfit)', letterSpacing: '-0.01em' }}
+            >
+              {formatCurrency(balance)}
+            </span>
+          </div>
         </div>
 
         {/* Actions */}
