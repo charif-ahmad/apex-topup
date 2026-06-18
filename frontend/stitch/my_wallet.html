@@ -1,0 +1,379 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>APEX | Wallet Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Outfit:wght@500;600;700;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary-fixed": "#2a1700",
+                      "tertiary": "#ffb95f",
+                      "on-tertiary": "#472a00",
+                      "error": "#ffb4ab",
+                      "inverse-on-surface": "#2c303b",
+                      "surface-container": "#1c1f2a",
+                      "surface-variant": "#313540",
+                      "surface-tint": "#4edea3",
+                      "on-error-container": "#ffdad6",
+                      "surface-container-low": "#171b26",
+                      "surface-container-lowest": "#0a0e18",
+                      "primary": "#4edea3",
+                      "on-primary": "#003824",
+                      "on-secondary-fixed": "#001a42",
+                      "on-primary-fixed-variant": "#005236",
+                      "on-background": "#dfe2f1",
+                      "on-secondary": "#002e6a",
+                      "primary-fixed": "#6ffbbe",
+                      "outline-variant": "#3c4a42",
+                      "secondary": "#adc6ff",
+                      "primary-fixed-dim": "#4edea3",
+                      "inverse-surface": "#dfe2f1",
+                      "on-error": "#690005",
+                      "surface-container-high": "#262a35",
+                      "error-container": "#93000a",
+                      "inverse-primary": "#006c49",
+                      "on-secondary-container": "#e6ecff",
+                      "on-primary-fixed": "#002113",
+                      "tertiary-fixed-dim": "#ffb95f",
+                      "surface": "#0f131d",
+                      "background": "#0f131d",
+                      "on-surface": "#dfe2f1",
+                      "primary-container": "#10b981",
+                      "on-secondary-fixed-variant": "#004395",
+                      "on-primary-container": "#00422b",
+                      "surface-container-highest": "#313540",
+                      "surface-bright": "#353944",
+                      "tertiary-fixed": "#ffddb8",
+                      "outline": "#86948a",
+                      "secondary-fixed": "#d8e2ff",
+                      "surface-dim": "#0f131d",
+                      "secondary-fixed-dim": "#adc6ff",
+                      "on-tertiary-container": "#523200",
+                      "tertiary-container": "#e29100",
+                      "on-surface-variant": "#bbcabf",
+                      "secondary-container": "#0566d9",
+                      "on-tertiary-fixed-variant": "#653e00"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "xl": "32px",
+                      "xs": "8px",
+                      "md": "16px",
+                      "sm": "12px",
+                      "gutter": "24px",
+                      "container-max": "1280px",
+                      "base": "4px",
+                      "lg": "24px",
+                      "margin-mobile": "16px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": ["Outfit"],
+                      "display-lg": ["Outfit"],
+                      "body-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "currency-display": ["Outfit"],
+                      "label-md": ["Inter"],
+                      "headline-lg": ["Outfit"],
+                      "headline-md": ["Outfit"],
+                      "display-lg-mobile": ["Outfit"]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "currency-display": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        body {
+            background-color: #0B0F19;
+            color: #dfe2f1;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(21, 29, 48, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(45, 61, 96, 0.4);
+            box-shadow: 0 24px 48px -12px rgba(11, 15, 25, 0.5);
+        }
+        .gradient-border {
+            position: relative;
+        }
+        .gradient-border::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            padding: 1px;
+            border-radius: inherit;
+            background: linear-gradient(to bottom, rgba(78, 222, 163, 0.5), transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-nav-item {
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body class="flex min-h-screen">
+<!-- SideNavBar (Shared Component) -->
+<aside class="hidden md:flex flex-col h-full w-[260px] fixed left-0 bg-surface-container-low border-r border-outline-variant/20 p-md gap-xs z-40">
+<div class="mb-xl px-sm">
+<span class="font-headline-md text-headline-md font-black text-primary">APEX</span>
+</div>
+<nav class="flex flex-col gap-xs flex-grow">
+<!-- Dashboard -->
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/30 rounded-xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<!-- Services -->
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/30 rounded-xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-label-md text-label-md">Services</span>
+</a>
+<!-- My Wallet (ACTIVE) -->
+<a class="flex items-center gap-md px-md py-sm bg-secondary-container text-on-secondary-container font-semibold rounded-xl active-nav-item translate-x-1 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-label-md text-label-md">My Wallet</span>
+</a>
+<!-- Transactions -->
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/30 rounded-xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-md text-label-md">Transactions</span>
+</a>
+<!-- Admin Control -->
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/30 rounded-xl transition-all duration-200" href="{{DATA:SCREEN:SCREEN_5}}">
+<span class="material-symbols-outlined" data-icon="admin_panel_settings">admin_panel_settings</span>
+<span class="font-label-md text-label-md">Admin Control</span>
+</a>
+</nav>
+<a class="mt-auto pt-md border-t border-outline-variant/20 flex items-center gap-md px-sm hover:bg-surface-variant/20 transition-all cursor-pointer" href="{{DATA:SCREEN:SCREEN_7}}"><div class="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center border border-primary/30 overflow-hidden"><img class="w-full h-full object-cover" data-alt="Close up professional portrait of a tech executive named Alex Rivera, soft studio lighting, deep blue background, corporate modern style, sharp focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2fTqUbmlXv26RyuSKxR9goy6wKJmRBK5fAmtAOXOc85jJ0U3nBzHvHorES8Z623_UNSqixD-ilU-B3-ReGkv4inY1xmXwUvHJfpe7vBusd7BL4ajnDf9f8lHUDIX0Ww8JL-aTEtX98sP7GEpBXRtY3X_FSHL6ghKMTivmGR56IwKYhExix8LFM-bvaI62edkepq9WnFbxBP_gdQTvQ6SWmUgdwFtaYoo0bZ8WDC8ugGJn81ISScKScd2qV7TjiMY8mboAzebsiw0"></div><div class="flex flex-col"><span class="font-label-md text-label-md font-bold text-on-surface">Alex Rivera</span><span class="text-[10px] uppercase tracking-wider text-primary font-bold">Premium Member</span></div></a>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-grow md:ml-[260px] min-h-screen p-gutter md:p-xl lg:p-xl flex flex-col items-center">
+<div class="w-full max-w-container-max mx-auto">
+<!-- Header Section -->
+<header class="flex flex-col gap-base mb-xl">
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Wallet Management</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Securely manage your digital assets, configure automated funding rules, and execute high-speed liquidity injections.</p>
+</header>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
+<!-- Left Side: Balance & Rules (Bento Grid Style) -->
+<div class="lg:col-span-7 flex flex-col gap-gutter">
+<!-- Current Balance Card -->
+<div class="glass-card gradient-border rounded-xl p-lg flex flex-col gap-md relative overflow-hidden">
+
+<div class="flex justify-between items-start z-10">
+<span class="font-label-md text-label-md text-primary uppercase tracking-widest">Available Liquidity</span>
+<span class="material-symbols-outlined text-primary/50" data-icon="verified_user">verified_user</span>
+</div>
+<div class="z-10">
+<h2 class="font-currency-display text-currency-display text-on-surface">$1,248,590.00</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-xs mt-base">
+<span class="material-symbols-outlined text-primary text-[16px]" data-icon="trending_up">trending_up</span>
+<span class="text-primary">+2.4%</span> since last cycle
+                            </p>
+</div>
+<div class="flex gap-sm mt-md z-10">
+<div class="bg-surface-variant/40 px-md py-xs rounded-full border border-outline-variant/30 flex items-center gap-xs">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="font-label-md text-label-md text-on-surface">USDT Node Active</span>
+</div>
+<div class="bg-surface-variant/40 px-md py-xs rounded-full border border-outline-variant/30 flex items-center gap-xs">
+<span class="font-label-md text-label-md text-on-surface">Tier 1 Settlement</span>
+</div>
+</div>
+</div>
+<!-- Funding Rules List -->
+<div class="glass-card rounded-xl p-lg flex flex-col gap-lg">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-md text-headline-md text-on-surface">Funding Rules</h3>
+<button class="text-primary font-label-md text-label-md hover:underline">Edit Rules</button>
+</div>
+<div class="flex flex-col gap-sm">
+<!-- Rule 1 -->
+<div class="bg-surface-container-high border border-outline-variant/20 rounded-xl p-md flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-container/20 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<div class="flex flex-grow flex-col">
+<span class="font-body-md text-body-md text-on-surface font-semibold">Auto-Rebalance</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Triggered when balance falls below $500k</span>
+</div>
+<div class="form-switch">
+<input checked="" class="w-10 h-5 bg-surface-variant rounded-full appearance-none checked:bg-primary transition-all relative cursor-pointer before:content-[''] before:absolute before:w-4 before:h-4 before:bg-white before:rounded-full before:top-[2px] before:left-[2px] checked:before:left-[22px] before:transition-all" type="checkbox">
+</div>
+</div>
+<!-- Rule 2 -->
+<div class="bg-surface-container-high border border-outline-variant/20 rounded-xl p-md flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-tertiary-container/20 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+</div>
+<div class="flex flex-grow flex-col">
+<span class="font-body-md text-body-md text-on-surface font-semibold">Weekly Replenish</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Scheduled every Monday at 04:00 UTC</span>
+</div>
+<div class="form-switch">
+<input class="w-10 h-5 bg-surface-variant rounded-full appearance-none checked:bg-primary transition-all relative cursor-pointer before:content-[''] before:absolute before:w-4 before:h-4 before:bg-white before:rounded-full before:top-[2px] before:left-[2px] checked:before:left-[22px] before:transition-all" type="checkbox">
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Side: Add Funds Card -->
+<div class="lg:col-span-5 sticky top-xl">
+<div class="glass-card rounded-xl p-lg flex flex-col gap-lg border-primary/20">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Inject Liquidity</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-base">Instant settlement via APEX High-Yield Rail.</p>
+</div>
+<div class="flex flex-col gap-md">
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface-variant uppercase ml-xs">Amount (USD)</label>
+<div class="relative">
+<span class="absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant font-currency-display text-headline-md">$</span>
+<input class="w-full bg-surface-container-lowest border border-outline-variant/40 rounded-xl py-lg pl-xl pr-md text-on-surface font-currency-display text-headline-md focus:border-primary focus:ring-0 transition-colors" placeholder="50,000" type="number">
+</div>
+</div>
+<div class="flex flex-col gap-sm">
+<label class="font-label-md text-label-md text-on-surface-variant uppercase ml-xs">Source Node</label>
+<div class="flex items-center gap-md bg-surface-container-high border border-outline-variant/20 p-md rounded-xl cursor-pointer hover:border-primary/40 transition-colors">
+<div class="w-8 h-8 bg-surface-variant/50 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="account_balance">account_balance</span>
+</div>
+<div class="flex flex-grow flex-col">
+<span class="font-body-sm text-body-sm text-on-surface font-semibold">Chase Business **** 9201</span>
+<span class="text-[10px] text-on-surface-variant">Verified Institutional Account</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+</div>
+<div class="bg-primary/5 p-md rounded-xl border border-primary/10">
+<div class="flex justify-between text-body-sm text-on-surface-variant">
+<span class="">Network Fee</span>
+<span class="text-on-surface">$0.00 (Tier 1 Benefit)</span>
+</div>
+<div class="flex justify-between text-body-sm text-on-surface-variant mt-xs">
+<span class="">Settlement Speed</span>
+<span class="text-primary font-semibold">Instant (&lt; 200ms)</span>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary font-headline-md text-headline-md py-md rounded-xl hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-sm" onclick="toggleModal('paymentModal')">
+<span class="material-symbols-outlined" data-icon="bolt" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                            Proceed to Simulated Payment
+                        </button>
+</div>
+<!-- Visual Accent below the card -->
+<div class="mt-lg p-lg glass-card rounded-xl opacity-60">
+<div class="flex items-center gap-md">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-surface-container-low overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Avatar of a digital entity, sleek minimalist 3D rendering, neon teal accents, dark background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUjALLuwqjgYwDobXaBcuDBr_dKq4Q-aos8ZBJVP41Y_bFekHjU1Wchj_GFBn9UeDUyqIazRcazf9NzlkazpirQXFe_fF_y9KmWNWAdUyZ4Luu4swmWOi0kEP28stU0TnuK6Mh63BWgfvVd-wh6U0JsK7mWZgt0KD2sk54Jog3hT3BElC2S2Npg-6O1Efg7XsZX2ejow8Z1xBJGrSeUF0FvxxSR6Z0auCIX3Y_gQHe4N0T3k0xzl3P_-Bkqp1N9t7RHe76495LlyQ">
+</div>
+<div class="w-8 h-8 rounded-full border-2 border-surface-container-low overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Abstract icon representing secure global data transfer, flowing lines of light in shades of blue and white on a pitch-black canvas." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8zXRh-M7ub41M5BDPXKBsacLDmePrBKn0GwCUK-e3p0iNKoTFRMVPba0a04bgU5GW3HfNhk6-G0xjs20eCkOue0LsPpJWbA4nhBgYJ7Pt_pz8sznoizKudmwY4ajMnW8ylK5oElgr3X9S2PSPR0Ojm_lR9J5HIX_EPSnMQ4JVsYR0gCOFH4j_b1xi4l7120x3zU2gnVP3i3acypT_C0M-fmPJfLDZf9so5gAM5W6ZcvNc8nGyru5vjSnZ6k-21AQbNvwXhw--9_k">
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Used by 12,000+ institutional traders today.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Simulated Payment Modal (Approved State) -->
+<div class="hidden fixed inset-0 z-[100] flex items-center justify-center p-md" id="paymentModal">
+<div class="absolute inset-0 bg-surface-container-lowest/80 backdrop-blur-md" onclick="toggleModal('paymentModal')"></div>
+<div class="glass-card gradient-border max-w-md w-full rounded-[2rem] p-xl flex flex-col items-center gap-lg relative z-10 text-center">
+<!-- Success Animation / Icon -->
+<div class="relative w-32 h-32 flex items-center justify-center">
+<div class="absolute inset-0 bg-primary/20 rounded-full animate-ping"></div>
+<div class="relative w-24 h-24 bg-primary text-on-primary rounded-full flex items-center justify-center shadow-[0_0_40px_rgba(78,222,163,0.4)]">
+<span class="material-symbols-outlined text-[48px]" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<div class="flex flex-col gap-base">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Payment Approved</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Your liquidity injection of <span class="text-on-surface font-bold">$50,000.00</span> has been successfully processed and verified on the ledger.</p>
+</div>
+<div class="w-full bg-surface-container-high/50 border border-outline-variant/20 rounded-2xl p-md flex flex-col gap-sm">
+<div class="flex justify-between font-label-md text-label-md text-on-surface-variant">
+<span class="">TRANSACTION ID</span>
+<span class="text-on-surface">APX-7742-9901-XQ</span>
+</div>
+<div class="flex justify-between font-label-md text-label-md text-on-surface-variant">
+<span class="">STATUS</span>
+<span class="text-primary flex items-center gap-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                        FINALIZED
+                    </span>
+</div>
+<div class="flex justify-between font-label-md text-label-md text-on-surface-variant">
+<span class="">TIMESTAMP</span>
+<span class="text-on-surface">JUST NOW</span>
+</div>
+</div>
+<div class="flex flex-col w-full gap-md">
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-md rounded-xl hover:brightness-110 transition-all" onclick="toggleModal('paymentModal')">
+                    Return to Dashboard
+                </button>
+<button class="w-full text-on-surface-variant font-label-md text-label-md hover:text-on-surface transition-colors" onclick="toggleModal('paymentModal')">
+                    View Ledger Receipt
+                </button>
+</div>
+</div>
+</div>
+<!-- Background Decorative Elements -->
+<div class="fixed top-0 right-0 w-[500px] h-[500px] bg-primary/10 blur-[150px] -z-10 rounded-full"></div>
+<div class="fixed bottom-0 left-[260px] w-[300px] h-[300px] bg-secondary-container/10 blur-[120px] -z-10 rounded-full"></div>
+<script>
+        function toggleModal(id) {
+            const modal = document.getElementById(id);
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                document.body.style.overflow = 'hidden';
+            } else {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Simple animation logic for the chart placeholder
+        window.addEventListener('DOMContentLoaded', () => {
+            // Placeholder logic if needed for future dynamic parts
+        });
+    </script>
+
+
+</body></html>

@@ -1,0 +1,375 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>APEX | Profile Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;900&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=Outfit:wght@100..900&amp;display=swap" rel="stylesheet">
+<style>
+        body {
+            background-color: #0B0F19; /* Level 0 Base */
+            color: #dfe2f1;
+            -webkit-font-smoothing: antialiased;
+        }
+        .glass-panel {
+            background: rgba(21, 29, 48, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(45, 61, 96, 0.4);
+        }
+        .rim-light {
+            border-top: 1px solid rgba(78, 222, 163, 0.2);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #2D3D60;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#ffddb8",
+                        "on-error": "#690005",
+                        "surface-tint": "#4edea3",
+                        "on-tertiary-fixed": "#2a1700",
+                        "on-secondary-fixed-variant": "#004395",
+                        "on-secondary": "#002e6a",
+                        "surface-dim": "#0f131d",
+                        "inverse-on-surface": "#2c303b",
+                        "primary-fixed": "#6ffbbe",
+                        "on-tertiary-container": "#523200",
+                        "on-error-container": "#ffdad6",
+                        "secondary": "#adc6ff",
+                        "surface-container-lowest": "#0a0e18",
+                        "on-background": "#dfe2f1",
+                        "inverse-primary": "#006c49",
+                        "on-primary-container": "#00422b",
+                        "error": "#ffb4ab",
+                        "outline-variant": "#3c4a42",
+                        "surface-container-high": "#262a35",
+                        "surface": "#0f131d",
+                        "tertiary-container": "#e29100",
+                        "surface-variant": "#313540",
+                        "outline": "#86948a",
+                        "on-primary-fixed-variant": "#005236",
+                        "secondary-container": "#0566d9",
+                        "primary-fixed-dim": "#4edea3",
+                        "tertiary": "#ffb95f",
+                        "on-secondary-fixed": "#001a42",
+                        "primary": "#4edea3",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "on-surface-variant": "#bbcabf",
+                        "error-container": "#93000a",
+                        "on-surface": "#dfe2f1",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-tertiary": "#472a00",
+                        "on-primary": "#003824",
+                        "primary-container": "#10b981",
+                        "secondary-fixed": "#d8e2ff",
+                        "on-primary-fixed": "#002113",
+                        "surface-container-low": "#171b26",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "inverse-surface": "#dfe2f1",
+                        "surface-bright": "#353944",
+                        "background": "#0f131d",
+                        "surface-container-highest": "#313540",
+                        "surface-container": "#1c1f2a",
+                        "on-secondary-container": "#e6ecff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "base": "4px",
+                        "margin-mobile": "16px",
+                        "sm": "12px",
+                        "container-max": "1280px",
+                        "xl": "32px",
+                        "gutter": "24px",
+                        "xs": "8px",
+                        "lg": "24px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Outfit"],
+                        "display-lg": ["Outfit"],
+                        "currency-display": ["Outfit"],
+                        "body-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Outfit"],
+                        "headline-lg-mobile": ["Outfit"],
+                        "body-md": ["Inter"],
+                        "display-lg-mobile": ["Outfit"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "currency-display": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="font-body-md text-on-surface bg-background min-h-screen">
+<div class="flex h-screen overflow-hidden">
+<!-- SideNavBar Anchor -->
+<aside class="hidden md:flex flex-col h-full p-md gap-xs bg-surface-container-low border-r border-outline-variant/20 w-[260px] flex-shrink-0">
+<div class="mb-xl px-xs">
+<span class="font-headline-md text-headline-md font-black text-primary">APEX</span>
+</div>
+<a href="{{DATA:SCREEN:SCREEN_7}}" class="flex items-center gap-md p-md mb-lg bg-surface-variant/20 rounded-xl hover:bg-surface-variant/40 transition-all cursor-pointer"><div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30"><span class="font-bold text-primary">AR</span></div><div class="flex flex-col overflow-hidden"><span class="font-label-md text-on-surface truncate">Alex Rivera</span><span class="text-[10px] uppercase tracking-widest text-on-surface-variant">Premium Member</span></div></a>
+<nav class="flex-1 space-y-1">
+<!-- Dashboard -->
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/30 rounded-xl transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span class="font-label-md">Dashboard</span>
+</a>
+<!-- Services -->
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/30 rounded-xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">payments</span>
+<span class="font-label-md">Services</span>
+</a>
+<!-- My Wallet -->
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/30 rounded-xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+<span class="font-label-md">My Wallet</span>
+</a>
+<!-- Transactions -->
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/30 rounded-xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">receipt_long</span>
+<span class="font-label-md">Transactions</span>
+</a>
+<!-- Admin Control (Mock active state for Settings) -->
+<a class="flex items-center gap-md px-md py-sm bg-secondary-container text-on-secondary-container font-semibold rounded-xl translate-x-1 transition-all duration-200 shadow-lg shadow-secondary-container/20" href="{{DATA:SCREEN:SCREEN_5}}">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: &quot;FILL&quot; 1;">admin_panel_settings</span>
+<span class="font-label-md">Admin Control</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-outline-variant/20 pt-md">
+<a class="flex items-center gap-md px-md py-sm text-error/80 hover:text-error hover:bg-error/10 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+<span class="font-label-md">Sign Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col overflow-y-auto custom-scrollbar relative">
+<!-- Animated Ambient Background Shader -->
+<div class="absolute top-0 left-0 w-full h-96 -z-10 opacity-30">
+
+</div>
+<!-- Header Content -->
+<header class="pt-xl px-gutter pb-lg max-w-container-max w-full mx-auto">
+<div class="flex flex-col gap-xs">
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Profile Settings</h1>
+<p class="font-body-md text-on-surface-variant">Manage your personal information and security settings.</p>
+</div>
+</header>
+<div class="px-gutter pb-xl max-w-container-max w-full mx-auto grid grid-cols-1 lg:grid-cols-3 gap-lg">
+<!-- Profile Form Card -->
+<section class="lg:col-span-2 flex flex-col gap-lg">
+<div class="glass-panel rim-light p-xl rounded-xl" style="transform: translateY(0px); transition: transform 0.3s;">
+<div class="flex items-center gap-md mb-xl">
+<div class="relative group">
+<div class="w-24 h-24 rounded-full overflow-hidden border-2 border-primary ring-4 ring-primary/10">
+<img class="w-full h-full object-cover" data-alt="A professional portrait of a modern fintech executive with a calm expression, set against a blurred high-tech office background. The lighting is cool-toned with cyan and navy blue highlights, reflecting a technological and institutional-grade reliability consistent with the APEX brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFt2Mq9pGph7ZCjE4wtmu6VkazLMnvbyjKn6xWNWxfyZWDesZ1x78RhceVNED2JozxYWJtMNYM-PJiWH-L_IHYlIylXztaStSJBeWFJdVQvlROctJAHiapWHzcc03LYrzUma7UlQk11xCcBM2_nxuZCzrIGAsCDIHiYyIxvDXfU1y3zlx4q0z-NmpHlnxRcrdIX6nwHSMRBwwz2WVJvmm_bNpFDogJEFePq3xwVVxEy5QEF0Nl_q-9-r_64x2WSBSgLGlyaD5Emno">
+</div>
+<button class="absolute bottom-0 right-0 p-2 bg-primary text-on-primary rounded-full shadow-lg hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-sm">photo_camera</span>
+</button>
+</div>
+<div class="flex flex-col">
+<h3 class="font-headline-md text-headline-md">Personal Profile</h3>
+<p class="font-body-sm text-on-surface-variant">Update your photo and personal details here.</p>
+</div>
+</div>
+<form class="space-y-lg">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<!-- Name Input -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-on-surface">Full Name</label>
+<div class="relative">
+<input class="w-full bg-surface-container-low border border-outline-variant/40 rounded-lg px-md py-sm font-body-md text-on-surface focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" placeholder="Enter your full name" type="text" value="Alex Rivera">
+<span class="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">person</span>
+</div>
+</div>
+<!-- Email Input -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-on-surface">Email Address</label>
+<div class="relative">
+<input class="w-full bg-surface-container-low border border-outline-variant/40 rounded-lg px-md py-sm font-body-md text-on-surface focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" placeholder="name@company.com" type="email" value="alex.rivera@apex-premium.com">
+<span class="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">mail</span>
+</div>
+</div>
+</div>
+<!-- Password Section -->
+<div class="flex flex-col gap-xs pt-base">
+<label class="font-label-md text-on-surface">New Password</label>
+<div class="relative">
+<input class="w-full bg-surface-container-low border border-outline-variant/40 rounded-lg px-md py-sm font-body-md text-on-surface focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" placeholder="••••••••" type="password">
+<button class="absolute right-md top-1/2 -translate-y-1/2 text-on-surface-variant" type="button">
+<span class="material-symbols-outlined text-sm">visibility_off</span>
+</button>
+</div>
+<p class="text-[11px] text-on-surface-variant mt-1 italic">Leave blank to keep your current password (min 8 characters)</p>
+</div>
+<!-- Bio/Status Mock -->
+<div class="flex flex-col gap-xs pt-base">
+<label class="font-label-md text-on-surface">Bio</label>
+<textarea class="w-full bg-surface-container-low border border-outline-variant/40 rounded-lg px-md py-sm font-body-md text-on-surface focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all resize-none" placeholder="Write a short bio about yourself..." rows="3">Institutional trade specialist with over 10 years experience in global market liquidity.</textarea>
+</div>
+<div class="flex justify-end gap-md pt-lg border-t border-outline-variant/20">
+<button class="px-lg py-sm rounded-xl font-label-md text-on-surface-variant border border-outline-variant hover:bg-surface-variant/30 transition-all" type="button">Cancel</button>
+<button class="px-lg py-sm rounded-xl font-label-md bg-primary-container text-on-primary-container hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95" type="submit">Save Changes</button>
+</div>
+</form>
+</div>
+</section>
+<!-- Security Sidebar Area -->
+<aside class="flex flex-col gap-lg">
+<!-- 2FA & Security Card -->
+<div class="glass-panel rim-light p-lg rounded-xl flex flex-col gap-lg">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: &quot;FILL&quot; 1;">verified_user</span>
+<h3 class="font-headline-md text-[18px]">Account Security</h3>
+</div>
+<div class="space-y-md">
+<!-- Status Item -->
+<div class="p-md rounded-xl bg-surface-container-highest/30 border border-outline-variant/20 flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-md text-on-surface">Two-Factor Auth</span>
+<span class="text-[10px] text-primary font-bold">ENABLED</span>
+</div>
+<span class="material-symbols-outlined text-primary text-xl" style="font-variation-settings: &quot;FILL&quot; 1;">check_circle</span>
+</div>
+<!-- Login Detail -->
+<div class="p-md rounded-xl bg-surface-container-highest/10 flex flex-col gap-xs">
+<span class="font-label-md text-on-surface-variant flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">login</span> Last Login
+                                </span>
+<div class="flex flex-col">
+<span class="font-body-md text-[14px]">Oct 24, 2023</span>
+<span class="font-body-sm text-[12px] text-on-surface-variant">Miami, US (IP: 192.168.1.1)</span>
+</div>
+</div>
+</div>
+<button class="w-full py-sm rounded-lg font-label-md text-primary border border-primary/30 hover:bg-primary/5 transition-colors">
+                            Manage Devices
+                        </button>
+</div>
+<!-- Notification Preferences Mini-Card -->
+<div class="glass-panel rim-light p-lg rounded-xl flex flex-col gap-md">
+<h3 class="font-label-md text-on-surface-variant uppercase tracking-wider">Preferences</h3>
+<div class="flex flex-col gap-sm">
+<label class="flex items-center justify-between cursor-pointer group">
+<span class="font-body-sm">Email Notifications</span>
+<div class="relative inline-flex items-center">
+<input checked="" class="sr-only peer" type="checkbox">
+<div class="w-9 h-5 bg-surface-variant rounded-full peer peer-checked:bg-primary transition-colors"></div>
+<div class="absolute left-0.5 top-0.5 bg-white w-4 h-4 rounded-full transition-transform peer-checked:translate-x-4"></div>
+</div>
+</label>
+<label class="flex items-center justify-between cursor-pointer group">
+<span class="font-body-sm">Transaction Alerts</span>
+<div class="relative inline-flex items-center">
+<input checked="" class="sr-only peer" type="checkbox">
+<div class="w-9 h-5 bg-surface-variant rounded-full peer peer-checked:bg-primary transition-colors"></div>
+<div class="absolute left-0.5 top-0.5 bg-white w-4 h-4 rounded-full transition-transform peer-checked:translate-x-4"></div>
+</div>
+</label>
+</div>
+</div>
+<!-- Map/Location Visual -->
+<div class="rounded-xl overflow-hidden glass-panel h-48 relative">
+<img class="w-full h-full object-cover opacity-60" data-location="Miami" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9KIic__54bfbfdFZnEX3A3DefyFrPZM21MesPrKdZdKOoaBxsf6VXNOiqxV3oXwi-HrJmk4IwZZvrUqfL-rMYUBNEA_QP6VGL-vpqQkoc2MpsB0z33K5vmUUG_89DQELMO36V9B0bQzIyL25cTkP-FzubDWMhk-CV59Plz6GOYTeMuJyw7xj0nemrDngnfxX2oD-1j4w5W4smpkgh4KhsmYSVpeule0kIVhmn_Qje9sb1gfaAICMCjOgt6MXoALIS2CgomoeoVN0">
+<div class="absolute inset-0 bg-gradient-to-t from-background to-transparent"></div>
+<div class="absolute bottom-md left-md">
+<span class="flex items-center gap-xs font-label-md bg-surface/80 px-sm py-1 rounded-full backdrop-blur-md">
+<span class="material-symbols-outlined text-[14px] text-error">location_on</span> Current Location
+                            </span>
+</div>
+</div>
+</aside>
+</div>
+<!-- Footer Decorative Element -->
+<footer class="mt-auto px-gutter py-lg flex justify-between items-center opacity-50 border-t border-outline-variant/10">
+<p class="text-[10px] uppercase tracking-widest">© 2023 APEX TECHNOLOGIES INC. ALL RIGHTS RESERVED.</p>
+<div class="flex gap-md">
+<span class="text-[10px] font-bold text-primary">SECURED BY QUANTUM-GRADE ENCRYPTION</span>
+</div>
+</footer>
+</main>
+</div>
+<!-- Mobile Navigation (Responsive Pivot) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container-highest/90 backdrop-blur-xl border-t border-outline-variant/20 flex justify-around items-center py-sm px-md z-50">
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px]">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="text-[10px]">Services</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 1;">person</span>
+<span class="text-[10px] font-bold">Profile</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px]">Settings</span>
+</a>
+</nav>
+<script>
+        // Simple Interaction logic for form submission and UI feedback
+        document.querySelector('form')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Saving...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                btn.innerHTML = '<span class="material-symbols-outlined">check</span> Saved!';
+                btn.classList.replace('bg-primary-container', 'bg-success-container');
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }, 2000);
+            }, 1000);
+        });
+
+        // Hover effects for card items
+        document.querySelectorAll('.glass-panel').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-2px)';
+                card.style.transition = 'transform 0.3s ease';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0px)';
+            });
+        });
+    </script>
+
+
+</body></html>

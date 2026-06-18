@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>APEX | Recharge Instantly</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .glass-panel {
+            background: rgba(21, 29, 48, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(45, 61, 96, 0.4);
+        }
+        .rim-light {
+            border-top: 1px solid rgba(78, 222, 163, 0.3);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #4edea3 0%, #adc6ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        body {
+            background-color: #0f131d;
+            color: #dfe2f1;
+            overflow-x: hidden;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary-fixed": "#2a1700",
+                      "tertiary": "#ffb95f",
+                      "on-tertiary": "#472a00",
+                      "error": "#ffb4ab",
+                      "inverse-on-surface": "#2c303b",
+                      "surface-container": "#1c1f2a",
+                      "surface-variant": "#313540",
+                      "surface-tint": "#4edea3",
+                      "on-error-container": "#ffdad6",
+                      "surface-container-low": "#171b26",
+                      "surface-container-lowest": "#0a0e18",
+                      "primary": "#4edea3",
+                      "on-primary": "#003824",
+                      "on-secondary-fixed": "#001a42",
+                      "on-primary-fixed-variant": "#005236",
+                      "on-background": "#dfe2f1",
+                      "on-secondary": "#002e6a",
+                      "primary-fixed": "#6ffbbe",
+                      "outline-variant": "#3c4a42",
+                      "secondary": "#adc6ff",
+                      "primary-fixed-dim": "#4edea3",
+                      "inverse-surface": "#dfe2f1",
+                      "on-error": "#690005",
+                      "surface-container-high": "#262a35",
+                      "error-container": "#93000a",
+                      "inverse-primary": "#006c49",
+                      "on-secondary-container": "#e6ecff",
+                      "on-primary-fixed": "#002113",
+                      "tertiary-fixed-dim": "#ffb95f",
+                      "surface": "#0f131d",
+                      "background": "#0f131d",
+                      "on-surface": "#dfe2f1",
+                      "primary-container": "#10b981",
+                      "on-secondary-fixed-variant": "#004395",
+                      "on-primary-container": "#00422b",
+                      "surface-container-highest": "#313540",
+                      "surface-bright": "#353944",
+                      "tertiary-fixed": "#ffddb8",
+                      "outline": "#86948a",
+                      "secondary-fixed": "#d8e2ff",
+                      "surface-dim": "#0f131d",
+                      "secondary-fixed-dim": "#adc6ff",
+                      "on-tertiary-container": "#523200",
+                      "tertiary-container": "#e29100",
+                      "on-surface-variant": "#bbcabf",
+                      "secondary-container": "#0566d9",
+                      "on-tertiary-fixed-variant": "#653e00"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "xl": "32px",
+                      "xs": "8px",
+                      "md": "16px",
+                      "sm": "12px",
+                      "gutter": "24px",
+                      "container-max": "1280px",
+                      "base": "4px",
+                      "lg": "24px",
+                      "margin-mobile": "16px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": ["Outfit"],
+                      "display-lg": ["Outfit"],
+                      "body-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "currency-display": ["Outfit"],
+                      "label-md": ["Inter"],
+                      "headline-lg": ["Outfit"],
+                      "headline-md": ["Outfit"],
+                      "display-lg-mobile": ["Outfit"]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "currency-display": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="font-body-md text-on-surface selection:bg-primary/30">
+<!-- Top Navigation Bar -->
+<nav class="fixed top-0 w-full z-50 bg-surface/75 backdrop-blur-xl border-b border-outline-variant/40 shadow-sm">
+<div class="max-w-container-max mx-auto px-gutter py-md flex justify-between items-center">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary text-[32px]">bolt</span>
+<span class="font-display-lg text-[28px] font-bold text-primary leading-none tracking-tight">APEX</span>
+</div>
+<!-- Desktop Links -->
+<div class="hidden md:flex items-center gap-xl">
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-body-md text-body-md" href="#">Features</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#">Services</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#">About Us</a>
+</div>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:text-on-surface font-label-md text-label-md px-md py-xs rounded-xl transition-all">Login</button>
+<button class="bg-primary text-on-primary font-label-md text-label-md px-lg py-sm rounded-xl hover:scale-95 duration-150 transition-all font-bold">Register</button>
+</div>
+</div>
+</nav>
+<main class="pt-32">
+<!-- Hero Section -->
+<section class="relative max-w-container-max mx-auto px-gutter pb-xl overflow-hidden">
+<div class="absolute -top-24 -right-24 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] pointer-events-none"></div>
+<div class="absolute top-1/2 -left-24 w-[400px] h-[400px] bg-secondary/10 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="relative z-10 grid md:grid-cols-2 gap-xl items-center">
+<div class="space-y-lg">
+<div class="inline-flex items-center gap-xs px-sm py-1 rounded-full bg-surface-variant/30 border border-outline-variant/20">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-label-md font-label-md text-primary tracking-wider uppercase">Institutional-Grade Security</span>
+</div>
+<h1 class="font-display-lg text-display-lg md:text-[64px] md:leading-[72px] text-on-surface">
+                        Recharge Instantly. <br/>
+<span class="text-gradient">Play &amp; Connect Without Limits.</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg">
+                        The enterprise-level wallet platform designed for high-speed transactions, seamless gaming top-ups, and global digital utility services. Experience speed beyond expectations.
+                    </p>
+<div class="flex flex-col sm:flex-row gap-md pt-md">
+<button class="bg-primary text-on-primary font-headline-md text-headline-md px-xl py-md rounded-xl hover:shadow-[0_0_20px_rgba(78,222,163,0.4)] transition-all flex items-center justify-center gap-xs">
+                            Get Started Now
+                            <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<button class="border border-secondary text-secondary font-headline-md text-headline-md px-xl py-md rounded-xl hover:bg-secondary/10 transition-all flex items-center justify-center">
+                            Explore Services
+                        </button>
+</div>
+</div>
+<div class="relative group">
+<div class="glass-panel rounded-full p-xl relative z-10 rim-light overflow-hidden shadow-2xl">
+<img class="w-full h-auto rounded-lg shadow-inner" data-alt="A futuristic, high-fidelity digital wallet interface displayed on a sleek smartphone floating in a void. The screen shows vibrant data visualizations, a glowing teal balance indicator, and sleek transaction cards. The background consists of deep navy architectural shadows and soft cyan light streaks, conveying speed and financial precision. The overall aesthetic is professional, corporate modern, and high-tech." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAa7Uzy0Mfblvul2hhwcxX1QynEtVDZzhYFURqyZFCZGYq7yGATnh9DpleyCGtZMTYgAT9wSHgUDrR3-UKBMFHNB-pELfkPey8CI5R-cGOlXIpD7cPDb94jy_v6zdGbzZ4-GpAUHV3XJYNP-laljoRCzVpsZjXO-ZgRaeCJ-_VJBzk9oI1k-Lj3itUZO7l0Kb5X68KzPSKHXuXY4puycd83cmNdN5g-5WM2YiOK1mciwnrGBGYsp8AI3tr-Kw6pC8Tmr6XEFybnt8A"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent opacity-40"></div>
+</div>
+<!-- Floating Stat Badge -->
+<div class="absolute -bottom-6 -left-6 glass-panel p-md rounded-xl z-20 border border-primary/30 flex items-center gap-sm animate-bounce shadow-xl">
+<div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">speed</span>
+</div>
+<div>
+<p class="text-label-md font-label-md text-on-surface-variant uppercase">Fastest Delivery</p>
+<p class="text-headline-md font-headline-md text-primary">&lt; 2.5s</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Service Showcase (Bento Grid) -->
+<section class="max-w-container-max mx-auto px-gutter py-xl">
+<div class="flex flex-col md:flex-row justify-between items-end mb-lg gap-md">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Universal Service Reach</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Access hundreds of premium digital products and utilities instantly.</p>
+</div>
+<button class="text-primary font-label-md text-label-md flex items-center gap-xs hover:gap-sm transition-all">
+                    View All Categories <span class="material-symbols-outlined">east</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-lg">
+<!-- Large Card: Gaming -->
+<div class="md:col-span-8 glass-panel rounded-full p-lg rim-light group cursor-pointer relative overflow-hidden h-[400px]">
+<div class="absolute inset-0 transition-transform duration-500 group-hover:scale-110">
+<div class="absolute inset-0 bg-gradient-to-t from-surface via-surface/40 to-transparent z-10"></div>
+<img class="w-full h-full object-cover opacity-60" data-alt="A cinematic, high-action gaming collage featuring stylized characters and epic landscapes from popular modern video games. The colors are vibrant with saturated oranges and deep magentas, set against a dark, tech-inspired backdrop. High-contrast lighting highlights digital details and textures, creating a sense of immersion and excitement. Professional corporate gaming aesthetic with sharp focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDi1uAqKlBvJptMCz1qx5SiLDGA_UlRb5DX268TQFQU9T2U-4ftOh8jVJtsezPKBSsAQyIHBK1cybEn3XbL8v3uy_rg5ePZM3jfdPoipFmDCQRwtwQjPXpsGX4zXASAcw8UzcMftyaSx7WH_quGK-jODQKQftBMHfzjrEevKob3dljOjeRbdl_ybwRjI1a0SzqumUNXGoWZFepRO57EvU6XKL3qMET2D02jxC5UAZYGXMeainIlDHfgDMUt8lQrkFsFOf2Dc_N7PvM"/>
+</div>
+<div class="relative z-20 h-full flex flex-col justify-end">
+<div class="flex items-center gap-xs mb-xs">
+<span class="material-symbols-outlined text-primary">sports_esports</span>
+<span class="font-label-md text-label-md text-primary tracking-widest uppercase">Global Store</span>
+</div>
+<h3 class="font-display-lg text-headline-lg text-on-surface">Gaming Cards &amp; Vouchers</h3>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md">Top up your Steam, PlayStation, Xbox, and Nintendo accounts with instant digital delivery codes.</p>
+</div>
+</div>
+<!-- Small Card: Mobile -->
+<div class="md:col-span-4 glass-panel rounded-full p-lg rim-light group cursor-pointer h-[400px] flex flex-col justify-between">
+<div class="w-16 h-16 rounded-xl bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined text-[32px]">cell_tower</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs">Mobile Airtime</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">Instant recharges for over 400 global carriers with localized pricing and zero hidden fees.</p>
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-surface bg-surface-variant"></div>
+<div class="w-8 h-8 rounded-full border-2 border-surface bg-primary/20"></div>
+<div class="w-8 h-8 rounded-full border-2 border-surface bg-secondary/20"></div>
+<div class="w-8 h-8 rounded-full border-2 border-surface flex items-center justify-center text-[10px] bg-surface-container-high">+40</div>
+</div>
+</div>
+</div>
+<!-- Medium Card: Internet -->
+<div class="md:col-span-6 glass-panel rounded-full p-lg rim-light group cursor-pointer h-[320px] relative overflow-hidden">
+<div class="absolute right-0 top-0 w-1/2 h-full opacity-20 pointer-events-none group-hover:opacity-40 transition-opacity">
+<span class="material-symbols-outlined text-[200px] text-primary">wifi</span>
+</div>
+<div class="relative z-10 flex flex-col justify-center h-full">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs">Internet Utilities</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md">Broadband subscriptions and residential data bundles at your fingertips.</p>
+<button class="w-fit px-md py-sm rounded-lg bg-surface-variant text-on-surface font-label-md text-label-md group-hover:bg-primary group-hover:text-on-primary transition-all">
+                            Renew Plan
+                        </button>
+</div>
+</div>
+<!-- Medium Card: Gift Cards -->
+<div class="md:col-span-6 glass-panel rounded-full p-lg rim-light group cursor-pointer h-[320px] relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-tertiary-container/10 to-transparent"></div>
+<div class="relative z-10 flex flex-col justify-center h-full">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs">Shopping &amp; Lifestyle</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md">Amazon, Netflix, and Spotify premium gift cards for unlimited entertainment.</p>
+<div class="flex gap-sm">
+<span class="px-sm py-1 bg-surface-container-high rounded text-body-sm">Amazon</span>
+<span class="px-sm py-1 bg-surface-container-high rounded text-body-sm">Apple</span>
+<span class="px-sm py-1 bg-surface-container-high rounded text-body-sm">Google</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Features Section -->
+<section class="bg-surface-container-low py-32 mt-xl relative overflow-hidden">
+<div class="max-w-container-max mx-auto px-gutter relative z-10">
+<div class="text-center max-w-2xl mx-auto mb-24">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-md">Why Global Institutions Trust APEX</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Our infrastructure is built for reliability, combining blockchain-level security with consumer-grade simplicity.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-xl">
+<!-- Feature 1 -->
+<div class="space-y-md p-md hover:bg-surface-variant/20 rounded-xl transition-all">
+<div class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[32px]">shield_lock</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Secured Ledger</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Multi-layered encryption and immutable audit trails ensure your funds and transactions remain private and secure at all times.</p>
+</div>
+<!-- Feature 2 -->
+<div class="space-y-md p-md hover:bg-surface-variant/20 rounded-xl transition-all">
+<div class="w-14 h-14 rounded-full bg-secondary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-[32px]">bolt</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Instant Delivery</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Proprietary API nodes ensure that 99% of digital voucher deliveries happen in less than 3 seconds after payment confirmation.</p>
+</div>
+<!-- Feature 3 -->
+<div class="space-y-md p-md hover:bg-surface-variant/20 rounded-xl transition-all">
+<div class="w-14 h-14 rounded-full bg-tertiary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-[32px]">account_balance_wallet</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Zero Maintenance Fees</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">We believe in transparent finance. No monthly account fees, no inactivity charges—just pure, value-driven service delivery.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- CTA Section -->
+<section class="max-w-container-max mx-auto px-gutter py-32">
+<div class="glass-panel rounded-full p-xl md:p-32 relative overflow-hidden text-center rim-light">
+
+<div class="relative z-10 max-w-3xl mx-auto space-y-lg">
+<h2 class="font-display-lg text-display-lg text-on-surface">Ready to ascend to the next level of recharge?</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Join over 1 million users who trust APEX for their daily digital needs. Secure your account today and experience the difference.</p>
+<div class="flex flex-col sm:flex-row gap-md justify-center">
+<button class="bg-primary text-on-primary font-headline-md text-headline-md px-xl py-md rounded-xl font-bold hover:scale-105 transition-all">Create Free Account</button>
+<button class="bg-surface-variant/50 text-on-surface font-headline-md text-headline-md px-xl py-md rounded-xl backdrop-blur-sm border border-outline-variant/40 hover:bg-surface-variant transition-all">Contact Sales</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest border-t border-outline-variant/20 py-xl">
+<div class="max-w-container-max mx-auto px-gutter">
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-xl mb-xl">
+<div class="col-span-2">
+<div class="flex items-center gap-xs mb-md">
+<span class="material-symbols-outlined text-primary text-[28px]">bolt</span>
+<span class="font-headline-md text-headline-md font-black text-primary">APEX</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-xs mb-md">The world's most advanced digital recharge ecosystem for enterprise and personal growth.</p>
+<div class="flex gap-md">
+<a class="w-10 h-10 rounded-full glass-panel flex items-center justify-center hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined text-sm">public</span></a>
+<a class="w-10 h-10 rounded-full glass-panel flex items-center justify-center hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined text-sm">alternate_email</span></a>
+<a class="w-10 h-10 rounded-full glass-panel flex items-center justify-center hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined text-sm">share</span></a>
+</div>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface mb-lg uppercase tracking-widest">Platform</h4>
+<ul class="space-y-sm font-body-sm text-body-sm text-on-surface-variant">
+<li><a class="hover:text-primary transition-colors" href="#">Digital Cards</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Mobile Topup</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Internet Bills</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Global Payouts</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface mb-lg uppercase tracking-widest">Company</h4>
+<ul class="space-y-sm font-body-sm text-body-sm text-on-surface-variant">
+<li><a class="hover:text-primary transition-colors" href="#">About Us</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Security</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Terms of Service</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Privacy Policy</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface mb-lg uppercase tracking-widest">Resources</h4>
+<ul class="space-y-sm font-body-sm text-body-sm text-on-surface-variant">
+<li><a class="hover:text-primary transition-colors" href="#">Help Center</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">API Docs</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Service Status</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface mb-lg uppercase tracking-widest">Contact</h4>
+<ul class="space-y-sm font-body-sm text-body-sm text-on-surface-variant">
+<li><a class="hover:text-primary transition-colors" href="#">Support Ticket</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Sales Dept</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Media Kit</a></li>
+</ul>
+</div>
+</div>
+<div class="flex flex-col md:flex-row justify-between items-center pt-lg border-t border-outline-variant/10 gap-md">
+<p class="font-body-sm text-body-sm text-on-surface-variant">© 2024 APEX Financial Systems. All rights reserved.</p>
+<div class="flex gap-xl font-body-sm text-body-sm text-on-surface-variant">
+<span class="flex items-center gap-xs"><span class="w-2 h-2 rounded-full bg-primary"></span> Network Stable</span>
+<span>English (US)</span>
+</div>
+</div>
+</div>
+</footer>
+<script>
+        // Micro-interactions and effects
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            // Subtle parallax for background blur elements could be added here
+        });
+
+        // Simple smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body></html>

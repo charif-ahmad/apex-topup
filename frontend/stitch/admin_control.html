@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>APEX Admin Control</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Outfit:wght@500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #0f131d;
+            color: #dfe2f1;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .glass-panel {
+            background: rgba(21, 29, 48, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(45, 61, 96, 0.4);
+            box-shadow: 0 4px 24px -1px rgba(11, 15, 25, 0.3);
+        }
+
+        .card-rim {
+            border-top: 1px solid rgba(78, 222, 163, 0.2);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #2D3D60;
+            border-radius: 10px;
+        }
+
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .animate-pulse-subtle {
+            animation: pulse-subtle 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#2a1700",
+                        "tertiary": "#ffb95f",
+                        "on-tertiary": "#472a00",
+                        "error": "#ffb4ab",
+                        "inverse-on-surface": "#2c303b",
+                        "surface-container": "#1c1f2a",
+                        "surface-variant": "#313540",
+                        "surface-tint": "#4edea3",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-low": "#171b26",
+                        "surface-container-lowest": "#0a0e18",
+                        "primary": "#4edea3",
+                        "on-primary": "#003824",
+                        "on-secondary-fixed": "#001a42",
+                        "on-primary-fixed-variant": "#005236",
+                        "on-background": "#dfe2f1",
+                        "on-secondary": "#002e6a",
+                        "primary-fixed": "#6ffbbe",
+                        "outline-variant": "#3c4a42",
+                        "secondary": "#adc6ff",
+                        "primary-fixed-dim": "#4edea3",
+                        "inverse-surface": "#dfe2f1",
+                        "on-error": "#690005",
+                        "surface-container-high": "#262a35",
+                        "error-container": "#93000a",
+                        "inverse-primary": "#006c49",
+                        "on-secondary-container": "#e6ecff",
+                        "on-primary-fixed": "#002113",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "surface": "#0f131d",
+                        "background": "#0f131d",
+                        "on-surface": "#dfe2f1",
+                        "primary-container": "#10b981",
+                        "on-secondary-fixed-variant": "#004395",
+                        "on-primary-container": "#00422b",
+                        "surface-container-highest": "#313540",
+                        "surface-bright": "#353944",
+                        "tertiary-fixed": "#ffddb8",
+                        "outline": "#86948a",
+                        "secondary-fixed": "#d8e2ff",
+                        "surface-dim": "#0f131d",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "on-tertiary-container": "#523200",
+                        "tertiary-container": "#e29100",
+                        "on-surface-variant": "#bbcabf",
+                        "secondary-container": "#0566d9",
+                        "on-tertiary-fixed-variant": "#653e00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "xs": "8px",
+                        "md": "16px",
+                        "sm": "12px",
+                        "gutter": "24px",
+                        "container-max": "1280px",
+                        "base": "4px",
+                        "lg": "24px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Outfit"],
+                        "headline-md": ["Outfit"],
+                        "display-lg": ["Outfit"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="overflow-hidden">
+<div class="flex h-screen w-full">
+<!-- SideNavBar Component -->
+<aside class="flex flex-col h-full p-md gap-xs bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant/20 w-[260px] flex-shrink-0 z-30">
+<div class="mb-xl px-xs">
+<span class="font-headline-md text-headline-md font-black text-primary tracking-tighter">APEX</span>
+<span class="block text-[10px] text-secondary font-bold uppercase tracking-[0.2em] mt-1">Control Center</span>
+</div>
+<div class="space-y-1 mb-auto">
+<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/30 rounded-xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/30 rounded-xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-label-md text-label-md">Services</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/30 rounded-xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="font-label-md text-label-md">My Wallet</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/30 rounded-xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label-md text-label-md">Transactions</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm bg-secondary-container text-on-secondary-container font-semibold rounded-xl translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">admin_panel_settings</span>
+<span class="font-label-md text-label-md">Admin Control</span>
+</a>
+</div>
+<div class="mt-auto glass-panel p-md rounded-xl flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold">AR</div>
+<div class="overflow-hidden">
+<p class="font-label-md text-label-md text-on-surface truncate">Alex Rivera</p>
+<p class="text-[10px] text-on-surface-variant truncate">Premium Member</p>
+</div>
+<button class="ml-auto text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-md">settings</span>
+</button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0 relative h-screen overflow-y-auto custom-scrollbar">
+<!-- Background Shader Atmosphere -->
+<div class="fixed inset-0 pointer-events-none opacity-20">
+
+</div>
+<!-- Header -->
+<header class="sticky top-0 z-20 glass-panel px-gutter py-md flex justify-between items-center border-b border-outline-variant/10">
+<div>
+<h1 class="font-headline-lg text-headline-lg font-bold text-on-surface">Admin Control</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">System oversight and platform governance.</p>
+</div>
+<div class="flex items-center gap-md">
+<div class="relative group">
+<span class="material-symbols-outlined text-on-surface-variant p-2 group-hover:text-primary cursor-pointer transition-colors">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+</div>
+<div class="h-8 w-[1px] bg-outline-variant/30"></div>
+<div class="flex items-center gap-sm bg-surface-container-high px-sm py-xs rounded-full border border-outline-variant/20">
+<span class="w-2 h-2 bg-primary rounded-full"></span>
+<span class="text-xs font-bold text-on-surface">SYSTEM LIVE</span>
+</div>
+</div>
+</header>
+<div class="p-gutter space-y-gutter relative z-10 max-w-container-max mx-auto w-full">
+<!-- Analytics Section -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<!-- Revenue Card -->
+<div class="glass-panel p-lg rounded-xl card-rim relative overflow-hidden group">
+<div class="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-[120px]" style="font-variation-settings: 'FILL' 1;">payments</span>
+</div>
+<div class="flex justify-between items-start mb-md">
+<span class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Total Revenue</span>
+<span class="text-primary flex items-center gap-1 text-xs font-bold">
+<span class="material-symbols-outlined text-sm">trending_up</span> +12.4%
+                            </span>
+</div>
+<div class="flex items-baseline gap-xs">
+<span class="font-headline-lg text-headline-lg font-bold text-on-surface">$2.4M</span>
+<span class="text-on-surface-variant font-body-sm">USD</span>
+</div>
+<div class="mt-md h-1 w-full bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[75%]"></div>
+</div>
+</div>
+<!-- Users Card -->
+<div class="glass-panel p-lg rounded-xl card-rim relative overflow-hidden group">
+<div class="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-[120px]" style="font-variation-settings: 'FILL' 1;">group</span>
+</div>
+<div class="flex justify-between items-start mb-md">
+<span class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Total Users</span>
+<span class="text-secondary flex items-center gap-1 text-xs font-bold">
+<span class="material-symbols-outlined text-sm">trending_up</span> +4.2%
+                            </span>
+</div>
+<div class="flex items-baseline gap-xs">
+<span class="font-headline-lg text-headline-lg font-bold text-on-surface">12,842</span>
+<span class="text-on-surface-variant font-body-sm">Active</span>
+</div>
+<div class="mt-md h-1 w-full bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[60%]"></div>
+</div>
+</div>
+<!-- Transactions Card -->
+<div class="glass-panel p-lg rounded-xl card-rim relative overflow-hidden group">
+<div class="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-[120px]" style="font-variation-settings: 'FILL' 1;">swap_horiz</span>
+</div>
+<div class="flex justify-between items-start mb-md">
+<span class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Transactions</span>
+<span class="text-tertiary flex items-center gap-1 text-xs font-bold">
+<span class="material-symbols-outlined text-sm">trending_flat</span> 0.0%
+                            </span>
+</div>
+<div class="flex items-baseline gap-xs">
+<span class="font-headline-lg text-headline-lg font-bold text-on-surface">84.2K</span>
+<span class="text-on-surface-variant font-body-sm">Processed</span>
+</div>
+<div class="mt-md h-1 w-full bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-tertiary w-[90%]"></div>
+</div>
+</div>
+</div>
+<!-- Tabbed Interface Section -->
+<div class="glass-panel rounded-xl overflow-hidden flex flex-col min-h-[600px]">
+<div class="flex border-b border-outline-variant/10 bg-surface-container-low/50">
+<button class="px-gutter py-md font-label-md text-label-md border-b-2 border-primary text-primary transition-all flex items-center gap-sm" id="tab-users" onclick="switchTab('users')">
+<span class="material-symbols-outlined text-sm">manage_accounts</span>
+                            User Administration
+                        </button>
+<button class="px-gutter py-md font-label-md text-label-md border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-all flex items-center gap-sm" id="tab-services" onclick="switchTab('services')">
+<span class="material-symbols-outlined text-sm">account_tree</span>
+                            Service Management
+                        </button>
+<button class="px-gutter py-md font-label-md text-label-md border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-all flex items-center gap-sm" id="tab-audit" onclick="switchTab('audit')">
+<span class="material-symbols-outlined text-sm">policy</span>
+                            Platform Audit Ledger
+                        </button>
+</div>
+<div class="p-gutter flex-1 relative">
+<!-- User Admin Content -->
+<div class="tab-content space-y-lg" id="content-users">
+<div class="flex justify-between items-center">
+<div class="relative w-full max-w-sm">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-high border border-outline-variant/30 rounded-xl pl-10 pr-md py-sm text-sm focus:outline-none focus:border-primary transition-colors text-on-surface" placeholder="Search by UID, Name or Email..." type="text"/>
+</div>
+<button class="bg-primary text-on-primary px-lg py-sm rounded-xl font-bold flex items-center gap-sm hover:brightness-110 transition-all active:scale-95">
+<span class="material-symbols-outlined">person_add</span>
+                                    Invite Admin
+                                </button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-separate border-spacing-y-2">
+<thead>
+<tr class="text-on-surface-variant uppercase text-[10px] tracking-widest font-bold">
+<th class="px-md py-xs">User Entity</th>
+<th class="px-md py-xs">Verification</th>
+<th class="px-md py-xs">Total Assets</th>
+<th class="px-md py-xs">Access Level</th>
+<th class="px-md py-xs text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="text-sm">
+<tr class="bg-surface-container-high/40 hover:bg-surface-container-high transition-colors rounded-lg group">
+<td class="px-md py-md rounded-l-xl">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A portrait of a tech-savvy professional male with short dark hair, wearing glasses and a dark turtleneck, against a blurred high-tech workspace background with subtle blue and teal ambient lighting. The style is clean, modern, and corporate." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnX-_-W3T-KxYRqcvKHwLK1mPt6SSqsLxnZrvRKuIJ2pxgC0YxX1yWV1Fber7jCyhnrbebzv7bNREberdIR_HcOajIe1QkkE0mRgVE792duBcY3XXK43slmr7jahTgKary_WI1eWgZadrDZS1vS28W4lH460JS3sVerD8SZweuGjlRMV_u6geFqETUCszJ5TC8-Jbg7FdM5-NY5SvlwGGgEPkfIa9g5xm__2XN1W0hYeUlwbIX-r0uWzMx09d1ozH-GjZwBbK3Etk"/>
+</div>
+<div>
+<p class="font-bold text-on-surface">Marcus Chen</p>
+<p class="text-xs text-on-surface-variant">m.chen@apex-vault.io</p>
+</div>
+</div>
+</td>
+<td class="px-md py-md">
+<span class="bg-primary/10 text-primary px-sm py-1 rounded-full text-[10px] font-bold uppercase border border-primary/20">Tier 3 Verified</span>
+</td>
+<td class="px-md py-md font-mono text-on-surface">$1,452,000.00</td>
+<td class="px-md py-md text-on-surface-variant">Standard User</td>
+<td class="px-md py-md rounded-r-xl text-right">
+<div class="flex justify-end gap-xs opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-lg transition-all" title="View details">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-tertiary hover:bg-tertiary/10 rounded-lg transition-all" title="Block user">
+<span class="material-symbols-outlined">block</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-error hover:bg-error/10 rounded-lg transition-all" title="Delete record">
+<span class="material-symbols-outlined">delete_forever</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="bg-surface-container-high/40 hover:bg-surface-container-high transition-colors rounded-lg group">
+<td class="px-md py-md rounded-l-xl">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center overflow-hidden text-primary font-bold">EK</div>
+<div>
+<p class="font-bold text-on-surface">Elena Kovic</p>
+<p class="text-xs text-on-surface-variant">e.kovic@apex-vault.io</p>
+</div>
+</div>
+</td>
+<td class="px-md py-md">
+<span class="bg-secondary/10 text-secondary px-sm py-1 rounded-full text-[10px] font-bold uppercase border border-secondary/20">Tier 1 Pending</span>
+</td>
+<td class="px-md py-md font-mono text-on-surface">$25,400.50</td>
+<td class="px-md py-md text-on-surface-variant">Institutional</td>
+<td class="px-md py-md rounded-r-xl text-right">
+<div class="flex justify-end gap-xs opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-lg transition-all">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-tertiary hover:bg-tertiary/10 rounded-lg transition-all">
+<span class="material-symbols-outlined">block</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-error hover:bg-error/10 rounded-lg transition-all">
+<span class="material-symbols-outlined">delete_forever</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Service Management Content -->
+<div class="tab-content hidden space-y-lg" id="content-services">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<div class="bg-surface-container-high/30 p-lg rounded-xl border border-outline-variant/20 flex items-center gap-lg">
+<div class="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-4xl">currency_exchange</span>
+</div>
+<div class="flex-1">
+<h3 class="font-bold text-on-surface">Cross-Chain Bridge</h3>
+<p class="text-sm text-on-surface-variant">Status: Operational (v2.1)</p>
+<div class="mt-md flex gap-sm">
+<button class="text-xs font-bold text-primary hover:underline">CONFIGURE</button>
+<button class="text-xs font-bold text-on-surface-variant hover:text-on-surface">RESTART</button>
+</div>
+</div>
+<div class="flex items-center">
+<div class="w-12 h-6 bg-primary rounded-full relative">
+<div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-high/30 p-lg rounded-xl border border-outline-variant/20 flex items-center gap-lg">
+<div class="w-16 h-16 bg-secondary/20 rounded-xl flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-4xl">shield_locked</span>
+</div>
+<div class="flex-1">
+<h3 class="font-bold text-on-surface">Cold Vault Relay</h3>
+<p class="text-sm text-on-surface-variant">Status: Maintenance Mode</p>
+<div class="mt-md flex gap-sm">
+<button class="text-xs font-bold text-primary hover:underline">CONFIGURE</button>
+<button class="text-xs font-bold text-on-surface-variant hover:text-on-surface">RESTART</button>
+</div>
+</div>
+<div class="flex items-center">
+<div class="w-12 h-6 bg-surface-variant rounded-full relative">
+<div class="absolute left-1 top-1 w-4 h-4 bg-on-surface-variant rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<button class="w-full py-md border-2 border-dashed border-outline-variant/30 rounded-xl text-on-surface-variant hover:text-primary hover:border-primary transition-all flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined">add_circle</span>
+                                Add New Microservice
+                            </button>
+</div>
+<!-- Audit Ledger Content -->
+<div class="tab-content hidden h-full" id="content-audit">
+<div class="bg-surface-container-lowest border border-outline-variant/10 rounded-xl h-[400px] flex flex-col font-mono text-xs overflow-hidden">
+<div class="bg-surface-container-high px-md py-xs border-b border-outline-variant/10 flex justify-between">
+<span class="text-on-surface-variant">SYSTEM_AUDIT_LOG_STREAM</span>
+<span class="text-primary animate-pulse">● LIVE</span>
+</div>
+<div class="p-md space-y-1 overflow-y-auto custom-scrollbar flex-1 bg-black/20">
+<p class="text-on-surface-variant"><span class="text-secondary">[14:02:11]</span> <span class="text-primary">INFO:</span> Transaction #8842-AX validated by validator-node-7.</p>
+<p class="text-on-surface-variant"><span class="text-secondary">[14:02:14]</span> <span class="text-primary">INFO:</span> User [AR-99] initiated manual Cold Vault sync.</p>
+<p class="text-on-surface-variant"><span class="text-secondary">[14:02:45]</span> <span class="text-tertiary">WARN:</span> Latecy spike detected on Ethereum RPC gateway.</p>
+<p class="text-on-surface-variant"><span class="text-secondary">[14:03:01]</span> <span class="text-primary">INFO:</span> API Key [SK-91...2] rotated for service 'Metrics'.</p>
+<p class="text-on-surface-variant"><span class="text-secondary">[14:04:12]</span> <span class="text-error">ERROR:</span> 403 Forbidden - Unauthorized IP attempt detected [192.168.1.104].</p>
+<p class="text-on-surface-variant"><span class="text-secondary">[14:05:00]</span> <span class="text-primary">INFO:</span> Auto-scaling event: Spin up worker-pool-gamma.</p>
+<p class="text-on-surface-variant"><span class="text-secondary">[14:05:22]</span> <span class="text-primary">INFO:</span> Security handshake completed for node-alpha-2.</p>
+<p class="text-on-surface-variant"><span class="text-secondary">[14:06:45]</span> <span class="text-primary">INFO:</span> Snapshot backup successfully pushed to AWS Glacier.</p>
+</div>
+<div class="p-md bg-surface-container-high border-t border-outline-variant/10 flex gap-md">
+<button class="text-primary hover:underline">EXPORT CSV</button>
+<button class="text-primary hover:underline">CLEAR VIEW</button>
+<button class="text-primary hover:underline">FILTER BY LEVEL</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Dashboard Footer/Taskbar -->
+<footer class="mt-auto px-gutter py-md bg-surface-container-low/50 flex justify-between items-center text-[10px] text-on-surface-variant border-t border-outline-variant/10">
+<div class="flex items-center gap-md">
+<span>SERVER: APEX-PROD-CLUSTER-01</span>
+<span>REGION: US-EAST-1</span>
+<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 bg-primary rounded-full"></span> 24ms LATENCY</span>
+</div>
+<div class="flex items-center gap-md">
+<span>© 2024 APEX TECHNOLOGIES</span>
+<span>SECURITY COMPLIANCE: SOC2 TYPE II</span>
+</div>
+</footer>
+</main>
+</div>
+<!-- Micro-interactions Script -->
+<script>
+        function switchTab(tabId) {
+            // Hide all content
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            // Remove active classes from buttons
+            document.querySelectorAll('[id^="tab-"]').forEach(el => {
+                el.classList.remove('border-primary', 'text-primary');
+                el.classList.add('border-transparent', 'text-on-surface-variant');
+            });
+
+            // Show current content
+            document.getElementById('content-' + tabId).classList.remove('hidden');
+            // Add active class to clicked button
+            const activeTab = document.getElementById('tab-' + tabId);
+            activeTab.classList.remove('border-transparent', 'text-on-surface-variant');
+            activeTab.classList.add('border-primary', 'text-primary');
+        }
+
+        // Simulating some numbers ticking up or down for atmosphere
+        setInterval(() => {
+            const auditLog = document.querySelector('#content-audit .custom-scrollbar');
+            if(auditLog && !document.getElementById('content-audit').classList.contains('hidden')) {
+                const now = new Date();
+                const time = now.getHours().toString().padStart(2, '0') + ":" + 
+                             now.getMinutes().toString().padStart(2, '0') + ":" + 
+                             now.getSeconds().toString().padStart(2, '0');
+                const log = document.createElement('p');
+                log.className = "text-on-surface-variant";
+                log.innerHTML = `<span class="text-secondary">[${time}]</span> <span class="text-primary">INFO:</span> Background integrity check completed for block ${Math.floor(Math.random() * 100000)}.`;
+                auditLog.appendChild(log);
+                auditLog.scrollTop = auditLog.scrollHeight;
+                if(auditLog.children.length > 20) auditLog.removeChild(auditLog.firstChild);
+            }
+        }, 5000);
+    </script>
+</body></html>

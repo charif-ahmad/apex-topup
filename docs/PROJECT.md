@@ -61,7 +61,7 @@ The application must follow **modern software engineering practices**, including
 |---|---|
 | **Framework** | React.js with Next.js App Router |
 | **Styling** | Tailwind CSS or CSS Modules |
-| **HTTP Client** | Axios or Fetch API |
+| **HTTP Client** | use server action |
 
 ### Backend
 

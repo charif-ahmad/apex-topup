@@ -1,0 +1,476 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Services Directory | APEX</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Outfit:wght@500;600;700;800;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed": "#2a1700",
+                    "tertiary": "#ffb95f",
+                    "on-tertiary": "#472a00",
+                    "error": "#ffb4ab",
+                    "inverse-on-surface": "#2c303b",
+                    "surface-container": "#1c1f2a",
+                    "surface-variant": "#313540",
+                    "surface-tint": "#4edea3",
+                    "on-error-container": "#ffdad6",
+                    "surface-container-low": "#171b26",
+                    "surface-container-lowest": "#0a0e18",
+                    "primary": "#4edea3",
+                    "on-primary": "#003824",
+                    "on-secondary-fixed": "#001a42",
+                    "on-primary-fixed-variant": "#005236",
+                    "on-background": "#dfe2f1",
+                    "on-secondary": "#002e6a",
+                    "primary-fixed": "#6ffbbe",
+                    "outline-variant": "#3c4a42",
+                    "secondary": "#adc6ff",
+                    "primary-fixed-dim": "#4edea3",
+                    "inverse-surface": "#dfe2f1",
+                    "on-error": "#690005",
+                    "surface-container-high": "#262a35",
+                    "error-container": "#93000a",
+                    "inverse-primary": "#006c49",
+                    "on-secondary-container": "#e6ecff",
+                    "on-primary-fixed": "#002113",
+                    "tertiary-fixed-dim": "#ffb95f",
+                    "surface": "#0f131d",
+                    "background": "#0f131d",
+                    "on-surface": "#dfe2f1",
+                    "primary-container": "#10b981",
+                    "on-secondary-fixed-variant": "#004395",
+                    "on-primary-container": "#00422b",
+                    "surface-container-highest": "#313540",
+                    "surface-bright": "#353944",
+                    "tertiary-fixed": "#ffddb8",
+                    "outline": "#86948a",
+                    "secondary-fixed": "#d8e2ff",
+                    "surface-dim": "#0f131d",
+                    "secondary-fixed-dim": "#adc6ff",
+                    "on-tertiary-container": "#523200",
+                    "tertiary-container": "#e29100",
+                    "on-surface-variant": "#bbcabf",
+                    "secondary-container": "#0566d9",
+                    "on-tertiary-fixed-variant": "#653e00"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "xl": "32px",
+                    "xs": "8px",
+                    "md": "16px",
+                    "sm": "12px",
+                    "gutter": "24px",
+                    "container-max": "1280px",
+                    "base": "4px",
+                    "lg": "24px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Outfit"],
+                    "display-lg": ["Outfit"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "currency-display": ["Outfit"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Outfit"],
+                    "headline-md": ["Outfit"],
+                    "display-lg-mobile": ["Outfit"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "currency-display": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #0B0F19; /* Level 0 Base */
+            color: #dfe2f1;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: rgba(21, 29, 48, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(45, 61, 96, 0.4);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(78, 222, 163, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .rim-light {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1c1f2a;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #313540;
+            border-radius: 10px;
+        }
+
+        .modal-overlay {
+            background: rgba(10, 14, 24, 0.85);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md selection:bg-primary/30">
+<!-- App Container -->
+<div class="flex min-h-screen">
+<!-- SideNavBar Anchor -->
+<aside class="fixed left-0 h-full w-[260px] bg-surface-container-low border-r border-outline-variant/20 flex flex-col p-md gap-xs z-40 hidden md:flex">
+<div class="mb-lg px-xs">
+<span class="font-headline-md text-headline-md font-black text-primary tracking-tight">APEX</span>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Dashboard -->
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/30 rounded-xl transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<!-- Services (Active) -->
+<a class="flex items-center gap-md px-md py-sm bg-secondary-container text-on-secondary-container font-semibold rounded-xl translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-label-md text-label-md">Services</span>
+</a>
+<!-- My Wallet -->
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/30 rounded-xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="font-label-md text-label-md">My Wallet</span>
+</a>
+<!-- Transactions -->
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/30 rounded-xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label-md text-label-md">Transactions</span>
+</a>
+<!-- Admin Control -->
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/30 rounded-xl transition-all duration-200" href="{{DATA:SCREEN:SCREEN_5}}">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+<span class="font-label-md text-label-md">Admin Control</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-outline-variant/10 pt-md px-xs"><a class="flex items-center gap-md hover:bg-surface-variant/30 p-xs rounded-xl transition-all duration-200 cursor-pointer" href="{{DATA:SCREEN:SCREEN_7}}"><div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30"><span class="text-primary font-bold">AR</span></div><div><p class="font-label-md text-label-md text-on-surface">Alex Rivera</p><p class="text-[10px] text-on-surface-variant uppercase tracking-widest">Premium Member</p></div></a></div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-[260px] pb-24 md:pb-0">
+<!-- TopNavBar Anchor -->
+<header class="sticky top-0 w-full z-30 bg-surface/75 backdrop-blur-xl border-b border-outline-variant/40 shadow-sm flex justify-between items-center px-gutter py-md max-w-container-max mx-auto">
+<div class="flex items-center gap-xl">
+<h1 class="font-headline-md text-headline-md text-on-surface">Services</h1>
+<!-- Search Bar -->
+<div class="relative hidden lg:block w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-high border-none rounded-full py-2 pl-10 pr-4 text-body-sm focus:ring-2 focus:ring-primary/50 text-on-surface placeholder:text-on-surface-variant/50" placeholder="Search for cards, recharge, or data..." type="text">
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-2 hover:bg-surface-variant/50 rounded-lg transition-all text-on-surface-variant">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="px-md py-2 font-body-md text-body-md text-primary font-bold hover:bg-surface-variant/50 rounded-lg transition-all">Login</button>
+<button class="px-md py-2 font-body-md text-body-md bg-primary text-on-primary rounded-lg font-bold hover:brightness-110 active:scale-95 transition-all">Register</button>
+</div>
+</header>
+<div class="max-w-container-max mx-auto px-gutter py-xl">
+<!-- Category Tabs -->
+<div class="flex items-center gap-md overflow-x-auto pb-4 custom-scrollbar mb-xl">
+<button class="flex items-center gap-xs px-lg py-sm bg-primary-container text-on-primary-container rounded-full whitespace-nowrap font-label-md">
+<span class="material-symbols-outlined text-[18px]">apps</span>
+                        All Services
+                    </button>
+<button class="flex items-center gap-xs px-lg py-sm bg-surface-container-high text-on-surface-variant hover:text-on-surface rounded-full whitespace-nowrap font-label-md transition-colors">
+<span class="material-symbols-outlined text-[18px]">smartphone</span>
+                        Mobile Recharge
+                    </button>
+<button class="flex items-center gap-xs px-lg py-sm bg-surface-container-high text-on-surface-variant hover:text-on-surface rounded-full whitespace-nowrap font-label-md transition-colors">
+<span class="material-symbols-outlined text-[18px]">wifi</span>
+                        Internet Packs
+                    </button>
+<button class="flex items-center gap-xs px-lg py-sm bg-surface-container-high text-on-surface-variant hover:text-on-surface rounded-full whitespace-nowrap font-label-md transition-colors">
+<span class="material-symbols-outlined text-[18px]">card_giftcard</span>
+                        Gift Cards
+                    </button>
+<button class="flex items-center gap-xs px-lg py-sm bg-surface-container-high text-on-surface-variant hover:text-on-surface rounded-full whitespace-nowrap font-label-md transition-colors">
+<span class="material-symbols-outlined text-[18px]">bolt</span>
+                        Utility Bills
+                    </button>
+</div>
+<!-- Bento Grid Layout for Promotions -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg mb-xl">
+<div class="md:col-span-2 glass-card rounded-full p-lg flex items-center justify-between relative overflow-hidden group">
+<div class="relative z-10 max-w-xs">
+<span class="px-2 py-1 bg-tertiary-container text-on-tertiary-container text-[10px] font-bold rounded uppercase tracking-widest mb-md inline-block">Flash Deal</span>
+<h2 class="font-headline-lg text-headline-lg mb-sm">Up to 25% Off Gaming Cards</h2>
+<p class="text-on-surface-variant font-body-sm mb-lg">Unlock premium content for Steam, PSN, and Xbox at institutional rates.</p>
+<button class="px-lg py-2 bg-primary text-on-primary rounded-xl font-bold">Claim Now</button>
+</div>
+<div class="absolute top-0 right-0 h-full w-1/2 opacity-40 group-hover:opacity-60 transition-opacity">
+
+</div>
+</div>
+<div class="glass-card rounded-full p-lg flex flex-col justify-end bg-gradient-to-br from-secondary-container/20 to-transparent">
+<span class="material-symbols-outlined text-secondary text-4xl mb-md">speed</span>
+<h3 class="font-headline-md text-headline-md mb-xs">Instant Settlement</h3>
+<p class="text-on-surface-variant text-body-sm">Vouchers are delivered to your email and wallet within seconds of confirmation.</p>
+</div>
+</div>
+<!-- Service Cards Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg">
+<!-- Steam Card -->
+<div class="glass-card rounded-full p-md flex flex-col items-center text-center rim-light">
+<div class="w-20 h-20 bg-surface-container rounded-full flex items-center justify-center mb-md border border-outline-variant/30">
+<img class="w-12 h-12 object-contain" data-alt="A high-quality, glowing icon for the Steam platform, featuring a metallic blue gear and piston motif against a deep midnight background. Professional gaming aesthetic with sharp highlights and soft teal shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4WJpvOzxRk1ZhnCTjEWwPDiwvcKSYWVdXRgKXyGj_pERJf4cK5jzOnBxRCp5MLphlklcam_8ZalBFTlF4O6urkScmWussD8lmvBp546CWQukLrEdC9Y-_J_-DJcEz3szgC7EcRElFM2mbrrZ7vx0sayHhtKIvNrI6CPViDrsPoKL7MgOPDRqC-2KOnWluuVRQVPkAH_CJRhYgATuGvxG6vwmboO442mS5LHhJEnm_PoCz280dGO3ZZ_JYxOSw1bbBud0np57sjF0">
+</div>
+<h4 class="font-headline-md text-headline-md text-on-surface mb-xs">Steam Gift Card</h4>
+<p class="text-on-surface-variant text-body-sm mb-lg">Global Gaming Credits</p>
+<div class="mt-auto w-full">
+<div class="flex justify-between items-center mb-md bg-surface-container-low p-sm rounded-xl">
+<span class="text-on-surface-variant text-label-md">Starts at</span>
+<span class="font-headline-md text-primary">$10.00</span>
+</div>
+<button class="w-full py-3 bg-white/5 hover:bg-primary hover:text-on-primary rounded-xl font-bold transition-all border border-white/10 hover:border-transparent" onclick="openModal('Steam Gift Card', '$10.00', 'gaming')">Buy Now</button>
+</div>
+</div>
+<!-- Netflix Card -->
+<div class="glass-card rounded-full p-md flex flex-col items-center text-center rim-light">
+<div class="w-20 h-20 bg-surface-container rounded-full flex items-center justify-center mb-md border border-outline-variant/30">
+<img class="w-12 h-12 object-contain" data-alt="The Netflix logo reimagined as a premium digital asset. Vibrant red letter N with a subtle 3D depth, illuminated by soft cinematic lighting in a dark room. Sharp edges and a matte finish to convey reliability and premium service." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZzTRgePv3cvQ3MKTgNLfkPwAACt2u6JFS64QPp8uoRVEjyZhKz49VCJk8wjkvIBjcRiRGSv_tUf8YV02pfuzSPclXl5-Ojf9MzH0-0HKDEs9LmkrNKBOC8nxKw6Gn7mq2Z9ZqdQpChjO100ahqbqpFnKD9tukbAv1QvhzjOEUbtiu6nXoyFojV43KZICzUz7DdWcRnNKPVtCxBuicLC43ymPl2o43JVimSOY1yZWM1MJbyhV87-tNwKQVC6K-snArSEvWAU-qKvw">
+</div>
+<h4 class="font-headline-md text-headline-md text-on-surface mb-xs">Netflix Premium</h4>
+<p class="text-on-surface-variant text-body-sm mb-lg">Stream in Ultra HD</p>
+<div class="mt-auto w-full">
+<div class="flex justify-between items-center mb-md bg-surface-container-low p-sm rounded-xl">
+<span class="text-on-surface-variant text-label-md">Monthly</span>
+<span class="font-headline-md text-primary">$15.99</span>
+</div>
+<button class="w-full py-3 bg-white/5 hover:bg-primary hover:text-on-primary rounded-xl font-bold transition-all border border-white/10 hover:border-transparent" onclick="openModal('Netflix Premium', '$15.99', 'streaming')">Buy Now</button>
+</div>
+</div>
+<!-- AT&T Mobile Recharge -->
+<div class="glass-card rounded-full p-md flex flex-col items-center text-center rim-light">
+<div class="w-20 h-20 bg-surface-container rounded-full flex items-center justify-center mb-md border border-outline-variant/30">
+<img class="w-12 h-12 object-contain" data-alt="A stylized digital representation of the AT&amp;T globe logo. The blue and white sphere is glowing from within, set against a dark glass-morphic background with data connection lines visible in the negative space. High-tech telecommunications vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDT99maTNtamDTKbWdLExnmaiQ1uNbB1Nefpk8VJ_gYUixFaWXIMb_aSt5kgaSlv3cKTPNPhycA5_584EjsnIeqAPxKWGDRuw8oRW6Q1oAGe2zTEpNXpbq7n4dFiRBltulZf7ptBtyMJDcYrA-bh-UngOqQBDqNg9AKD3KiNjT7jcCKIx-DWAlWv_O6dBJfA8_81UEO4FGnWRNWqJ80LT7ZvxNZNVJ8lQjacrsbMXVBpluZgN3JZ5IMEYsyTSltqRy-qsCw7UpUlrk">
+</div>
+<h4 class="font-headline-md text-headline-md text-on-surface mb-xs">AT&amp;T Recharge</h4>
+<p class="text-on-surface-variant text-body-sm mb-lg">Instant Airtime Top-up</p>
+<div class="mt-auto w-full">
+<div class="flex justify-between items-center mb-md bg-surface-container-low p-sm rounded-xl">
+<span class="text-on-surface-variant text-label-md">Flexible</span>
+<span class="font-headline-md text-primary">$5 - $100</span>
+</div>
+<button class="w-full py-3 bg-white/5 hover:bg-primary hover:text-on-primary rounded-xl font-bold transition-all border border-white/10 hover:border-transparent" onclick="openModal('AT&amp;T Recharge', '$25.00', 'mobile')">Buy Now</button>
+</div>
+</div>
+<!-- Amazon Card -->
+<div class="glass-card rounded-full p-md flex flex-col items-center text-center rim-light">
+<div class="w-20 h-20 bg-surface-container rounded-full flex items-center justify-center mb-md border border-outline-variant/30">
+<img class="w-12 h-12 object-contain" data-alt="The Amazon logo smile mark in a vibrant orange, glowing on a dark, sleek black surface. The lighting is low and moody, emphasizing the curve of the smile and the technological sophistication of global e-commerce. Corporate modern aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcPeIZhQ4dEL4pk9O7A7mECaJkY_KOHgJ07r4Up1UqiU4YR3MLiiPpEDZu3k0vy5Wb2ug5tA3-tCzu1q0bwF9PDYdUDnGcLSQ51pI4RIH7v0HE0v9QYZkqINDQHnNjs0T7Bgld-rSbOPXcbPI5QRIHHqAXKJfg4i7mDoFnQ88hvZi0CjxTHi-PZifdfKFMT1VbLPG3oHE1MAlZiSLMkq2TgxJNQVoI74gNI4qg0KZkAzUEjYG3pMmXGnYUTMUgQdeluNRGQfc4Alw">
+</div>
+<h4 class="font-headline-md text-headline-md text-on-surface mb-xs">Amazon US</h4>
+<p class="text-on-surface-variant text-body-sm mb-lg">Global Shopping Credit</p>
+<div class="mt-auto w-full">
+<div class="flex justify-between items-center mb-md bg-surface-container-low p-sm rounded-xl">
+<span class="text-on-surface-variant text-label-md">Any Amount</span>
+<span class="font-headline-md text-primary">$50.00</span>
+</div>
+<button class="w-full py-3 bg-white/5 hover:bg-primary hover:text-on-primary rounded-xl font-bold transition-all border border-white/10 hover:border-transparent" onclick="openModal('Amazon US Gift Card', '$50.00', 'shopping')">Buy Now</button>
+</div>
+</div>
+<!-- Spotify -->
+<div class="glass-card rounded-full p-md flex flex-col items-center text-center rim-light">
+<div class="w-20 h-20 bg-surface-container rounded-full flex items-center justify-center mb-md border border-outline-variant/30">
+<img class="w-12 h-12 object-contain" data-alt="A neon-green Spotify logo icon with glowing sound waves emitting from the center. Set against a dark, textured background that looks like carbon fiber. Modern, high-energy aesthetic for music and audio streaming." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGZSTZ7UUVe2Ia5KfPTUcHdYwKmJ4vU0oBJsaePoM6e6OvDi3avU7a2-1ZigScJiyxCRsSItAC2442VbkKOT_adnPcRif13GqDTd5y_ig08olfgcNnIeRh6c6jk0R8wziHTEZQt3lVFk_vUBiDZs2BQLEkXNLXG4BXr1s2AZx5a6CTdmeSm1UjtUlx5YqGgAja8vIi2OxuC7YtdoU_UjWKniRLtqu8MUeBFaZhNtXD8vC2ymPMzpMn98fv46sW_zoggSYIlGyTwNU">
+</div>
+<h4 class="font-headline-md text-headline-md text-on-surface mb-xs">Spotify Family</h4>
+<p class="text-on-surface-variant text-body-sm mb-lg">Ad-free Music</p>
+<div class="mt-auto w-full">
+<div class="flex justify-between items-center mb-md bg-surface-container-low p-sm rounded-xl">
+<span class="text-on-surface-variant text-label-md">Monthly</span>
+<span class="font-headline-md text-primary">$16.99</span>
+</div>
+<button class="w-full py-3 bg-white/5 hover:bg-primary hover:text-on-primary rounded-xl font-bold transition-all border border-white/10 hover:border-transparent" onclick="openModal('Spotify Family', '$16.99', 'music')">Buy Now</button>
+</div>
+</div>
+<!-- PlayStation -->
+<div class="glass-card rounded-full p-md flex flex-col items-center text-center rim-light">
+<div class="w-20 h-20 bg-surface-container rounded-full flex items-center justify-center mb-md border border-outline-variant/30">
+<img class="w-12 h-12 object-contain" data-alt="The PlayStation logo in a sleek, frosted glass style. Soft blue lighting glows through the logo against a dark navy background. Professional gaming visual with subtle lens flares and high-fidelity textures." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbN7OsCYtjiDKSB0T86maX9KoEPB6KI4Z8fUJjFf8UsaM4alsas-DKnQfIb7cy_ffH0S8YDNtSyRpZrW-Oz6XcjiMhjU4Gz7gxk6BbwU_YfzZ2pRC5H6YaEq0isD-jMLHElVd2tHDiobkCmW8g8zkKlNwvkBqY0U4-AifzanpUC2e-WwZdIAyAEKzKD_lwLaCibG8NoYRqjBSZXDVzjRfI0yRVH10hD8yM7SVs5LDBmTmt-HdG60joV82O2dZN9wjcZf0SenXlPVo">
+</div>
+<h4 class="font-headline-md text-headline-md text-on-surface mb-xs">PlayStation Plus</h4>
+<p class="text-on-surface-variant text-body-sm mb-lg">Online Multiplayer</p>
+<div class="mt-auto w-full">
+<div class="flex justify-between items-center mb-md bg-surface-container-low p-sm rounded-xl">
+<span class="text-on-surface-variant text-label-md">3 Months</span>
+<span class="font-headline-md text-primary">$29.99</span>
+</div>
+<button class="w-full py-3 bg-white/5 hover:bg-primary hover:text-on-primary rounded-xl font-bold transition-all border border-white/10 hover:border-transparent" onclick="openModal('PlayStation Plus', '$29.99', 'gaming')">Buy Now</button>
+</div>
+</div>
+<!-- Apple -->
+<div class="glass-card rounded-full p-md flex flex-col items-center text-center rim-light">
+<div class="w-20 h-20 bg-surface-container rounded-full flex items-center justify-center mb-md border border-outline-variant/30">
+<img class="w-12 h-12 object-contain" data-alt="A minimalist Apple logo rendered in brushed aluminum with a subtle white rim-light. Set against a deep, dark grey background to create a premium, high-end technology feel. Clean lines and perfect symmetry." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0Qx4Fuv9_Trs8KrqsQf6vAE_ZTicMJZdd3Ya7dNnN5Fzlqm-0Kr2aCElwMOD3PntYza1CIBFIjhMsp6X1K3FEf0lv3BRxGPFYQ5sc9m82GyGw89BX3k0mRN_WDhzcr7IRWrUChYy4bNIgjQ9JcKrrk5OO0P2aQR6PG7w0QTlrHUGbviZqYuTUzoZAvjxXeyRhhQkxah8EwoQF9JhSoslMWpr7T0Utlg_qJOoC5pS4sR_P5uRf_uzm8ww8zE4TpLDFe-OOgyXPIs8">
+</div>
+<h4 class="font-headline-md text-headline-md text-on-surface mb-xs">Apple Card</h4>
+<p class="text-on-surface-variant text-body-sm mb-lg">App Store &amp; Services</p>
+<div class="mt-auto w-full">
+<div class="flex justify-between items-center mb-md bg-surface-container-low p-sm rounded-xl">
+<span class="text-on-surface-variant text-label-md">Starts at</span>
+<span class="font-headline-md text-primary">$15.00</span>
+</div>
+<button class="w-full py-3 bg-white/5 hover:bg-primary hover:text-on-primary rounded-xl font-bold transition-all border border-white/10 hover:border-transparent" onclick="openModal('Apple Services Card', '$15.00', 'tech')">Buy Now</button>
+</div>
+</div>
+<!-- PUBG Mobile -->
+<div class="glass-card rounded-full p-md flex flex-col items-center text-center rim-light">
+<div class="w-20 h-20 bg-surface-container rounded-full flex items-center justify-center mb-md border border-outline-variant/30">
+<img class="w-12 h-12 object-contain" data-alt="A detailed digital icon of a level 3 helmet from PUBG, illuminated by golden desert sunset lighting. High contrast between the dark metal and the bright reflections. Rugged gaming aesthetic with gritty textures and sharp detail." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCeGVWk12PsEJ0W6GNQ_oErY7DOGCVNTUcEfihm3gDqwHir0rHBZIOXKCfBV8rOtY5uIDl7KKd-GtbW7iOYGtQZySWuc4uERYnrkIs_S0QtBO_SKW1CqBj5A06tseaAy1BfFU1NiAXjXX0HfHJMuM56LHlAcNJTifPDT96zwijjEj6acT6Ssacy6TlspXW-VQNHE5bfZLvlgDqAQIaTYg4MxJXJHwrJL_bCa1tZk5ZAMGXjrv7zUGcmv5e6PZAivS8lzqS388UX-zM">
+</div>
+<h4 class="font-headline-md text-headline-md text-on-surface mb-xs">PUBG Mobile UC</h4>
+<p class="text-on-surface-variant text-body-sm mb-lg">In-game Currency</p>
+<div class="mt-auto w-full">
+<div class="flex justify-between items-center mb-md bg-surface-container-low p-sm rounded-xl">
+<span class="text-on-surface-variant text-label-md">600 UC</span>
+<span class="font-headline-md text-primary">$9.99</span>
+</div>
+<button class="w-full py-3 bg-white/5 hover:bg-primary hover:text-on-primary rounded-xl font-bold transition-all border border-white/10 hover:border-transparent" onclick="openModal('PUBG Mobile UC', '$9.99', 'gaming')">Buy Now</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Purchase Confirmation Modal -->
+<div class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-md" id="purchaseModal">
+<div class="modal-content glass-card rounded-full max-w-md w-full p-xl shadow-2xl relative">
+<button class="absolute top-md right-md text-on-surface-variant hover:text-on-surface transition-colors" onclick="closeModal()">
+<span class="material-symbols-outlined">close</span>
+</button>
+<div class="text-center mb-lg">
+<div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-md">
+<span class="material-symbols-outlined text-primary text-4xl">shopping_cart_checkout</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface mb-xs">Confirm Purchase</h3>
+<p class="text-on-surface-variant text-body-md">Review your transaction details before proceeding with the secure payment.</p>
+</div>
+<div class="space-y-md mb-xl">
+<div class="flex justify-between items-center p-md bg-surface-container-low rounded-xl">
+<span class="text-on-surface-variant">Service</span>
+<span class="font-bold text-on-surface" id="modalServiceName">Netflix Premium</span>
+</div>
+<div class="flex justify-between items-center p-md bg-surface-container-low rounded-xl">
+<span class="text-on-surface-variant">Amount</span>
+<span class="font-bold text-primary" id="modalPrice">$15.99</span>
+</div>
+<div class="flex justify-between items-center p-md bg-surface-container-low rounded-xl">
+<span class="text-on-surface-variant">Payment Method</span>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-sm">account_balance_wallet</span>
+<span class="font-bold text-on-surface">APEX Wallet</span>
+</div>
+</div>
+<div class="flex justify-between items-center p-md bg-surface-container-low rounded-xl">
+<span class="text-on-surface-variant">Wallet Balance</span>
+<span class="font-bold text-on-surface">$1,240.50</span>
+</div>
+</div>
+<div class="flex gap-md">
+<button class="flex-1 py-3 bg-surface-variant/30 hover:bg-surface-variant/50 text-on-surface rounded-xl font-bold transition-all" onclick="closeModal()">Cancel</button>
+<button class="flex-1 py-3 bg-primary text-on-primary rounded-xl font-bold hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary/20" onclick="processPurchase()">Confirm Pay</button>
+</div>
+</div>
+</div>
+<!-- Success Message (Toast) -->
+<div class="fixed bottom-lg right-lg z-50 glass-card rounded-xl px-xl py-md translate-y-24 opacity-0 transition-all duration-500 flex items-center gap-md border-l-4 border-l-primary" id="successToast">
+<span class="material-symbols-outlined text-primary">check_circle</span>
+<div>
+<p class="font-bold text-on-surface">Transaction Successful</p>
+<p class="text-body-sm text-on-surface-variant">Check your email for the voucher.</p>
+</div>
+</div>
+<script>
+        const modal = document.getElementById('purchaseModal');
+        const modalServiceName = document.getElementById('modalServiceName');
+        const modalPrice = document.getElementById('modalPrice');
+        const toast = document.getElementById('successToast');
+
+        function openModal(name, price, category) {
+            modalServiceName.textContent = name;
+            modalPrice.textContent = price;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function processPurchase() {
+            closeModal();
+            // Show toast
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+                toast.classList.remove('translate-y-0', 'opacity-100');
+            }, 5000);
+        }
+
+        // Close modal on click outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+    </script>
+
+
+</body></html>

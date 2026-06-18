@@ -344,7 +344,32 @@ Each service is rendered inside a card container:
 
 ---
 
-### 3.8 Admin Panel Page (`/admin`)
+### 3.8 User Profile Settings Page (`/profile`)
+- **Access**: Authenticated users only.
+- **Layout**: Sidebar Layout.
+- **Form Fields & Validation Rules**:
+  - **Name Input**:
+    - Type: `text`. Optional.
+    - Placeholder: Pre-filled with user's current name.
+    - Validation: Must be at least 2 characters if provided.
+  - **Email Input**:
+    - Type: `email`. Optional.
+    - Placeholder: Pre-filled with user's current email.
+    - Validation: Must be a valid email syntax.
+  - **New Password Input**:
+    - Type: `password`. Optional.
+    - Placeholder: `••••••••` (leave blank to keep current).
+    - Validation: Must be at least 8 characters if provided.
+- **Actions & Logic**:
+  - **Save Changes Button**:
+    - Action: Dispatches inputs to backend `PUT /api/user/profile`.
+    - Active State: Shows a loading circular spinner inside the button. Sets input fields to `disabled` to prevent double submissions.
+    - Failure handling: Reads standard error response (e.g., `409 Conflict`) and displays error: *"Email is already in use."*
+    - Success handling: Updates client auth state/profile cache, displays success toast: *"Profile updated successfully."*
+
+---
+
+### 3.9 Admin Panel Page (`/admin`)
 - **Access**: Authenticated Admin Role Only (`role === 'admin'`).
 - **Layout**: Sidebar Layout.
 - **A. Analytics Dash Cards**:
