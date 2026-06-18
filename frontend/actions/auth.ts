@@ -26,7 +26,7 @@ function setAuthCookies(
   token: string,
   role: string,
 ) {
-  const opts = { httpOnly: true, path: '/', maxAge: 86400, sameSite: 'lax' as const };
+  const opts = { httpOnly: true, path: '/', maxAge: 86400, sameSite: 'lax' as const, secure: process.env.NODE_ENV === 'production' };
   store.set('apex_token', token, opts);
   store.set('apex_role', role, opts);
 }

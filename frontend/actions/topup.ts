@@ -3,11 +3,19 @@
 import { serverFetch } from '@/lib/server/client';
 import type { Transaction } from '@/types/models';
 
+// Shape returned by the backend POST /api/topup: the created transaction plus
+// the new wallet balance and a service summary.
+export interface TopupResult {
+  transaction: Transaction;
+  balance: number;
+  service: { id: number; name: string; price: number };
+}
+
 export async function executeTopupAction(
   serviceId: number,
-): Promise<{ data?: Transaction; error?: string }> {
+): Promise<{ data?: TopupResult; error?: string }> {
   try {
-    const res = await serverFetch<Transaction>('/topup', {
+    const res = await serverFetch<TopupResult>('/topup', {
       method: 'POST',
       body: JSON.stringify({ serviceId }),
     });

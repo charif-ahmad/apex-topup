@@ -35,7 +35,7 @@ export function PurchaseModal({ service, walletBalance, onClose, onSuccess }: Pu
       return;
     }
 
-    if (res.data?.status === 'success') {
+    if (res.data?.transaction.status === 'success') {
       setResult('success');
       toast(`${service.name} purchased successfully!`, 'success');
       router.refresh();

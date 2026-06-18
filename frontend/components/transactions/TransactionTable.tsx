@@ -23,6 +23,10 @@ export function TransactionTable({ filters: externalFilters, showFilters = false
   const [total, setTotal] = useState(0);
   const [filters, setFilters] = useState<TransactionFilters>({ limit: 10 });
 
+  // Serialize externalFilters to a stable string so the callback/effect do not
+  // re-run on every render when a caller passes an inline object literal.
+  const externalKey = JSON.stringify(externalFilters ?? {});
+
   const load = useCallback(async () => {
     setLoading(true);
     try {
@@ -34,7 +38,10 @@ export function TransactionTable({ filters: externalFilters, showFilters = false
     } finally {
       setLoading(false);
     }
-  }, [filters, externalFilters, page]);
+    // externalKey is the stable serialization of externalFilters — using it
+    // instead of externalFilters avoids infinite re-renders from object identity churn.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters, externalKey, page]);
 
   useEffect(() => { load(); }, [load]);
 

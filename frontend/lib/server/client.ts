@@ -27,7 +27,8 @@ export async function serverFetch<T>(path: string, options?: RequestInit): Promi
     ...options,
   });
 
-  const json: unknown = await res.json();
+  const text = await res.text();
+  const json: unknown = text ? JSON.parse(text) : null;
 
   if (!res.ok) {
     const err = json as ApiError;
@@ -38,5 +39,5 @@ export async function serverFetch<T>(path: string, options?: RequestInit): Promi
     );
   }
 
-  return json as ApiSuccess<T>;
+  return (json ?? null) as ApiSuccess<T>;
 }
