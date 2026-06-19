@@ -39,7 +39,7 @@ export function LoginForm() {
 
   return (
     <div className="glass-card rounded-[var(--radius-lg)] p-6 md:p-8 space-y-5">
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+      <form onSubmit={handleSubmit(onSubmit)} method="post" className="space-y-4" noValidate>
         {/* Email */}
         <div className="space-y-1.5">
           <label

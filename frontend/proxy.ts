@@ -8,7 +8,7 @@ const AUTH_PATHS = ['/dashboard', '/wallet', '/services', '/transactions', '/pro
 // which verifies the JWT token server-side. The unsigned apex_role cookie must
 // not be used as a security boundary here.
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const token = request.cookies.get('apex_token')?.value;
 
