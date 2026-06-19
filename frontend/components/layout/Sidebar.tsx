@@ -23,16 +23,23 @@ const ADMIN_NAV: NavItem[] = [
   { label: 'Dashboard', href: '/dashboard', icon: 'dashboard' },
   { label: 'Admin Panel', href: '/admin', icon: 'admin_panel_settings' },
   { label: 'My Wallet', href: '/wallet', icon: 'account_balance_wallet' },
+  { label: 'Services', href: '/services', icon: 'apps' },
+  { label: 'Transactions', href: '/transactions', icon: 'receipt_long' },
   { label: 'Profile', href: '/profile', icon: 'manage_accounts' },
 ];
 
-export function Sidebar() {
+/**
+ * The inner content of the sidebar (logo, nav, user/logout). Shared between the
+ * fixed desktop sidebar and the sliding mobile drawer. `onNavigate` lets the
+ * drawer close itself when a link is tapped.
+ */
+export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const { user, logout } = useAuth();
   const nav = user?.role === 'admin' ? ADMIN_NAV : USER_NAV;
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 shrink-0 border-r border-[var(--color-outline-variant)] bg-[var(--color-surface-container-low)] min-h-screen">
+    <>
       {/* Logo */}
       <div className="px-6 py-5 border-b border-[var(--color-outline-variant)]">
         <span className="text-xl font-bold font-[var(--font-outfit)] text-[var(--color-primary)]">
@@ -41,13 +48,14 @@ export function Sidebar() {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-4 flex flex-col gap-1">
+      <nav className="flex-1 px-3 py-4 flex flex-col gap-1 overflow-y-auto">
         {nav.map((item) => {
           const active = pathname === item.href || pathname.startsWith(item.href + '/');
           return (
             <Link
               key={item.href}
               href={item.href}
+              onClick={onNavigate}
               className={cn(
                 'flex items-center gap-3 px-3 py-2.5 rounded-[var(--radius-md)] text-sm font-medium transition-colors',
                 active
@@ -71,13 +79,24 @@ export function Sidebar() {
           </div>
         )}
         <button
-          onClick={logout}
+          onClick={() => {
+            onNavigate?.();
+            logout();
+          }}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-[var(--radius-md)] text-sm font-medium text-[var(--color-on-surface-variant)] hover:text-[var(--color-error)] hover:bg-[color-mix(in_srgb,var(--color-error)_10%,transparent)] transition-colors"
         >
           <span className="material-symbols-outlined text-xl">logout</span>
           Sign Out
         </button>
       </div>
+    </>
+  );
+}
+
+export function Sidebar() {
+  return (
+    <aside className="hidden lg:flex flex-col w-64 shrink-0 border-r border-[var(--color-outline-variant)] bg-[var(--color-surface-container-low)] sticky top-0 h-screen">
+      <SidebarContent />
     </aside>
   );
 }

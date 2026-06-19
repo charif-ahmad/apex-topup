@@ -61,7 +61,7 @@ export function AuthShell({ title, subtitle, children }: AuthShellProps) {
       </main>
 
       {/* Security badge */}
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-1.5 opacity-40 hover:opacity-100 transition-opacity">
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center justify-center gap-1.5 w-full max-w-[90vw] px-4 text-center opacity-40 hover:opacity-100 transition-opacity">
         <span
           className="material-symbols-outlined text-sm text-[var(--color-on-surface-variant)]"
           style={{ fontVariationSettings: "'FILL' 1" }}

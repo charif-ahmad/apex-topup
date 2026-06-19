@@ -8,6 +8,11 @@ export async function listServicesAction(): Promise<Service[]> {
   return res.data.services;
 }
 
+export async function listAllServicesAdminAction(): Promise<Service[]> {
+  const res = await serverFetch<{ services: Service[] }>('/services?all=true');
+  return res.data.services;
+}
+
 export interface ServicePayload {
   name: string;
   category: string;

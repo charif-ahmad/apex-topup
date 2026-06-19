@@ -23,11 +23,11 @@ export default async function DashboardPage() {
     .reduce((s, t) => s + t.amount, 0);
 
   return (
-    <div className="p-6 md:p-8 max-w-[1280px] mx-auto">
+    <div className="page-container py-6 md:py-8">
       <DashboardGreeting />
 
       {/* Bento grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 mb-8">
         <div className="lg:col-span-7">
           <WalletCard balance={walletBalance} />
         </div>
@@ -97,8 +97,8 @@ export default async function DashboardPage() {
       </div>
 
       {/* Bottom row */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
-        <div className="xl:col-span-4">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
+        <div className="lg:col-span-4">
           <h2
             className="text-base font-semibold text-[var(--color-on-surface)] flex items-center gap-2 mb-4"
             style={{ fontFamily: 'var(--font-outfit)' }}
@@ -109,7 +109,7 @@ export default async function DashboardPage() {
           <QuickTopupList services={services} walletBalance={walletBalance} />
         </div>
 
-        <div className="xl:col-span-8">
+        <div className="lg:col-span-8">
           <RecentTransactions transactions={transactions} loading={false} />
         </div>
       </div>

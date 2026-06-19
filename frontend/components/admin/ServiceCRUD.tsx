@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useToast } from '@/context/ToastContext';
 import {
-  listServicesAction,
+  listAllServicesAdminAction,
   createServiceAction,
   updateServiceAction,
   deleteServiceAction,
@@ -39,6 +39,9 @@ const CATEGORY_ICONS: Record<string, string> = {
   giftcard: 'card_giftcard',
 };
 
+type StatusFilter = 'all' | 'active' | 'inactive';
+type CategoryFilter = 'all' | 'mobile' | 'internet' | 'giftcard';
+
 export function ServiceCRUD() {
   const { toast } = useToast();
   const [services, setServices] = useState<Service[]>([]);
@@ -46,11 +49,13 @@ export function ServiceCRUD() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Service | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
+  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('all');
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const all = await listServicesAction();
+      const all = await listAllServicesAdminAction();
       setServices(all);
     } finally {
       setLoading(false);
@@ -119,14 +124,56 @@ export function ServiceCRUD() {
     }
   }
 
+  const filtered = services.filter((s) => {
+    const statusOk =
+      statusFilter === 'all' ||
+      (statusFilter === 'active' && s.isActive) ||
+      (statusFilter === 'inactive' && !s.isActive);
+    const categoryOk = categoryFilter === 'all' || s.category === categoryFilter;
+    return statusOk && categoryOk;
+  });
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <span className="text-xs text-[var(--color-on-surface-variant)]">{services.length} services</span>
+        <span className="text-xs text-[var(--color-on-surface-variant)]">
+          {filtered.length} / {services.length} services
+        </span>
         <Button variant="primary" size="sm" onClick={openCreate}>
           <span className="material-symbols-outlined text-xl">add</span>
           New Service
         </Button>
+      </div>
+
+      {/* Filters */}
+      <div className="flex flex-wrap gap-2">
+        {(['all', 'active', 'inactive'] as StatusFilter[]).map((s) => (
+          <button
+            key={s}
+            onClick={() => setStatusFilter(s)}
+            className={`px-3 py-1.5 rounded-[var(--radius-sm)] text-xs font-semibold capitalize transition-all border ${
+              statusFilter === s
+                ? 'bg-[var(--color-primary)] text-[var(--color-on-primary)] border-[var(--color-primary)]'
+                : 'border-[var(--color-outline-variant)] text-[var(--color-on-surface-variant)] hover:border-[var(--color-primary)] hover:text-[var(--color-on-surface)]'
+            }`}
+          >
+            {s}
+          </button>
+        ))}
+        <div className="w-px bg-[var(--color-outline-variant)] mx-1" />
+        {(['all', 'mobile', 'internet', 'giftcard'] as CategoryFilter[]).map((c) => (
+          <button
+            key={c}
+            onClick={() => setCategoryFilter(c)}
+            className={`px-3 py-1.5 rounded-[var(--radius-sm)] text-xs font-semibold capitalize transition-all border ${
+              categoryFilter === c
+                ? 'border-[var(--color-primary)] text-[var(--color-primary)] bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)]'
+                : 'border-[var(--color-outline-variant)] text-[var(--color-on-surface-variant)] hover:border-[var(--color-primary)] hover:text-[var(--color-on-surface)]'
+            }`}
+          >
+            {c}
+          </button>
+        ))}
       </div>
 
       {loading ? (
@@ -135,14 +182,14 @@ export function ServiceCRUD() {
             <Skeleton key={i} className="h-24 rounded-[var(--radius-md)]" />
           ))}
         </div>
-      ) : services.length === 0 ? (
+      ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 gap-2 text-[var(--color-on-surface-variant)]">
           <span className="material-symbols-outlined text-4xl opacity-40">account_tree</span>
-          <p className="text-sm">No services yet</p>
+          <p className="text-sm">{services.length === 0 ? 'No services yet' : 'No services match the filter'}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {services.map((svc) => (
+          {filtered.map((svc) => (
             <div
               key={svc.id}
               className="flex items-center gap-4 p-4 rounded-[var(--radius-md)] group transition-colors"
@@ -172,7 +219,7 @@ export function ServiceCRUD() {
                   {formatCurrency(svc.price)}
                 </p>
               </div>
-              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+              <div className="flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity shrink-0">
                 <button
                   onClick={() => openEdit(svc)}
                   className="p-2 rounded-[var(--radius-sm)] text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)] hover:bg-[rgba(78,222,163,0.1)] transition-all"

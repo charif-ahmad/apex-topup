@@ -82,12 +82,12 @@ export function TransactionTable({ filters: externalFilters, showFilters = false
             <option value="failed">Failed</option>
           </select>
 
-          <button
+          {/* <button
             onClick={() => { setFilters({ limit: 10 }); setPage(1); }}
             className="px-3 py-2 rounded-[var(--radius-md)] text-sm border border-[var(--color-outline-variant)] text-[var(--color-on-surface-variant)] hover:text-[var(--color-on-surface)] transition-colors"
           >
             Clear
-          </button>
+          </button> */}
 
           <span className="ml-auto text-xs text-[var(--color-on-surface-variant)] self-center">
             {total} transactions

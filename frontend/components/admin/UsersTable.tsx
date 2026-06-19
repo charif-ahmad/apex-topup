@@ -39,7 +39,8 @@ export function UsersTable() {
     ? users.filter(
         (u) =>
           u.name.toLowerCase().includes(search.toLowerCase()) ||
-          u.email.toLowerCase().includes(search.toLowerCase()),
+          u.email.toLowerCase().includes(search.toLowerCase()) ||
+          u.id.toLowerCase().includes(search.toLowerCase()),
       )
     : users;
 
@@ -80,13 +81,13 @@ export function UsersTable() {
     <div className="flex flex-col gap-4">
       {/* Toolbar */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="relative flex-1 max-w-sm">
+        <div className="relative w-full sm:flex-1 sm:max-w-sm">
           <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-on-surface-variant)] text-xl pointer-events-none">
             search
           </span>
           <input
             type="text"
-            placeholder="Search by name or email..."
+            placeholder="Search by name, email or ID..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 rounded-[var(--radius-md)] text-sm bg-[var(--color-surface-container-high)] border border-[var(--color-outline-variant)] text-[var(--color-on-surface)] placeholder:text-[var(--color-on-surface-variant)]/50 focus:outline-none focus:border-[var(--color-primary)] transition-colors"
@@ -103,7 +104,9 @@ export function UsersTable() {
           <p className="text-sm">No users found</p>
         </div>
       ) : (
-        <div className="overflow-x-auto">
+        <>
+        {/* Desktop / tablet table */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-sm border-separate" style={{ borderSpacing: '0 6px' }}>
             <thead>
               <tr>
@@ -190,6 +193,69 @@ export function UsersTable() {
             </tbody>
           </table>
         </div>
+
+        {/* Mobile cards */}
+        <div className="md:hidden flex flex-col gap-3">
+          {filtered.map((user) => (
+            <div
+              key={user.id}
+              className="rounded-[var(--radius-md)] p-4 flex flex-col gap-3"
+              style={{ background: 'rgba(38,42,53,0.5)' }}
+            >
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
+                  style={{
+                    background: 'var(--color-secondary-container)',
+                    color: 'var(--color-on-secondary-container)',
+                  }}
+                >
+                  {initials(user.name)}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold text-[var(--color-on-surface)] truncate">{user.name}</p>
+                  <p className="text-xs text-[var(--color-on-surface-variant)] truncate">{user.email}</p>
+                </div>
+                <span className="font-mono text-sm text-[var(--color-on-surface)] whitespace-nowrap">
+                  {formatCurrency(user.balance ?? 0)}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between gap-2 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <Badge variant={user.role === 'admin' ? 'info' : 'neutral'}>{user.role}</Badge>
+                  <Badge variant={user.isBlocked ? 'error' : 'success'}>
+                    {user.isBlocked ? 'Blocked' : 'Active'}
+                  </Badge>
+                  <span className="text-xs text-[var(--color-on-surface-variant)]">
+                    {formatDateShort(user.createdAt)}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => handleBlock(user)}
+                    disabled={actionId === user.id}
+                    title={user.isBlocked ? 'Unblock user' : 'Block user'}
+                    className="p-2 rounded-[var(--radius-sm)] text-[var(--color-on-surface-variant)] hover:text-[var(--color-tertiary)] hover:bg-[rgba(255,185,95,0.1)] transition-all disabled:opacity-40"
+                  >
+                    <span className="material-symbols-outlined text-xl">
+                      {user.isBlocked ? 'lock_open' : 'block'}
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => setConfirmDelete(user)}
+                    disabled={actionId === user.id}
+                    title="Delete user"
+                    className="p-2 rounded-[var(--radius-sm)] text-[var(--color-on-surface-variant)] hover:text-[var(--color-error)] hover:bg-[rgba(255,180,171,0.1)] transition-all disabled:opacity-40"
+                  >
+                    <span className="material-symbols-outlined text-xl">delete_forever</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        </>
       )}
 
       {totalPages > 1 && (

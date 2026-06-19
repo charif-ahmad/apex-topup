@@ -2,10 +2,10 @@ import { TransactionTable } from '@/components/transactions/TransactionTable';
 
 export default function TransactionsPage() {
   return (
-    <div className="p-6 md:p-8 max-w-[1280px] mx-auto">
-      <header className="mb-8">
+    <div className="page-container py-6 md:py-8">
+      <header className="mb-6 md:mb-8">
         <h1
-          className="text-3xl font-semibold text-[var(--color-on-surface)]"
+          className="text-2xl sm:text-3xl font-semibold text-[var(--color-on-surface)]"
           style={{ fontFamily: 'var(--font-outfit)' }}
         >
           Transaction History
@@ -16,7 +16,7 @@ export default function TransactionsPage() {
       </header>
 
       <div
-        className="glass-card rounded-[var(--radius-lg)] p-6"
+        className="glass-card rounded-[var(--radius-lg)] p-4 sm:p-6"
         style={{ background: 'rgba(21,29,48,0.75)' }}
       >
         <TransactionTable showFilters />

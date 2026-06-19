@@ -43,8 +43,8 @@ export function ServiceCard({ service, onSelect }: ServiceCardProps) {
 
       {/* Info */}
       <div className="flex-1">
-        <p className="font-semibold text-[var(--color-on-surface)] text-sm leading-snug">{service.name}</p>
-        <p className="text-xs text-[var(--color-on-surface-variant)] mt-0.5">{service.provider}</p>
+        <p className="font-semibold text-[var(--color-on-surface)] text-sm leading-snug line-clamp-2">{service.name}</p>
+        <p className="text-xs text-[var(--color-on-surface-variant)] mt-0.5 truncate">{service.provider}</p>
       </div>
 
       {/* Price + CTA */}

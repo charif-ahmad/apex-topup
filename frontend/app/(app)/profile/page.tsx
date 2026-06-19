@@ -54,10 +54,10 @@ export default function ProfilePage() {
       .slice(0, 2) ?? '?';
 
   return (
-    <div className="p-6 md:p-8 max-w-[1280px] mx-auto">
-      <header className="mb-8">
+    <div className="page-container py-6 md:py-8">
+      <header className="mb-6 md:mb-8">
         <h1
-          className="text-3xl font-semibold text-[var(--color-on-surface)]"
+          className="text-2xl sm:text-3xl font-semibold text-[var(--color-on-surface)]"
           style={{ fontFamily: 'var(--font-outfit)' }}
         >
           Profile Settings
@@ -67,7 +67,7 @@ export default function ProfilePage() {
         </p>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
         {/* Left — avatar + account info */}
         <div className="lg:col-span-4 flex flex-col gap-4">
           <div
@@ -201,7 +201,7 @@ export default function ProfilePage() {
             >
               Security
             </h2>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-3 flex-wrap">
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-[var(--color-primary)] text-2xl">
                   lock

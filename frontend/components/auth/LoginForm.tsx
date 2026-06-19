@@ -83,9 +83,9 @@ export function LoginForm() {
             >
               Password
             </label>
-            <span className="text-xs text-[var(--color-primary)] font-semibold cursor-default opacity-40">
+            {/* <span className="text-xs text-[var(--color-primary)] font-semibold cursor-default opacity-40">
               Forgot?
-            </span>
+            </span> */}
           </div>
           <div
             className={cn(
@@ -151,16 +151,16 @@ export function LoginForm() {
       </form>
 
       {/* Divider */}
-      <div className="flex items-center gap-4 py-1">
+      {/* <div className="flex items-center gap-4 py-1">
         <div className="h-px flex-1 bg-[var(--color-outline-variant)]/20" />
         <span className="text-[10px] font-semibold tracking-widest uppercase text-[var(--color-on-surface-variant)]/60">
           or continue with
         </span>
         <div className="h-px flex-1 bg-[var(--color-outline-variant)]/20" />
-      </div>
+      </div> */}
 
       {/* Social (decorative) */}
-      <div className="grid grid-cols-2 gap-3">
+      {/* <div className="grid grid-cols-2 gap-3">
         {[
           { icon: 'shield', label: 'SSO' },
           { icon: 'fingerprint', label: 'Passkey' },
@@ -175,7 +175,7 @@ export function LoginForm() {
             {label}
           </button>
         ))}
-      </div>
+      </div> */}
 
       {/* Footer link */}
       <p className="text-center text-sm text-[var(--color-on-surface-variant)]">

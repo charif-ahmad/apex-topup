@@ -26,10 +26,10 @@ export function ServicesClient({ initialServices, walletBalance }: ServicesClien
       : initialServices.filter((s) => s.category.toLowerCase() === category);
 
   return (
-    <div className="p-6 md:p-8 max-w-[1280px] mx-auto">
-      <header className="mb-8">
+    <div className="page-container py-6 md:py-8">
+      <header className="mb-6 md:mb-8">
         <h1
-          className="text-3xl font-semibold text-[var(--color-on-surface)]"
+          className="text-2xl sm:text-3xl font-semibold text-[var(--color-on-surface)]"
           style={{ fontFamily: 'var(--font-outfit)' }}
         >
           Services Directory
@@ -67,7 +67,7 @@ export function ServicesClient({ initialServices, walletBalance }: ServicesClien
           <p className="text-sm">No services in this category</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
           {filtered.map((svc) => (
             <ServiceCard key={svc.id} service={svc} onSelect={setSelected} />
           ))}

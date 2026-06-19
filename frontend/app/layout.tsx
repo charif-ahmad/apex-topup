@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter, Outfit } from 'next/font/google';
 import './globals.css';
 import { ToastProvider } from '@/context/ToastContext';
@@ -18,6 +18,12 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: 'APEX | Digital Top-Up Platform',
   description: 'Fast, secure digital top-up and wallet services.',
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

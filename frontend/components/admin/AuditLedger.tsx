@@ -60,7 +60,8 @@ export function AuditLedger() {
         </div>
       ) : (
         <>
-          <div className="overflow-x-auto">
+          {/* Desktop / tablet table */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr style={{ borderBottom: '1px solid rgba(60,74,66,0.4)' }}>
@@ -108,6 +109,43 @@ export function AuditLedger() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile cards */}
+          <div className="md:hidden flex flex-col gap-3">
+            {transactions.map((tx) => (
+              <div
+                key={tx.id}
+                className="rounded-[var(--radius-md)] p-4 flex flex-col gap-2"
+                style={{ background: 'rgba(38,42,53,0.5)' }}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <p className="text-sm font-medium text-[var(--color-on-surface)] truncate">
+                    {tx.service?.name ?? (tx.type === 'credit' ? 'Wallet Top-up' : 'Purchase')}
+                  </p>
+                  <span
+                    className="text-sm font-semibold whitespace-nowrap"
+                    style={{
+                      color: tx.type === 'credit' ? 'var(--color-primary)' : 'var(--color-on-surface)',
+                    }}
+                  >
+                    {tx.type === 'credit' ? '+' : '-'}{formatCurrency(tx.amount)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <div className="flex items-center gap-2">
+                    <TypeBadge type={tx.type} />
+                    <StatusBadge status={tx.status} />
+                  </div>
+                  <span className="text-xs font-mono text-[var(--color-on-surface-variant)]">
+                    {tx.userId.slice(0, 8).toUpperCase()}
+                  </span>
+                </div>
+                <span className="text-xs text-[var(--color-on-surface-variant)]">
+                  {formatDate(tx.createdAt)}
+                </span>
+              </div>
+            ))}
           </div>
 
           {totalPages > 1 && (

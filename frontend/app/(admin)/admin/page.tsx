@@ -14,16 +14,16 @@ export default async function AdminPage() {
     <div className="min-h-screen">
       {/* Sticky header */}
       <header
-        className="sticky top-0 z-20 px-6 md:px-8 py-4 flex items-center justify-between"
+        className="lg:sticky lg:top-0 z-20 px-4 sm:px-6 md:px-8 py-3 md:py-4 flex items-center justify-between gap-3 flex-wrap"
         style={{
           background: 'rgba(21,29,48,0.85)',
           backdropFilter: 'blur(12px)',
           borderBottom: '1px solid rgba(60,74,66,0.2)',
         }}
       >
-        <div>
+        <div className="min-w-0">
           <h1
-            className="text-2xl font-bold text-[var(--color-on-surface)]"
+            className="text-xl sm:text-2xl font-bold text-[var(--color-on-surface)]"
             style={{ fontFamily: 'var(--font-outfit)' }}
           >
             Admin Control
@@ -49,7 +49,7 @@ export default async function AdminPage() {
         </div>
       </header>
 
-      <div className="p-6 md:p-8 max-w-[1280px] mx-auto space-y-6">
+      <div className="page-container py-6 md:py-8 space-y-6">
         <AnalyticsCards analytics={analytics} loading={false} />
         <AdminTabs />
       </div>

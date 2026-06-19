@@ -37,7 +37,7 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
     >
       <div
         className={cn(
-          'glass-panel rounded-[var(--radius-lg)] p-6 w-full max-w-md',
+          'glass-panel rounded-[var(--radius-lg)] p-5 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto',
           'border border-[var(--color-outline-variant)]',
           className,
         )}
