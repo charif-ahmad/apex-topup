@@ -29,7 +29,7 @@ function errorHandler(err, req, res, next) {
     message = 'Invalid database query';
   }
 
-  if (statusCode >= 500) {
+  if (env.nodeEnv === 'development' || statusCode >= 500) {
     // eslint-disable-next-line no-console
     console.error(err);
   }
