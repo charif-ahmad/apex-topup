@@ -11,7 +11,7 @@ interface AuthData {
 }
 
 async function authPost(path: string, body: object): Promise<AuthData> {
-  console.log(`${BASE}/api${path}`);
+  // console.log(`${BASE}/api${path}`);
   const res = await fetch(`${BASE}/api${path}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
