@@ -18,31 +18,35 @@ export function UsersTable() {
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [actionId, setActionId] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<AdminUser | null>(null);
+
+  // Debounce the search box so we hit the API at most once every 350ms and
+  // reset to the first page whenever the query changes.
+  useEffect(() => {
+    const id = setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(1);
+    }, 350);
+    return () => clearTimeout(id);
+  }, [search]);
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await listUsersAction(page, 10);
+      const res = await listUsersAction(page, 10, debouncedSearch || undefined);
       setUsers(res.items);
       setTotalPages(res.totalPages);
       setTotal(res.total);
     } finally {
       setLoading(false);
     }
-  }, [page]);
+  }, [page, debouncedSearch]);
 
   useEffect(() => { load(); }, [load]);
 
-  const filtered = search
-    ? users.filter(
-        (u) =>
-          u.name.toLowerCase().includes(search.toLowerCase()) ||
-          u.email.toLowerCase().includes(search.toLowerCase()) ||
-          u.id.toLowerCase().includes(search.toLowerCase()),
-      )
-    : users;
+  const filtered = users;
 
   async function handleBlock(user: AdminUser) {
     setActionId(user.id);

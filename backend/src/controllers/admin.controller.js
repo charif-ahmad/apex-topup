@@ -4,8 +4,8 @@ const adminService = require('../services/admin.service');
 const transactionService = require('../services/transaction.service');
 
 const listUsers = asyncHandler(async (req, res) => {
-  const { page, limit } = req.validatedQuery;
-  const result = await adminService.listUsers({ page, limit });
+  const { page, limit, search } = req.validatedQuery;
+  const result = await adminService.listUsers({ page, limit, search });
   return sendSuccess(res, 200, result);
 });
 

@@ -4,7 +4,12 @@ import { serverFetch } from '@/lib/server/client';
 import type { Service } from '@/types/models';
 
 export async function listServicesAction(): Promise<Service[]> {
-  const res = await serverFetch<{ services: Service[] }>('/services');
+  // The public service catalog is identical for every user and changes rarely,
+  // so cache it for 60s to avoid re-fetching on every navigation. The admin
+  // variant below stays uncached because it includes inactive services.
+  const res = await serverFetch<{ services: Service[] }>('/services', {
+    next: { revalidate: 60 },
+  });
   return res.data.services;
 }
 

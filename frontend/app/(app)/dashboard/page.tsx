@@ -1,5 +1,5 @@
 import { getWalletAction } from '@/actions/wallet';
-import { listTransactionsAction } from '@/actions/transactions';
+import { listTransactionsAction, getTransactionSummaryAction } from '@/actions/transactions';
 import { listServicesAction } from '@/actions/services';
 import { WalletCard } from '@/components/dashboard/WalletCard';
 import { QuickTopupList } from '@/components/dashboard/QuickTopupList';
@@ -8,19 +8,24 @@ import { DashboardGreeting } from '@/components/dashboard/DashboardGreeting';
 import { formatCurrency } from '@/lib/utils/formatCurrency';
 
 export default async function DashboardPage() {
-  const [walletResult, txResult, svcResult] = await Promise.allSettled([
+  const [walletResult, txResult, svcResult, summaryResult] = await Promise.allSettled([
     getWalletAction(),
     listTransactionsAction({ limit: 5 }),
     listServicesAction(),
+    getTransactionSummaryAction(),
   ]);
 
   const walletBalance = walletResult.status === 'fulfilled' ? walletResult.value : 0;
   const transactions = txResult.status === 'fulfilled' ? txResult.value.items : [];
   const services = svcResult.status === 'fulfilled' ? svcResult.value : [];
+  const summary =
+    summaryResult.status === 'fulfilled'
+      ? summaryResult.value
+      : { totalSpent: 0, totalTransactions: 0 };
 
-  const totalSpent = transactions
-    .filter((t) => t.type === 'debit' && t.status === 'success')
-    .reduce((s, t) => s + t.amount, 0);
+  // Server-aggregated totals — the recent-transactions list above is capped at 5,
+  // so it can no longer be used to derive an accurate lifetime total.
+  const totalSpent = summary.totalSpent;
 
   return (
     <div className="page-container py-6 md:py-8">
@@ -89,9 +94,9 @@ export default async function DashboardPage() {
               className="text-xl font-bold text-[var(--color-primary)] mt-1"
               style={{ fontFamily: 'var(--font-outfit)' }}
             >
-              {transactions.length}
+              {summary.totalTransactions}
             </p>
-            <p className="text-[10px] text-[var(--color-on-surface-variant)] mt-1">Recent</p>
+            <p className="text-[10px] text-[var(--color-on-surface-variant)] mt-1">Total</p>
           </div>
         </div>
       </div>

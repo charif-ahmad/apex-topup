@@ -8,10 +8,11 @@ import type { TransactionFilters } from './transactions';
 export async function listUsersAction(
   page = 1,
   limit = 20,
+  search?: string,
 ): Promise<PaginatedResult<AdminUser>> {
-  const res = await serverFetch<PaginatedResult<AdminUser>>(
-    `/admin/users?page=${page}&limit=${limit}`,
-  );
+  const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+  if (search) params.set('search', search);
+  const res = await serverFetch<PaginatedResult<AdminUser>>(`/admin/users?${params.toString()}`);
   return res.data;
 }
 

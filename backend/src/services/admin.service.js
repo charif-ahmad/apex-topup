@@ -1,10 +1,19 @@
 const prisma = require('../config/prisma');
 const ApiError = require('../utils/ApiError');
 
-async function listUsers({ page = 1, limit = 10 } = {}) {
+async function listUsers({ page = 1, limit = 10, search } = {}) {
   const skip = (page - 1) * limit;
+  const where = search
+    ? {
+        OR: [
+          { name: { contains: search, mode: 'insensitive' } },
+          { email: { contains: search, mode: 'insensitive' } },
+        ],
+      }
+    : {};
   const [users, total] = await Promise.all([
     prisma.user.findMany({
+      where,
       skip,
       take: limit,
       orderBy: { createdAt: 'desc' },
@@ -18,7 +27,7 @@ async function listUsers({ page = 1, limit = 10 } = {}) {
         wallet: { select: { balance: true } },
       },
     }),
-    prisma.user.count(),
+    prisma.user.count({ where }),
   ]);
 
   const items = users.map((u) => ({

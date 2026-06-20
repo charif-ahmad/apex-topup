@@ -24,3 +24,13 @@ export async function listTransactionsAction(
   const res = await serverFetch<PaginatedResult<Transaction>>(`/transactions${query}`);
   return res.data;
 }
+
+export interface TransactionSummary {
+  totalSpent: number;
+  totalTransactions: number;
+}
+
+export async function getTransactionSummaryAction(): Promise<TransactionSummary> {
+  const res = await serverFetch<TransactionSummary>('/transactions/summary');
+  return res.data;
+}

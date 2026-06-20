@@ -15,7 +15,14 @@ export class ApiRequestError extends Error {
   }
 }
 
-export async function serverFetch<T>(path: string, options?: RequestInit): Promise<ApiSuccess<T>> {
+type ServerFetchOptions = RequestInit & {
+  next?: { revalidate?: number | false; tags?: string[] };
+};
+
+export async function serverFetch<T>(
+  path: string,
+  options?: ServerFetchOptions,
+): Promise<ApiSuccess<T>> {
   const cookieStore = await cookies();
   const token = cookieStore.get('apex_token')?.value;
 

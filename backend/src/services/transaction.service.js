@@ -39,4 +39,21 @@ async function listTransactions({ userId, page, limit, type, status, from, to })
   };
 }
 
-module.exports = { listTransactions };
+// Aggregate spend/transaction stats for a single user. Computed in the DB so
+// the dashboard does not have to load every transaction to total them.
+async function getSummary({ userId }) {
+  const [spentAgg, totalCount] = await Promise.all([
+    prisma.transaction.aggregate({
+      _sum: { amount: true },
+      where: { userId, type: 'debit', status: 'success' },
+    }),
+    prisma.transaction.count({ where: { userId } }),
+  ]);
+
+  return {
+    totalSpent: spentAgg._sum.amount ? Number(spentAgg._sum.amount) : 0,
+    totalTransactions: totalCount,
+  };
+}
+
+module.exports = { listTransactions, getSummary };

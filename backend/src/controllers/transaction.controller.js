@@ -16,4 +16,9 @@ const listMyTransactions = asyncHandler(async (req, res) => {
   return sendSuccess(res, 200, result);
 });
 
-module.exports = { listMyTransactions };
+const getMySummary = asyncHandler(async (req, res) => {
+  const result = await transactionService.getSummary({ userId: req.user.id });
+  return sendSuccess(res, 200, result);
+});
+
+module.exports = { listMyTransactions, getMySummary };

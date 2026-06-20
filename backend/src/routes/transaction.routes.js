@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.use(authenticate);
 
+router.get('/summary', transactionController.getMySummary);
 router.get('/', validate(listTransactionsSchema), transactionController.listMyTransactions);
 
 module.exports = router;
