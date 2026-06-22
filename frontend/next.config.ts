@@ -1,14 +1,20 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Required by experimental.cachedNavigations. Enables the Cache Components
+  // infrastructure (the Next.js 16 evolution of PPR) so the router can hold
+  // RSC payloads client-side between navigations.
+  cacheComponents: true,
   experimental: {
-    // Client-side Router Cache. By default Next treats dynamic (cookie-backed)
-    // routes as stale immediately (dynamic: 0), so navigating back to an
-    // already-visited page does a full server round-trip and re-hits the API.
-    // Reusing the cached RSC payload for a short window makes back/forward and
-    // repeat navigation instant. 30s keeps financial data (wallet balance,
-    // transactions) reasonably fresh; mutations call router.refresh() which
-    // busts the cache for the active route immediately.
+    // Next.js 16 gated the client-side router cache behind this flag (default: false).
+    // Without it, every <Link> navigation is a fresh server round-trip regardless of
+    // staleTimes. Enabling it activates the RSC payload cache on the client.
+    cachedNavigations: true,
+   
+    // How long the client-side router cache holds RSC payloads before re-fetching.
+    // dynamic: 30 keeps cookie-backed pages (wallet, dashboard, etc.) cached for 30s
+    // so back/forward and repeat navigation is instant. Mutations call router.refresh()
+    // to bust the cache for the active route immediately.
     staleTimes: {
       dynamic: 30,
       static: 180,
