@@ -40,7 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         */}
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=account_balance,account_balance_wallet,account_tree,add,add_circle,admin_panel_settings,alternate_email,apps,arrow_downward,arrow_forward,arrow_upward,block,bolt,calendar_today,cancel,card_giftcard,category,check_circle,chevron_left,chevron_right,close,dashboard,delete_forever,edit,fingerprint,group,hourglass_empty,insights,lock,lock_open,logout,manage_accounts,menu,payments,policy,receipt_long,search,shield,smartphone,swap_horiz,tag,trending_flat,trending_up,verified,verified_user,visibility,visibility_off,warning,wifi&display=block"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=account_balance,account_balance_wallet,account_tree,add,add_circle,admin_panel_settings,alternate_email,apps,arrow_downward,arrow_forward,arrow_upward,block,bolt,calendar_today,cancel,card_giftcard,category,check_circle,chevron_left,chevron_right,close,dashboard,delete_forever,edit,fingerprint,group,hourglass_empty,insights,lock,lock_open,lock_reset,logout,manage_accounts,menu,payments,person,policy,receipt_long,search,shield,smartphone,swap_horiz,tag,trending_flat,trending_up,verified,verified_user,visibility,visibility_off,warning,wifi&display=block"
         />
       </head>
       <body className="min-h-full antialiased">
