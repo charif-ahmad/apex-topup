@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { listTransactionsAction } from '@/actions/transactions';
 import type { TransactionFilters } from '@/actions/transactions';
+import type { PaginatedResult } from '@/types/api';
 import { formatCurrency } from '@/lib/utils/formatCurrency';
 import { formatDate } from '@/lib/utils/formatDate';
 import { StatusBadge, TypeBadge } from '@/components/ui/Badge';
@@ -13,15 +14,17 @@ import type { Transaction } from '@/types/models';
 interface TransactionTableProps {
   filters?: TransactionFilters;
   showFilters?: boolean;
+  initialData?: PaginatedResult<Transaction>;
 }
 
-export function TransactionTable({ filters: externalFilters, showFilters = false }: TransactionTableProps) {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [loading, setLoading] = useState(true);
+export function TransactionTable({ filters: externalFilters, showFilters = false, initialData }: TransactionTableProps) {
+  const [transactions, setTransactions] = useState<Transaction[]>(initialData?.items ?? []);
+  const [loading, setLoading] = useState(!initialData);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(initialData?.totalPages ?? 1);
+  const [total, setTotal] = useState(initialData?.total ?? 0);
   const [filters, setFilters] = useState<TransactionFilters>({ limit: 10 });
+  const skipFirstFetch = useRef(!!initialData);
 
   // Serialize externalFilters to a stable string so the callback/effect do not
   // re-run on every render when a caller passes an inline object literal.
@@ -43,7 +46,13 @@ export function TransactionTable({ filters: externalFilters, showFilters = false
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters, externalKey, page]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    if (skipFirstFetch.current) {
+      skipFirstFetch.current = false;
+      return;
+    }
+    load();
+  }, [load]);
 
   function setFilter<K extends keyof TransactionFilters>(key: K, val: TransactionFilters[K]) {
     setFilters((f) => ({ ...f, [key]: val }));

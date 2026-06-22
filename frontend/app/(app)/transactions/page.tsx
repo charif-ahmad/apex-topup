@@ -1,6 +1,9 @@
+import { listTransactionsAction } from '@/actions/transactions';
 import { TransactionTable } from '@/components/transactions/TransactionTable';
 
-export default function TransactionsPage() {
+export default async function TransactionsPage() {
+  const initialData = await listTransactionsAction({ limit: 10, page: 1 });
+
   return (
     <div className="page-container py-6 md:py-8">
       <header className="mb-6 md:mb-8">
@@ -19,7 +22,7 @@ export default function TransactionsPage() {
         className="glass-card rounded-[var(--radius-lg)] p-4 sm:p-6"
         style={{ background: 'rgba(21,29,48,0.75)' }}
       >
-        <TransactionTable showFilters />
+        <TransactionTable showFilters initialData={initialData} />
       </div>
     </div>
   );
