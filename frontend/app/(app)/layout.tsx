@@ -1,17 +1,34 @@
 import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
 import { getProfileAction } from '@/actions/user';
 import { AuthProvider } from '@/context/AuthContext';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { MobileTopBar } from '@/components/layout/MobileTopBar';
 import { MobileNav } from '@/components/layout/MobileNav';
+import type { User } from '@/types/models';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  let user;
-  try {
-    user = await getProfileAction();
-  } catch {
-    redirect('/login');
+  let user: User | undefined;
+
+  const cookieStore = await cookies();
+  const cached = cookieStore.get('apex_user')?.value;
+  if (cached) {
+    try {
+      user = JSON.parse(cached) as User;
+    } catch {
+      // fall through to API fetch
+    }
   }
+
+  if (!user) {
+    try {
+      user = await getProfileAction();
+    } catch {
+      redirect('/login');
+    }
+  }
+
+  if (!user) redirect('/login');
 
   return (
     <AuthProvider initialUser={user}>

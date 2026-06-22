@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useToast } from '@/context/ToastContext';
 import { loginAction } from '@/actions/auth';
 import { cn } from '@/lib/utils/cn';
@@ -20,7 +19,6 @@ type FormData = z.infer<typeof schema>;
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
-  const router = useRouter();
 
   const {
     register,
@@ -30,11 +28,9 @@ export function LoginForm() {
 
   async function onSubmit(data: FormData) {
     const result = await loginAction(data.email, data.password);
-    if (result.error) {
+    if (result?.error) {
       toast(result.error, 'error');
-      return;
     }
-    router.push('/dashboard');
   }
 
   return (
