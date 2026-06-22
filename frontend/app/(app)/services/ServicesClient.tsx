@@ -2,11 +2,18 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { ServiceCard } from '@/components/services/ServiceCard';
-import { PurchaseModal } from '@/components/services/PurchaseModal';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { cn } from '@/lib/utils/cn';
 import type { Service } from '@/types/models';
+
+// Lazy-loaded: only mounts when a service is selected, so it stays out of the
+// services page's initial bundle.
+const PurchaseModal = dynamic(
+  () => import('@/components/services/PurchaseModal').then((m) => m.PurchaseModal),
+  { ssr: false },
+);
 
 const CATEGORIES = ['All', 'mobile', 'internet', 'giftcard'];
 

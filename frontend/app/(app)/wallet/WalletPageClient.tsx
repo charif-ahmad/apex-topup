@@ -2,11 +2,17 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { useAuth } from '@/context/AuthContext';
 import { formatCurrency } from '@/lib/utils/formatCurrency';
-import { Skeleton } from '@/components/ui/Skeleton';
-import { AddFundsModal } from '@/components/wallet/AddFundsModal';
 import { TransactionTable } from '@/components/transactions/TransactionTable';
+
+// Lazy-loaded: only mounts when "Add Funds" is tapped. This keeps react-hook-form
+// + zod (its validation stack) out of the wallet page's initial bundle.
+const AddFundsModal = dynamic(
+  () => import('@/components/wallet/AddFundsModal').then((m) => m.AddFundsModal),
+  { ssr: false },
+);
 
 interface WalletPageClientProps {
   initialBalance: number;

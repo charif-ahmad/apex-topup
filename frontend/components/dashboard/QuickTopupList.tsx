@@ -2,10 +2,17 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { formatCurrency } from '@/lib/utils/formatCurrency';
 import { Skeleton } from '@/components/ui/Skeleton';
-import { PurchaseModal } from '@/components/services/PurchaseModal';
 import type { Service } from '@/types/models';
+
+// Lazy-loaded: the modal only mounts on tap, so keeping it (and its topup
+// action) out of the dashboard's initial bundle cuts the JS parsed at load.
+const PurchaseModal = dynamic(
+  () => import('@/components/services/PurchaseModal').then((m) => m.PurchaseModal),
+  { ssr: false },
+);
 
 const CATEGORY_ICONS: Record<string, string> = {
   mobile: 'smartphone',
