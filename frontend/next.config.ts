@@ -16,7 +16,7 @@ const nextConfig: NextConfig = {
     // so back/forward and repeat navigation is instant. Mutations call router.refresh()
     // to bust the cache for the active route immediately.
     staleTimes: {
-      dynamic: 30,
+      dynamic: 50,
       static: 180,
     },
     // Prefetch dynamic routes on link hover so the data is usually already
