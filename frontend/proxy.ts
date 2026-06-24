@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server';
 const PUBLIC_PATHS = ['/login', '/register', '/'];
 const AUTH_PATHS = ['/dashboard', '/wallet', '/services', '/transactions', '/profile', '/admin'];
 
-// Admin authorization is enforced in the (admin) layout via getProfileAction()
+// Admin authorization is enforced in the (app)/admin layout via getProfileAction()
 // which verifies the JWT token server-side. The unsigned apex_role cookie must
 // not be used as a security boundary here.
 
