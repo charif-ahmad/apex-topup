@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
     // the active route immediately, but that only affects the current tab — so this
     // window is the worst-case staleness for a balance change made elsewhere.
     staleTimes: {
-      dynamic: 15,
+      dynamic: 40,
       static: 180,
     },
     // Prefetch dynamic routes on link hover so the data is usually already
