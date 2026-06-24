@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { formatCurrency } from '@/lib/utils/formatCurrency';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -28,11 +27,11 @@ interface QuickTopupListProps {
   services: Service[];
   walletBalance: number;
   loading?: boolean;
+  onConfirm: (service: Service) => Promise<boolean>;
 }
 
-export function QuickTopupList({ services, walletBalance, loading = false }: QuickTopupListProps) {
+export function QuickTopupList({ services, walletBalance, loading = false, onConfirm }: QuickTopupListProps) {
   const [selected, setSelected] = useState<Service | null>(null);
-  const router = useRouter();
 
   if (loading) {
     return (
@@ -88,10 +87,8 @@ export function QuickTopupList({ services, walletBalance, loading = false }: Qui
           service={selected}
           walletBalance={walletBalance}
           onClose={() => setSelected(null)}
-          onSuccess={() => {
-            setSelected(null);
-            router.refresh();
-          }}
+          onConfirm={onConfirm}
+          onSuccess={() => setSelected(null)}
         />
       )}
     </>

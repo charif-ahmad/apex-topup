@@ -1,24 +1,28 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { formatCurrency } from '@/lib/utils/formatCurrency';
 import { useToast } from '@/context/ToastContext';
-import { executeTopupAction } from '@/actions/topup';
 import type { Service } from '@/types/models';
 
 interface PurchaseModalProps {
   service: Service;
   walletBalance: number;
   onClose: () => void;
+  /**
+   * Runs the purchase. The parent owns the action + any optimistic row +
+   * refresh (in a transition, so the layout shell doesn't blink). Resolves
+   * `true` on success. Keeping the action in the parent is what lets the
+   * dashboard show a 0ms pending debit row.
+   */
+  onConfirm: (service: Service) => Promise<boolean>;
   onSuccess: () => void;
 }
 
-export function PurchaseModal({ service, walletBalance, onClose, onSuccess }: PurchaseModalProps) {
+export function PurchaseModal({ service, walletBalance, onClose, onConfirm, onSuccess }: PurchaseModalProps) {
   const { toast } = useToast();
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<'success' | 'failed' | null>(null);
 
@@ -26,19 +30,12 @@ export function PurchaseModal({ service, walletBalance, onClose, onSuccess }: Pu
 
   async function handleConfirm() {
     setLoading(true);
-    const res = await executeTopupAction(service.id);
+    const ok = await onConfirm(service);
     setLoading(false);
 
-    if (res.error) {
-      toast(res.error, 'error');
-      setResult('failed');
-      return;
-    }
-
-    if (res.data?.transaction.status === 'success') {
+    if (ok) {
       setResult('success');
       toast(`${service.name} purchased successfully!`, 'success');
-      router.refresh();
       onSuccess();
     } else {
       setResult('failed');

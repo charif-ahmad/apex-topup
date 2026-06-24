@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solution - Dépendances fonctionnelles et normalisation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 850px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #f4f7f6;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            font-size: 24px;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+            font-size: 20px;
+        }
+        .box {
+            background-color: #fff;
+            padding: 20px;
+            border-left: 5px solid #3498db;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .key {
+            text-decoration: underline;
+            font-weight: bold;
+            color: #c0392b;
+        }
+        ul {
+            padding-left: 25px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        code {
+            background-color: #eaeded;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+        }
+        .strong-result {
+            background-color: #e8f4f8;
+            padding: 10px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Correction de l'exercice : Dépendances fonctionnelles et normalisation</h1>
+
+    <h2>1. Détermination de la clé de la relation R</h2>
+    <div class="box">
+        <p>Pour trouver la clé de la relation <code>R</code>, on identifie les attributs qui n'apparaissent jamais à droite (la partie membre droit) d'une dépendance fonctionnelle (DF). Ces attributs doivent obligatoirement faire partie de toute clé candidate.</p>
+        
+        <p>En analysant vos dépendances fonctionnelles :</p>
+        <ul>
+            <li><code>NumEmploye</code> n'est jamais déterminé par un autre attribut.</li>
+            <li><code>NumProjet</code> n'est jamais déterminé par un autre attribut.</li>
+        </ul>
+        
+        <p>Calculons la fermeture de l'ensemble contenant ces deux attributs, notée <code>{NumEmploye, NumProjet}+</code> :</p>
+        <ul>
+            <li>On commence avec : <code>{NumEmploye, NumProjet}</code></li>
+            <li>En utilisant <code>NumEmploye &rarr; NomEmploye, CodeService</code>, on obtient : <br><code>{NumEmploye, NumProjet, NomEmploye, CodeService}</code></li>
+            <li>En utilisant <code>CodeService &rarr; NomService</code>, on obtient : <br><code>{NumEmploye, NumProjet, NomEmploye, CodeService, NomService}</code></li>
+            <li>En utilisant <code>NumProjet &rarr; NomProjet, BudgetProjet</code>, on obtient : <br><code>{NumEmploye, NumProjet, NomEmploye, CodeService, NomService, NomProjet, BudgetProjet}</code></li>
+        </ul>
+        
+        <p>Puisque la fermeture contient l'intégralité des attributs de la relation <code>R</code> et qu'aucun sous-ensemble plus petit ne peut le faire, cet ensemble forme la clé primaire.</p>
+        
+        <div class="strong-result">
+            <strong>Clé de la relation R :</strong> <span class="key">(NumEmploye, NumProjet)</span> (C'est une clé composée).
+        </div>
+    </div>
+
+    <h2>2. Décomposition de la relation R en troisième forme normale (3FN)</h2>
+    <div class="box">
+        <p>La relation originale <code>R</code> n'est pas en 2FN car il y a des <strong>dépendances partielles</strong> (des attributs non clés dépendent d'une partie seulement de la clé composée). Elle viole aussi la 3FN à cause de la <strong>dépendance transitive</strong> <code>CodeService &rarr; NomService</code>.</p>
+        
+        <p>Pour la décomposer en 3FN tout en préservant les dépendances fonctionnelles et la clé, on crée une relation distincte pour chaque groupe de dépendances logiques, plus une relation pour l'association globale :</p>
+        
+        <ul>
+            <li><strong>R1 (Employés) :</strong> (<span class="key">NumEmploye</span>, NomEmploye, CodeService)<br>
+                <em>Provenant de : NumEmploye &rarr; NomEmploye, CodeService</em>
+            </li>
+            <br>
+            <li><strong>R2 (Services) :</strong> (<span class="key">CodeService</span>, NomService)<br>
+                <em>Provenant de : CodeService &rarr; NomService</em>
+            </li>
+            <br>
+            <li><strong>R3 (Projets) :</strong> (<span class="key">NumProjet</span>, NomProjet, BudgetProjet)<br>
+                <em>Provenant de : NumProjet &rarr; NomProjet, BudgetProjet</em>
+            </li>
+            <br>
+            <li><strong>R4 (Affectations) :</strong> (<span class="key">NumEmploye</span>, <span class="key">NumProjet</span>)<br>
+                <em>Cette relation est indispensable pour maintenir le lien initial entre les employés et les projets sur lesquels ils travaillent (préservation de la clé d'origine).</em>
+            </li>
+        </ul>
+        
+        <div class="strong-result">
+            <strong>Résultat final :</strong> La décomposition produit 4 relations saines en 3FN : <code>R1</code>, <code>R2</code>, <code>R3</code> et <code>R4</code>.
+        </div>
+    </div>
+
+<div class="container">
+    <h1>Exercice IV - Partie B : Requêtes SQL (9 pts)</h1>
+    <p>Voici les scripts de création des tables manquantes ainsi que les requêtes de manipulation de données (DML) et de sélection demandées.</p>
+
+    <div class="section-title">
+        <span class="badge">1</span> Création des tables (DDL)
+    </div>
+    <p>Définition de la structure des tables <code>Produit</code>, <code>Achete</code> et <code>Note</code> avec contraintes d'intégrité (clés primaires et clés étrangères).</p>
+    <pre><code><span class="keyword">CREATE TABLE</span> Produit (
+    Code <span class="type">VARCHAR</span>(50) <span class="keyword">PRIMARY KEY</span>,
+    Libellé <span class="type">VARCHAR</span>(100),
+    Marque <span class="type">VARCHAR</span>(50),
+    Type <span class="type">VARCHAR</span>(50),
+    Prix <span class="type">DECIMAL</span>(10, 2),
+    DateFabrication <span class="type">DATE</span>
+);
+
+<span class="keyword">CREATE TABLE</span> Achete (
+    idClient <span class="type">INT</span>,
+    codeProduit <span class="type">VARCHAR</span>(50),
+    numMagasin <span class="type">INT</span>,
+    DateAchat <span class="type">DATE</span>,
+    <span class="keyword">PRIMARY KEY</span> (idClient, codeProduit, numMagasin),
+    <span class="keyword">FOREIGN KEY</span> (idClient) <span class="keyword">REFERENCES</span> Client(ID),
+    <span class="keyword">FOREIGN KEY</span> (codeProduit) <span class="keyword">REFERENCES</span> Produit(Code),
+    <span class="keyword">FOREIGN KEY</span> (numMagasin) <span class="keyword">REFERENCES</span> Magasin(Num)
+);
+
+<span class="keyword">CREATE TABLE</span> Note (
+    idClient <span class="type">INT</span>,
+    codeProduit <span class="type">VARCHAR</span>(50),
+    Note <span class="type">INT</span>,
+    <span class="keyword">PRIMARY KEY</span> (idClient, codeProduit),
+    <span class="keyword">FOREIGN KEY</span> (idClient) <span class="keyword">REFERENCES</span> Client(ID),
+    <span class="keyword">FOREIGN KEY</span> (codeProduit) <span class="keyword">REFERENCES</span> Produit(Code)
+);</code></pre>
+
+    <div class="section-title">
+        <span class="badge">2</span> Mise à jour des prix
+    </div>
+    <p>Augmentation de 10% du prix de tous les produits de la marque <span class="string">'Samsung'</span>.</p>
+    <pre><code><span class="keyword">UPDATE</span> Produit
+<span class="keyword">SET</span> Prix = Prix * 1.10
+<span class="keyword">WHERE</span> Marque = <span class="string">'Samsung'</span>;</code></pre>
+
+    <div class="section-title">
+        <span class="badge">3</span> Suppression des produits invendus
+    </div>
+    <p>Suppression des produits dont le code n'apparaît dans aucune transaction de la table <code>Achete</code>.</p>
+    <pre><code><span class="keyword">DELETE FROM</span> Produit
+<span class="keyword">WHERE</span> Code <span class="keyword">NOT IN</span> (<span class="keyword">SELECT DISTINCT</span> codeProduit <span class="keyword">FROM</span> Achete);</code></pre>
+
+    <div class="section-title">
+        <span class="badge">4</span> Sélection des marques de smartphones de 2023
+    </div>
+    <p>Liste des marques distinctes de smartphones fabriqués entre le 1er janvier et le 31 décembre 2023.</p>
+    <pre><code><span class="keyword">SELECT DISTINCT</span> Marque
+<span class="keyword">FROM</span> Produit
+<span class="keyword">WHERE</span> Type = <span class="string">'Smartphone'</span> 
+  <span class="keyword">AND</span> DateFabrication <span class="keyword">BETWEEN</span> <span class="string">'2023-01-01'</span> <span class="keyword">AND</span> <span class="string">'2023-12-31'</span>;</code></pre>
+
+    <div class="section-title">
+        <span class="badge">5</span> Clients de Lyon ayant acheté un iPhone 15
+    </div>
+    <p>Sélection des informations des clients résidant à Lyon ayant effectué l'achat d'un produit nommé <span class="string">'iPhone 15'</span>.</p>
+    <pre><code><span class="keyword">SELECT DISTINCT</span> c.*
+<span class="keyword">FROM</span> Client c
+<span class="keyword">JOIN</span> Achete a <span class="keyword">ON</span> c.ID = a.idClient
+<span class="keyword">JOIN</span> Produit p <span class="keyword">ON</span> a.codeProduit = p.Code
+<span class="keyword">WHERE</span> c.Ville = <span class="string">'Lyon'</span> <span class="keyword">AND</span> p.Libellé = <span class="string">'iPhone 15'</span>;</code></pre>
+
+    <div class="section-title">
+        <span class="badge">6</span> Statistiques des produits bien notés
+    </div>
+    <p>Affichage de la marque, du code et du libellé des produits, ainsi que le nombre de clients uniques ayant attribué une note strictement supérieure à 4.</p>
+    <pre><code><span class="keyword">SELECT</span> p.Marque, p.Code, p.Libellé, <span class="function">COUNT</span>(<span class="keyword">DISTINCT</span> n.idClient) <span class="keyword">AS</span> NbClients
+<span class="keyword">FROM</span> Produit p
+<span class="keyword">JOIN</span> Note n <span class="keyword">ON</span> p.Code = n.codeProduit
+<span class="keyword">WHERE</span> n.Note > 4
+<span class="keyword">GROUP BY</span> p.Marque, p.Code, p.Libellé;</code></pre>
+</div>
+
+
+
+</body>
+</html>
+<!-- <!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Correction Exercice IV - Partie B : Requêtes SQL</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        h1 {
+            color: #1e3a8a;
+            border-bottom: 3px solid #3b82f6;
+            padding-bottom: 12px;
+            margin-top: 0;
+            font-size: 28px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2563eb;
+            margin-top: 30px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .badge {
+            background-color: #dbeafe;
+            color: #1e40af;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        p {
+            margin: 0 0 12px 0;
+            color: #475569;
+        }
+        pre {
+            background-color: #0f172a;
+            color: #f8fafc;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            margin: 10px 0 25px 0;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        }
+        /* Style des mots-clés SQL */
+        .keyword { color: #f43f5e; font-weight: bold; }
+        .type { color: #38bdf8; }
+        .string { color: #10b981; }
+        .function { color: #fbbf24; }
+        .comment { color: #64748b; font-style: italic; }
+    </style>
+</head>
+<body> -->

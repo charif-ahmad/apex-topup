@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { ServiceCard } from '@/components/services/ServiceCard';
+import { executeTopupAction } from '@/actions/topup';
 import { cn } from '@/lib/utils/cn';
 import type { Service } from '@/types/models';
 
@@ -40,6 +41,16 @@ export function ServicesClient({ initialServices, walletBalance }: ServicesClien
     startTransition(() => {
       router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
     });
+  }
+
+  // No transaction list on this page to make optimistic, so just run the action
+  // and refresh the balance on success (in a transition — no layout-shell flash).
+  async function handleConfirm(service: Service): Promise<boolean> {
+    const res = await executeTopupAction(service.id);
+    if (res.error) return false;
+    const ok = res.data?.transaction.status === 'success';
+    if (ok) startTransition(() => router.refresh());
+    return ok;
   }
 
   const filtered =
@@ -101,10 +112,8 @@ export function ServicesClient({ initialServices, walletBalance }: ServicesClien
           service={selected}
           walletBalance={walletBalance}
           onClose={() => setSelected(null)}
-          onSuccess={() => {
-            setSelected(null);
-            router.refresh();
-          }}
+          onConfirm={handleConfirm}
+          onSuccess={() => setSelected(null)}
         />
       )}
     </div>

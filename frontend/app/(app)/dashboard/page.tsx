@@ -2,8 +2,7 @@ import { getWalletAction } from '@/actions/wallet';
 import { listTransactionsAction, getTransactionSummaryAction } from '@/actions/transactions';
 import { listServicesAction } from '@/actions/services';
 import { WalletCard } from '@/components/dashboard/WalletCard';
-import { QuickTopupList } from '@/components/dashboard/QuickTopupList';
-import { RecentTransactions } from '@/components/dashboard/RecentTransactions';
+import { DashboardActivity } from '@/components/dashboard/DashboardActivity';
 import { DashboardGreeting } from '@/components/dashboard/DashboardGreeting';
 import { formatCurrency } from '@/lib/utils/formatCurrency';
 
@@ -101,23 +100,12 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* Bottom row */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
-        <div className="lg:col-span-4">
-          <h2
-            className="text-base font-semibold text-[var(--color-on-surface)] flex items-center gap-2 mb-4"
-            style={{ fontFamily: 'var(--font-outfit)' }}
-          >
-            <span className="material-symbols-outlined text-[var(--color-primary)] text-xl">bolt</span>
-            Quick Top-up
-          </h2>
-          <QuickTopupList services={services} walletBalance={walletBalance} />
-        </div>
-
-        <div className="lg:col-span-8">
-          <RecentTransactions transactions={transactions} loading={false} />
-        </div>
-      </div>
+      {/* Bottom row — client owner for the optimistic pending-debit purchase flow */}
+      <DashboardActivity
+        services={services}
+        walletBalance={walletBalance}
+        transactions={transactions}
+      />
     </div>
   );
 }
