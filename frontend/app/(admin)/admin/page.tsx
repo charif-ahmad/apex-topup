@@ -1,8 +1,28 @@
+import { Suspense } from 'react';
 import { getAnalyticsAction } from '@/actions/admin';
 import { AnalyticsCards } from '@/components/admin/AnalyticsCards';
 import { AdminTabs } from '@/components/admin/AdminTabs';
+import type { AdminTab } from '@/components/admin/AdminTabs';
+import { UsersPanel } from '@/components/admin/UsersPanel';
+import { ServicesPanel } from '@/components/admin/ServicesPanel';
+import { AuditPanel } from '@/components/admin/AuditPanel';
+import { SkeletonTable } from '@/components/ui/Skeleton';
+import { firstParam as first, type SearchParams } from '@/lib/utils/searchParams';
 
-export default async function AdminPage() {
+const TABS: AdminTab[] = ['users', 'services', 'audit'];
+
+export default async function AdminPage({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const sp = await searchParams;
+  const tabParam = first(sp.tab) as AdminTab | undefined;
+  const tab: AdminTab = tabParam && TABS.includes(tabParam) ? tabParam : 'users';
+  // Re-key Suspense on the full query so changing a filter/page (or the tab)
+  // shows the skeleton while the active panel refetches server-side.
+  const suspenseKey = `${tab}:${first(sp.search) ?? ''}:${first(sp.status) ?? ''}:${first(sp.category) ?? ''}:${first(sp.page) ?? ''}`;
+
   let analytics = null;
   try {
     analytics = await getAnalyticsAction();
@@ -51,7 +71,13 @@ export default async function AdminPage() {
 
       <div className="page-container py-6 md:py-8 space-y-6">
         <AnalyticsCards analytics={analytics} loading={false} />
-        <AdminTabs />
+        <AdminTabs activeTab={tab}>
+          <Suspense key={suspenseKey} fallback={<SkeletonTable rows={8} cols={5} />}>
+            {tab === 'users' && <UsersPanel searchParams={sp} />}
+            {tab === 'services' && <ServicesPanel searchParams={sp} />}
+            {tab === 'audit' && <AuditPanel searchParams={sp} />}
+          </Suspense>
+        </AdminTabs>
       </div>
     </div>
   );

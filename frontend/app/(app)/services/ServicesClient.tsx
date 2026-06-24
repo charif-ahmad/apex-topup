@@ -1,10 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useTransition } from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { ServiceCard } from '@/components/services/ServiceCard';
-import { Skeleton } from '@/components/ui/Skeleton';
 import { cn } from '@/lib/utils/cn';
 import type { Service } from '@/types/models';
 
@@ -23,9 +22,25 @@ interface ServicesClientProps {
 }
 
 export function ServicesClient({ initialServices, walletBalance }: ServicesClientProps) {
-  const [category, setCategory] = useState('All');
   const [selected, setSelected] = useState<Service | null>(null);
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [, startTransition] = useTransition();
+
+  // Category lives in the URL (?category=) so the view is shareable and the back
+  // button works. Filtering stays client-side over the already server-fetched list.
+  const category = searchParams.get('category') ?? 'All';
+
+  function setCategory(next: string) {
+    const params = new URLSearchParams(searchParams);
+    if (next && next !== 'All') params.set('category', next);
+    else params.delete('category');
+    const query = params.toString();
+    startTransition(() => {
+      router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+    });
+  }
 
   const filtered =
     category === 'All'

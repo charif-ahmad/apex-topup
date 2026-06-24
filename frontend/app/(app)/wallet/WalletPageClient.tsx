@@ -6,6 +6,8 @@ import dynamic from 'next/dynamic';
 import { useAuth } from '@/context/AuthContext';
 import { formatCurrency } from '@/lib/utils/formatCurrency';
 import { TransactionTable } from '@/components/transactions/TransactionTable';
+import { Pagination } from '@/components/ui/Pagination';
+import type { Transaction } from '@/types/models';
 
 // Lazy-loaded: only mounts when "Add Funds" is tapped. This keeps react-hook-form
 // + zod (its validation stack) out of the wallet page's initial bundle.
@@ -16,9 +18,12 @@ const AddFundsModal = dynamic(
 
 interface WalletPageClientProps {
   initialBalance: number;
+  transactions: Transaction[];
+  page: number;
+  totalPages: number;
 }
 
-export function WalletPageClient({ initialBalance }: WalletPageClientProps) {
+export function WalletPageClient({ initialBalance, transactions, page, totalPages }: WalletPageClientProps) {
   const { user } = useAuth();
   const [showAdd, setShowAdd] = useState(false);
   const router = useRouter();
@@ -136,7 +141,10 @@ export function WalletPageClient({ initialBalance }: WalletPageClientProps) {
         >
           Transaction History
         </h2>
-        <TransactionTable />
+        <div className="flex flex-col gap-4">
+          <TransactionTable transactions={transactions} />
+          <Pagination page={page} totalPages={totalPages} />
+        </div>
       </div>
 
       {showAdd && (

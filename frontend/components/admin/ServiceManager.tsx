@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useTransition } from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useToast } from '@/context/ToastContext';
 import {
-  listAllServicesAdminAction,
   createServiceAction,
   updateServiceAction,
   deleteServiceAction,
@@ -17,7 +17,6 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
 import { Badge } from '@/components/ui/Badge';
-import { Skeleton } from '@/components/ui/Skeleton';
 import type { Service } from '@/types/models';
 
 const schema = z.object({
@@ -25,9 +24,7 @@ const schema = z.object({
   category: z.enum(['mobile', 'internet', 'giftcard'], {
     errorMap: () => ({ message: 'Pick a category' }),
   }),
-  price: z
-    .number({ invalid_type_error: 'Enter a valid price' })
-    .min(0.01, 'Price must be > 0'),
+  price: z.number({ invalid_type_error: 'Enter a valid price' }).min(0.01, 'Price must be > 0'),
   provider: z.string().min(2, 'Provider is required'),
   isActive: z.boolean().optional(),
 });
@@ -39,30 +36,44 @@ const CATEGORY_ICONS: Record<string, string> = {
   giftcard: 'card_giftcard',
 };
 
-type StatusFilter = 'all' | 'active' | 'inactive';
-type CategoryFilter = 'all' | 'mobile' | 'internet' | 'giftcard';
+const STATUS_FILTERS = ['all', 'active', 'inactive'] as const;
+const CATEGORY_FILTERS = ['all', 'mobile', 'internet', 'giftcard'] as const;
 
-export function ServiceCRUD() {
+interface ServiceManagerProps {
+  /** Already filtered (by the URL params) and fetched server-side. */
+  services: Service[];
+  filteredCount: number;
+  totalCount: number;
+}
+
+/**
+ * Client island for service CRUD. It does NOT fetch — `services` arrives as props
+ * from ServicesPanel (a Server Component) and is re-supplied via router.refresh()
+ * after a mutation (the actions call revalidatePath). The status/category filters
+ * are written to the URL so the server re-filters; only modal/form state is local.
+ */
+export function ServiceManager({ services, filteredCount, totalCount }: ServiceManagerProps) {
   const { toast } = useToast();
-  const [services, setServices] = useState<Service[]>([]);
-  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
+
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Service | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
-  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('all');
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    try {
-      const all = await listAllServicesAdminAction();
-      setServices(all);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const activeStatus = searchParams.get('status') ?? 'all';
+  const activeCategory = searchParams.get('category') ?? 'all';
 
-  useEffect(() => { load(); }, [load]);
+  function setFilter(key: 'status' | 'category', value: string) {
+    const params = new URLSearchParams(searchParams);
+    if (value && value !== 'all') params.set(key, value);
+    else params.delete(key);
+    startTransition(() => {
+      router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    });
+  }
 
   const {
     register,
@@ -109,7 +120,7 @@ export function ServiceCRUD() {
 
     toast(editing ? 'Service updated' : 'Service created', 'success');
     setModalOpen(false);
-    load();
+    startTransition(() => router.refresh());
   }
 
   async function handleDelete(id: number) {
@@ -120,24 +131,15 @@ export function ServiceCRUD() {
       toast('Delete failed', 'error');
     } else {
       toast('Service deleted', 'success');
-      load();
+      startTransition(() => router.refresh());
     }
   }
-
-  const filtered = services.filter((s) => {
-    const statusOk =
-      statusFilter === 'all' ||
-      (statusFilter === 'active' && s.isActive) ||
-      (statusFilter === 'inactive' && !s.isActive);
-    const categoryOk = categoryFilter === 'all' || s.category === categoryFilter;
-    return statusOk && categoryOk;
-  });
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <span className="text-xs text-[var(--color-on-surface-variant)]">
-          {filtered.length} / {services.length} services
+          {filteredCount} / {totalCount} services
         </span>
         <Button variant="primary" size="sm" onClick={openCreate}>
           <span className="material-symbols-outlined text-xl">add</span>
@@ -145,14 +147,14 @@ export function ServiceCRUD() {
         </Button>
       </div>
 
-      {/* Filters */}
+      {/* Filters — written to the URL */}
       <div className="flex flex-wrap gap-2">
-        {(['all', 'active', 'inactive'] as StatusFilter[]).map((s) => (
+        {STATUS_FILTERS.map((s) => (
           <button
             key={s}
-            onClick={() => setStatusFilter(s)}
+            onClick={() => setFilter('status', s)}
             className={`px-3 py-1.5 rounded-[var(--radius-sm)] text-xs font-semibold capitalize transition-all border ${
-              statusFilter === s
+              activeStatus === s
                 ? 'bg-[var(--color-primary)] text-[var(--color-on-primary)] border-[var(--color-primary)]'
                 : 'border-[var(--color-outline-variant)] text-[var(--color-on-surface-variant)] hover:border-[var(--color-primary)] hover:text-[var(--color-on-surface)]'
             }`}
@@ -161,12 +163,12 @@ export function ServiceCRUD() {
           </button>
         ))}
         <div className="w-px bg-[var(--color-outline-variant)] mx-1" />
-        {(['all', 'mobile', 'internet', 'giftcard'] as CategoryFilter[]).map((c) => (
+        {CATEGORY_FILTERS.map((c) => (
           <button
             key={c}
-            onClick={() => setCategoryFilter(c)}
+            onClick={() => setFilter('category', c)}
             className={`px-3 py-1.5 rounded-[var(--radius-sm)] text-xs font-semibold capitalize transition-all border ${
-              categoryFilter === c
+              activeCategory === c
                 ? 'border-[var(--color-primary)] text-[var(--color-primary)] bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)]'
                 : 'border-[var(--color-outline-variant)] text-[var(--color-on-surface-variant)] hover:border-[var(--color-primary)] hover:text-[var(--color-on-surface)]'
             }`}
@@ -176,20 +178,14 @@ export function ServiceCRUD() {
         ))}
       </div>
 
-      {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-24 rounded-[var(--radius-md)]" />
-          ))}
-        </div>
-      ) : filtered.length === 0 ? (
+      {services.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 gap-2 text-[var(--color-on-surface-variant)]">
           <span className="material-symbols-outlined text-4xl opacity-40">account_tree</span>
-          <p className="text-sm">{services.length === 0 ? 'No services yet' : 'No services match the filter'}</p>
+          <p className="text-sm">{totalCount === 0 ? 'No services yet' : 'No services match the filter'}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {filtered.map((svc) => (
+        <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 transition-opacity ${isPending ? 'opacity-60' : ''}`}>
+          {services.map((svc) => (
             <div
               key={svc.id}
               className="flex items-center gap-4 p-4 rounded-[var(--radius-md)] group transition-colors"
@@ -205,9 +201,7 @@ export function ServiceCRUD() {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <p className="font-semibold text-[var(--color-on-surface)] text-sm truncate">
-                    {svc.name}
-                  </p>
+                  <p className="font-semibold text-[var(--color-on-surface)] text-sm truncate">{svc.name}</p>
                   <Badge variant={svc.isActive ? 'success' : 'neutral'}>
                     {svc.isActive ? 'Active' : 'Off'}
                   </Badge>
@@ -243,11 +237,7 @@ export function ServiceCRUD() {
         </div>
       )}
 
-      <Modal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        title={editing ? 'Edit Service' : 'New Service'}
-      >
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={editing ? 'Edit Service' : 'New Service'}>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           <Input label="Service Name" error={errors.name?.message} {...register('name')} />
 
@@ -263,9 +253,7 @@ export function ServiceCRUD() {
               <option value="internet">Internet</option>
               <option value="giftcard">Gift Card</option>
             </select>
-            {errors.category && (
-              <p className="text-xs text-[var(--color-error)]">{errors.category.message}</p>
-            )}
+            {errors.category && <p className="text-xs text-[var(--color-error)]">{errors.category.message}</p>}
           </div>
 
           <div className="flex flex-col gap-1.5">
@@ -279,29 +267,18 @@ export function ServiceCRUD() {
               className="w-full px-4 py-2.5 text-sm rounded-[var(--radius-md)] bg-[var(--color-surface-container-high)] border border-[var(--color-outline-variant)] text-[var(--color-on-surface)] focus:outline-none focus:border-[var(--color-primary)]"
               {...register('price', { valueAsNumber: true })}
             />
-            {errors.price && (
-              <p className="text-xs text-[var(--color-error)]">{errors.price.message}</p>
-            )}
+            {errors.price && <p className="text-xs text-[var(--color-error)]">{errors.price.message}</p>}
           </div>
 
           <Input label="Provider" error={errors.provider?.message} {...register('provider')} />
 
           <label className="flex items-center gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              className="w-4 h-4 accent-[var(--color-primary)]"
-              {...register('isActive')}
-            />
+            <input type="checkbox" className="w-4 h-4 accent-[var(--color-primary)]" {...register('isActive')} />
             <span className="text-sm text-[var(--color-on-surface)]">Active (visible to users)</span>
           </label>
 
           <div className="flex gap-3 pt-2">
-            <Button
-              variant="secondary"
-              className="flex-1"
-              type="button"
-              onClick={() => setModalOpen(false)}
-            >
+            <Button variant="secondary" className="flex-1" type="button" onClick={() => setModalOpen(false)}>
               Cancel
             </Button>
             <Button variant="primary" className="flex-1" isLoading={isSubmitting} type="submit">

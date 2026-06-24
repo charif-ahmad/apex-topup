@@ -1,5 +1,6 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
 import { serverFetch } from '@/lib/server/client';
 import type { AdminUser, Transaction, Analytics } from '@/types/models';
 import type { PaginatedResult } from '@/types/api';
@@ -25,6 +26,7 @@ export async function blockUserAction(
       method: 'PATCH',
       body: JSON.stringify({ isBlocked }),
     });
+    revalidatePath('/admin');
     return {};
   } catch (err) {
     return { error: err instanceof Error ? err.message : 'Action failed' };
@@ -34,6 +36,7 @@ export async function blockUserAction(
 export async function deleteUserAction(id: string): Promise<{ error?: string }> {
   try {
     await serverFetch<null>(`/admin/users/${id}`, { method: 'DELETE' });
+    revalidatePath('/admin');
     return {};
   } catch (err) {
     return { error: err instanceof Error ? err.message : 'Delete failed' };
