@@ -12,11 +12,13 @@ const nextConfig: NextConfig = {
     cachedNavigations: true,
    
     // How long the client-side router cache holds RSC payloads before re-fetching.
-    // dynamic: 30 keeps cookie-backed pages (wallet, dashboard, etc.) cached for 30s
-    // so back/forward and repeat navigation is instant. Mutations call router.refresh()
-    // to bust the cache for the active route immediately.
+    // dynamic: 15 keeps cookie-backed pages (wallet, dashboard, etc.) cached briefly
+    // so back/forward and repeat navigation is instant, while keeping balance/transaction
+    // data fresh enough cross-tab. Mutations call router.refresh() to bust the cache for
+    // the active route immediately, but that only affects the current tab — so this
+    // window is the worst-case staleness for a balance change made elsewhere.
     staleTimes: {
-      dynamic: 50,
+      dynamic: 15,
       static: 180,
     },
     // Prefetch dynamic routes on link hover so the data is usually already
