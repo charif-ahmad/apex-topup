@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { Suspense, cache } from 'react';
 import { getWalletAction } from '@/actions/wallet';
 import { listTransactionsAction, getTransactionSummaryAction } from '@/actions/transactions';
 import { listServicesAction } from '@/actions/services';
@@ -7,6 +7,13 @@ import { DashboardActivity } from '@/components/dashboard/DashboardActivity';
 import { DashboardGreeting } from '@/components/dashboard/DashboardGreeting';
 import { formatCurrency } from '@/lib/utils/formatCurrency';
 import { Skeleton } from '@/components/ui/Skeleton';
+
+// React.cache deduplicates calls with the same args within a single render pass.
+// WalletSection + DashboardActivitySection both need the balance.
+// StatsSection  + DashboardActivitySection both need the services list.
+// Without cache each <Suspense> boundary would trigger a separate network round-trip.
+const getWalletCached = cache(getWalletAction);
+const getServicesCached = cache(listServicesAction);
 
 // Skeletons for independent streaming sections
 function WalletCardSkeleton() {
@@ -41,14 +48,14 @@ function DashboardActivitySkeleton() {
 
 // Server Components for fetching and rendering independent data parts
 async function WalletSection() {
-  const balance = await getWalletAction().catch(() => 0);
+  const balance = await getWalletCached().catch(() => 0);
   return <WalletCard balance={balance} />;
 }
 
 async function StatsSection() {
   const [summaryResult, svcResult] = await Promise.allSettled([
     getTransactionSummaryAction(),
-    listServicesAction(),
+    getServicesCached(),
   ]);
 
   const summary =
@@ -125,9 +132,9 @@ async function StatsSection() {
 
 async function DashboardActivitySection() {
   const [walletResult, txResult, svcResult] = await Promise.allSettled([
-    getWalletAction(),
+    getWalletCached(),
     listTransactionsAction({ limit: 5 }),
-    listServicesAction(),
+    getServicesCached(),
   ]);
 
   const walletBalance = walletResult.status === 'fulfilled' ? walletResult.value : 0;
