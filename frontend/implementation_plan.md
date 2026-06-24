@@ -71,16 +71,17 @@ frontend/
 │   ├── (auth)/                   # Route Group — صفحات بدون sidebar
 │   │   ├── login/page.tsx
 │   │   └── register/page.tsx
-│   ├── (app)/                    # Route Group — صفحات المستخدم المسجل
+│   ├── (app)/                    # Route Group — صفحات المستخدم والـ Admin المسجلين
 │   │   ├── layout.tsx            # AppLayout: Sidebar + MobileNav
 │   │   ├── dashboard/page.tsx
 │   │   ├── wallet/page.tsx
 │   │   ├── services/page.tsx
 │   │   ├── transactions/page.tsx
-│   │   └── profile/page.tsx
-│   ├── (admin)/                  # Route Group — صفحات Admin فقط
-│   │   ├── layout.tsx            # AdminGuard + AdminSidebar
-│   │   └── admin/page.tsx
+│   │   ├── profile/page.tsx
+│   │   └── admin/                # صفحات الـ Admin (يرث AppLayout ويتضمن Guard)
+│   │       ├── layout.tsx        # AdminGuard
+│   │       ├── loading.tsx
+│   │       └── page.tsx
 │   ├── layout.tsx                # Root layout: HTML, fonts, providers
 │   ├── page.tsx                  # Home / Landing Page
 │   ├── not-found.tsx
