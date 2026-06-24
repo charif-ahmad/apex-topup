@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useOptimistic, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useAuth } from '@/context/AuthContext';
+import { useToast } from '@/context/ToastContext';
 import { formatCurrency } from '@/lib/utils/formatCurrency';
+import { addFundsAction } from '@/actions/wallet';
 import { TransactionTable } from '@/components/transactions/TransactionTable';
 import { Pagination } from '@/components/ui/Pagination';
 import type { Transaction } from '@/types/models';
@@ -25,8 +27,51 @@ interface WalletPageClientProps {
 
 export function WalletPageClient({ initialBalance, transactions, page, totalPages }: WalletPageClientProps) {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [showAdd, setShowAdd] = useState(false);
   const router = useRouter();
+  const [, startTransition] = useTransition();
+
+  // Optimistic ledger: a top-up appends a `pending` credit row instantly. On
+  // server confirmation router.refresh() supplies the real (reconciled) row; on
+  // a failed payment or error the optimistic row auto-reverts and we toast.
+  const [optimisticTxns, addOptimisticTxn] = useOptimistic(
+    transactions,
+    (state, pending: Transaction) => [pending, ...state],
+  );
+
+  function handleAddFunds(amount: number) {
+    setShowAdd(false); // close the input modal at 0ms; the pending row is the feedback
+    startTransition(async () => {
+      addOptimisticTxn({
+        id: -Date.now(), // temp id; replaced by the real row on refresh
+        userId: user?.id ?? '',
+        type: 'credit',
+        amount,
+        status: 'pending',
+        serviceId: null,
+        reference: null,
+        createdAt: new Date().toISOString(),
+        service: null,
+      });
+
+      const res = await addFundsAction(amount);
+      if (res.error) {
+        // Unknown server state (transport/validation) — drop the optimistic row.
+        toast(res.error, 'error');
+        return;
+      }
+      // The backend records every attempt (success OR failed) as a real
+      // transaction, so we reconcile in both cases: refresh swaps the optimistic
+      // `pending` row for the recorded row. Balance only moves on success.
+      if (res.data?.paymentStatus === 'failed') {
+        toast('Payment simulation failed. Please try again.', 'error');
+      } else {
+        toast(`MYR ${amount} added successfully!`, 'success');
+      }
+      router.refresh(); // optimistic pending holds until the reconciled data paints
+    });
+  }
 
   return (
     <div className="page-container py-6 md:py-8">
@@ -142,19 +187,13 @@ export function WalletPageClient({ initialBalance, transactions, page, totalPage
           Transaction History
         </h2>
         <div className="flex flex-col gap-4">
-          <TransactionTable transactions={transactions} />
+          <TransactionTable transactions={optimisticTxns} />
           <Pagination page={page} totalPages={totalPages} />
         </div>
       </div>
 
       {showAdd && (
-        <AddFundsModal
-          onClose={() => setShowAdd(false)}
-          onSuccess={() => {
-            setShowAdd(false);
-            router.refresh();
-          }}
-        />
+        <AddFundsModal onClose={() => setShowAdd(false)} onAddFunds={handleAddFunds} />
       )}
     </div>
   );

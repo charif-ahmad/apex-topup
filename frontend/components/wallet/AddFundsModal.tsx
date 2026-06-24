@@ -1,14 +1,10 @@
 'use client';
 
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
-import { formatCurrency } from '@/lib/utils/formatCurrency';
-import { useToast } from '@/context/ToastContext';
-import { addFundsAction } from '@/actions/wallet';
 import { cn } from '@/lib/utils/cn';
 
 const schema = z.object({
@@ -24,76 +20,31 @@ const QUICK_AMOUNTS = [10, 50, 100, 500];
 
 interface AddFundsModalProps {
   onClose: () => void;
-  onSuccess: () => void;
+  /**
+   * Hands the validated amount to the parent, which owns the optimistic
+   * pending-row + addFunds lifecycle and closes this modal at 0ms.
+   */
+  onAddFunds: (amount: number) => void;
 }
 
-export function AddFundsModal({ onClose, onSuccess }: AddFundsModalProps) {
-  const { toast } = useToast();
-  const [result, setResult] = useState<{ reference: string; newBalance: number } | null>(null);
-
+export function AddFundsModal({ onClose, onAddFunds }: AddFundsModalProps) {
   const {
     register,
     handleSubmit,
     setValue,
     watch,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
   const currentAmount = watch('amount');
 
-  async function onSubmit(data: FormData) {
-    const res = await addFundsAction(data.amount);
-    if (res.error) {
-      toast(res.error, 'error');
-      return;
-    }
-    if (res.data) {
-      if (res.data.paymentStatus === 'failed') {
-        toast('Payment simulation failed. Please try again.', 'error');
-        return;
-      }
-      setResult({
-        reference: res.data.transaction.reference,
-        newBalance: res.data.balance ?? 0,
-      });
-      toast(`MYR ${data.amount} added successfully!`, 'success');
-      onSuccess();
-    }
+  function onSubmit(data: FormData) {
+    onAddFunds(data.amount);
   }
 
   return (
     <Modal open onClose={onClose} title="Add Funds">
-      {result ? (
-        <div className="flex flex-col items-center gap-5 py-4">
-          <div
-            className="w-16 h-16 rounded-full flex items-center justify-center"
-            style={{ background: 'rgba(78,222,163,0.15)', border: '2px solid var(--color-primary)' }}
-          >
-            <span
-              className="material-symbols-outlined text-[var(--color-primary)] text-3xl"
-              style={{ fontVariationSettings: "'FILL' 1" }}
-            >
-              check_circle
-            </span>
-          </div>
-          <div className="text-center">
-            <p className="text-[var(--color-on-surface)] font-semibold text-lg">Funds Added!</p>
-            <p className="text-[var(--color-on-surface-variant)] text-sm mt-1">
-              New balance:{' '}
-              <span className="text-[var(--color-primary)] font-bold">
-                {formatCurrency(result.newBalance)}
-              </span>
-            </p>
-            <p className="text-xs text-[var(--color-on-surface-variant)] mt-2">
-              Ref: {result.reference}
-            </p>
-          </div>
-          <Button variant="primary" className="w-full" onClick={onClose}>
-            Done
-          </Button>
-        </div>
-      ) : (
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
           {/* Quick select amounts */}
           <div>
             <p className="text-xs font-semibold tracking-widest uppercase text-[var(--color-on-surface-variant)] mb-3">
@@ -151,19 +102,19 @@ export function AddFundsModal({ onClose, onSuccess }: AddFundsModalProps) {
           </div>
 
           <p className="text-xs text-[var(--color-on-surface-variant)]">
-            Simulated payment — 80% success rate. Funds are credited instantly on success.
+            Simulated payment — 80% success rate. The top-up shows as pending, then
+            confirms once the payment clears.
           </p>
 
           <div className="flex gap-3">
             <Button variant="secondary" className="flex-1" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button variant="primary" className="flex-1" isLoading={isSubmitting} type="submit">
+            <Button variant="primary" className="flex-1" type="submit">
               Add Funds
             </Button>
           </div>
         </form>
-      )}
     </Modal>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useOptimistic, useState, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -39,6 +39,12 @@ const CATEGORY_ICONS: Record<string, string> = {
 const STATUS_FILTERS = ['all', 'active', 'inactive'] as const;
 const CATEGORY_FILTERS = ['all', 'mobile', 'internet', 'giftcard'] as const;
 
+type OptimisticService = Service & { pending?: boolean };
+type OptimisticAction =
+  | { type: 'create'; service: Service }
+  | { type: 'update'; id: number; payload: ServicePayload }
+  | { type: 'delete'; id: number };
+
 interface ServiceManagerProps {
   /** Already filtered (by the URL params) and fetched server-side. */
   services: Service[];
@@ -57,11 +63,29 @@ export function ServiceManager({ services, filteredCount, totalCount }: ServiceM
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  // Separate transitions: `isPending` dims the grid during filter navigation,
+  // while mutations rely on per-card pending state (no full-grid dim).
   const [isPending, startTransition] = useTransition();
+  const [, startMutation] = useTransition();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Service | null>(null);
-  const [deletingId, setDeletingId] = useState<number | null>(null);
+
+  const [optimisticServices, applyOptimistic] = useOptimistic<OptimisticService[], OptimisticAction>(
+    services,
+    (state, action) => {
+      switch (action.type) {
+        case 'create':
+          return [{ ...action.service, pending: true }, ...state];
+        case 'update':
+          return state.map((s) =>
+            s.id === action.id ? { ...s, ...action.payload, pending: true } : s,
+          );
+        case 'delete':
+          return state.filter((s) => s.id !== action.id);
+      }
+    },
+  );
 
   const activeStatus = searchParams.get('status') ?? 'all';
   const activeCategory = searchParams.get('category') ?? 'all';
@@ -100,7 +124,7 @@ export function ServiceManager({ services, filteredCount, totalCount }: ServiceM
     setModalOpen(true);
   }
 
-  async function onSubmit(data: FormData) {
+  function onSubmit(data: FormData) {
     const payload: ServicePayload = {
       name: data.name,
       category: data.category,
@@ -108,31 +132,45 @@ export function ServiceManager({ services, filteredCount, totalCount }: ServiceM
       provider: data.provider,
       isActive: data.isActive ?? true,
     };
+    const editingId = editing?.id ?? null;
+    setModalOpen(false); // close at 0ms; the optimistic card carries the feedback
 
-    const result = editing
-      ? await updateServiceAction(editing.id, payload)
-      : await createServiceAction(payload);
+    startMutation(async () => {
+      if (editingId != null) {
+        applyOptimistic({ type: 'update', id: editingId, payload });
+      } else {
+        applyOptimistic({
+          type: 'create',
+          // Temp negative id keeps React keys stable until the real row arrives.
+          service: { id: -Date.now(), createdAt: new Date().toISOString(), ...payload, isActive: payload.isActive ?? true },
+        });
+      }
 
-    if (result.error) {
-      toast(result.error, 'error');
-      return;
-    }
+      const result =
+        editingId != null
+          ? await updateServiceAction(editingId, payload)
+          : await createServiceAction(payload);
 
-    toast(editing ? 'Service updated' : 'Service created', 'success');
-    setModalOpen(false);
-    startTransition(() => router.refresh());
+      if (result.error) {
+        toast(result.error, 'error');
+        return; // optimistic insert/update auto-reverts
+      }
+      toast(editingId != null ? 'Service updated' : 'Service created', 'success');
+      router.refresh();
+    });
   }
 
-  async function handleDelete(id: number) {
-    setDeletingId(id);
-    const result = await deleteServiceAction(id);
-    setDeletingId(null);
-    if (result.error) {
-      toast('Delete failed', 'error');
-    } else {
+  function handleDelete(id: number) {
+    startMutation(async () => {
+      applyOptimistic({ type: 'delete', id });
+      const result = await deleteServiceAction(id);
+      if (result.error) {
+        toast('Delete failed', 'error');
+        return; // removed card is restored on revert
+      }
       toast('Service deleted', 'success');
-      startTransition(() => router.refresh());
-    }
+      router.refresh();
+    });
   }
 
   return (
@@ -178,17 +216,17 @@ export function ServiceManager({ services, filteredCount, totalCount }: ServiceM
         ))}
       </div>
 
-      {services.length === 0 ? (
+      {optimisticServices.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 gap-2 text-[var(--color-on-surface-variant)]">
           <span className="material-symbols-outlined text-4xl opacity-40">account_tree</span>
           <p className="text-sm">{totalCount === 0 ? 'No services yet' : 'No services match the filter'}</p>
         </div>
       ) : (
         <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 transition-opacity ${isPending ? 'opacity-60' : ''}`}>
-          {services.map((svc) => (
+          {optimisticServices.map((svc) => (
             <div
               key={svc.id}
-              className="flex items-center gap-4 p-4 rounded-[var(--radius-md)] group transition-colors"
+              className={`flex items-center gap-4 p-4 rounded-[var(--radius-md)] group transition-opacity ${svc.pending ? 'opacity-50' : ''}`}
               style={{ background: 'rgba(38,42,53,0.5)', border: '1px solid rgba(60,74,66,0.3)' }}
             >
               <div
@@ -216,19 +254,20 @@ export function ServiceManager({ services, filteredCount, totalCount }: ServiceM
               <div className="flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity shrink-0">
                 <button
                   onClick={() => openEdit(svc)}
-                  className="p-2 rounded-[var(--radius-sm)] text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)] hover:bg-[rgba(78,222,163,0.1)] transition-all"
+                  disabled={svc.pending}
+                  className="p-2 rounded-[var(--radius-sm)] text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)] hover:bg-[rgba(78,222,163,0.1)] transition-all disabled:opacity-40"
                   title="Edit"
                 >
                   <span className="material-symbols-outlined text-xl">edit</span>
                 </button>
                 <button
                   onClick={() => handleDelete(svc.id)}
-                  disabled={deletingId === svc.id}
+                  disabled={svc.pending}
                   className="p-2 rounded-[var(--radius-sm)] text-[var(--color-on-surface-variant)] hover:text-[var(--color-error)] hover:bg-[rgba(255,180,171,0.1)] transition-all disabled:opacity-40"
                   title="Delete"
                 >
                   <span className="material-symbols-outlined text-xl">
-                    {deletingId === svc.id ? 'hourglass_empty' : 'delete_forever'}
+                    {svc.pending ? 'hourglass_empty' : 'delete_forever'}
                   </span>
                 </button>
               </div>
