@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { createContext, useContext, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import type { AuthContextValue } from '@/types/auth';
 import type { User } from '@/types/models';
@@ -14,12 +14,14 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ initialUser, children }: AuthProviderProps) {
+  const [prevInitialUser, setPrevInitialUser] = useState<User | null>(initialUser);
   const [user, setUser] = useState<User | null>(initialUser);
   const router = useRouter();
 
-  useEffect(() => {
+  if (initialUser !== prevInitialUser) {
+    setPrevInitialUser(initialUser);
     setUser(initialUser);
-  }, [initialUser]);
+  }
 
   const updateUser = useCallback((updated: User) => {
     setUser(updated);

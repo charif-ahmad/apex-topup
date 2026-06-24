@@ -11,6 +11,16 @@ import { firstParam as first, type SearchParams } from '@/lib/utils/searchParams
 
 const TABS: AdminTab[] = ['users', 'services', 'audit'];
 
+async function AnalyticsCardsSection() {
+  let analytics = null;
+  try {
+    analytics = await getAnalyticsAction();
+  } catch {
+    // analytics stays null, cards show 0
+  }
+  return <AnalyticsCards analytics={analytics} loading={false} />;
+}
+
 export default async function AdminPage({
   searchParams,
 }: {
@@ -22,13 +32,6 @@ export default async function AdminPage({
   // Re-key Suspense on the full query so changing a filter/page (or the tab)
   // shows the skeleton while the active panel refetches server-side.
   const suspenseKey = `${tab}:${first(sp.search) ?? ''}:${first(sp.status) ?? ''}:${first(sp.category) ?? ''}:${first(sp.page) ?? ''}`;
-
-  let analytics = null;
-  try {
-    analytics = await getAnalyticsAction();
-  } catch {
-    // analytics stays null, cards show 0
-  }
 
   return (
     <div className="min-h-screen">
@@ -70,7 +73,9 @@ export default async function AdminPage({
       </header>
 
       <div className="page-container py-6 md:py-8 space-y-6">
-        <AnalyticsCards analytics={analytics} loading={false} />
+        <Suspense fallback={<AnalyticsCards analytics={null} loading={true} />}>
+          <AnalyticsCardsSection />
+        </Suspense>
         <AdminTabs activeTab={tab}>
           <Suspense key={suspenseKey} fallback={<SkeletonTable rows={8} cols={5} />}>
             {tab === 'users' && <UsersPanel searchParams={sp} />}
