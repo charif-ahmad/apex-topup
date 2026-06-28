@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { formatCurrency } from '@/lib/utils/formatCurrency';
 import { addFundsAction } from '@/actions/wallet';
 import { TransactionTable } from '@/components/transactions/TransactionTable';
@@ -28,6 +29,7 @@ interface WalletPageClientProps {
 export function WalletPageClient({ initialBalance, transactions, page, totalPages }: WalletPageClientProps) {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [showAdd, setShowAdd] = useState(false);
   const router = useRouter();
   const [, startTransition] = useTransition();
@@ -65,9 +67,9 @@ export function WalletPageClient({ initialBalance, transactions, page, totalPage
       // transaction, so we reconcile in both cases: refresh swaps the optimistic
       // `pending` row for the recorded row. Balance only moves on success.
       if (res.data?.paymentStatus === 'failed') {
-        toast('Payment simulation failed. Please try again.', 'error');
+        toast(t('wallet.paymentFailed'), 'error');
       } else {
-        toast(`MYR ${amount} added successfully!`, 'success');
+        toast(t('wallet.addedSuccess', { amount }), 'success');
       }
       router.refresh(); // optimistic pending holds until the reconciled data paints
     });
@@ -80,10 +82,10 @@ export function WalletPageClient({ initialBalance, transactions, page, totalPage
           className="text-2xl sm:text-3xl font-semibold text-[var(--color-on-surface)]"
           style={{ fontFamily: 'var(--font-outfit)' }}
         >
-          Wallet Management
+          {t('wallet.title')}
         </h1>
         <p className="text-[var(--color-on-surface-variant)] mt-1">
-          Manage your digital assets and funding history.
+          {t('wallet.subtitle')}
         </p>
       </header>
 
@@ -105,7 +107,7 @@ export function WalletPageClient({ initialBalance, transactions, page, totalPage
 
             <div className="relative z-10 flex items-start justify-between">
               <span className="text-xs font-semibold tracking-widest uppercase text-[var(--color-primary)]">
-                Available Liquidity
+                {t('wallet.availableLiquidity')}
               </span>
               <span
                 className="material-symbols-outlined text-[var(--color-primary)] opacity-50 text-xl"
@@ -123,7 +125,7 @@ export function WalletPageClient({ initialBalance, transactions, page, totalPage
                 {formatCurrency(initialBalance)}
               </span>
               <p className="text-sm text-[var(--color-on-surface-variant)] mt-2">
-                Account holder:{' '}
+                {t('wallet.accountHolder')}{' '}
                 <span className="text-[var(--color-on-surface)] font-medium">{user?.name}</span>
               </p>
             </div>
@@ -142,7 +144,7 @@ export function WalletPageClient({ initialBalance, transactions, page, totalPage
                 }}
               >
                 <span className="material-symbols-outlined text-xl">add_circle</span>
-                Add Funds
+                {t('wallet.addFunds')}
               </button>
             </div>
           </div>
@@ -151,9 +153,9 @@ export function WalletPageClient({ initialBalance, transactions, page, totalPage
         {/* Info panel */}
         <div className="lg:col-span-5 flex flex-col gap-4">
           {[
-            { label: 'Currency', value: 'Malaysian Ringgit (MYR)', icon: 'payments' },
-            { label: 'Account Type', value: 'Digital Wallet', icon: 'account_balance' },
-            { label: 'Security', value: 'AES-256 Encrypted', icon: 'shield' },
+            { label: t('wallet.infoCurrency'), value: t('wallet.infoCurrencyValue'), icon: 'payments' },
+            { label: t('wallet.infoAccountType'), value: t('wallet.infoAccountTypeValue'), icon: 'account_balance' },
+            { label: t('wallet.infoSecurity'), value: t('wallet.infoSecurityValue'), icon: 'shield' },
           ].map(({ label, value, icon }) => (
             <div
               key={label}
@@ -184,7 +186,7 @@ export function WalletPageClient({ initialBalance, transactions, page, totalPage
           className="text-base font-semibold text-[var(--color-on-surface)] mb-4"
           style={{ fontFamily: 'var(--font-outfit)' }}
         >
-          Transaction History
+          {t('wallet.transactionHistory')}
         </h2>
         <div className="flex flex-col gap-4">
           <TransactionTable transactions={optimisticTxns} />

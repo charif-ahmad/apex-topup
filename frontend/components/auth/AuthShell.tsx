@@ -1,10 +1,18 @@
+'use client';
+
+import { useLanguage } from '@/context/LanguageContext';
+
 interface AuthShellProps {
-  title: string;
-  subtitle: string;
+  variant: 'login' | 'register';
   children: React.ReactNode;
 }
 
-export function AuthShell({ title, subtitle, children }: AuthShellProps) {
+export function AuthShell({ variant, children }: AuthShellProps) {
+  const { t } = useLanguage();
+  const title = variant === 'login' ? t('auth.loginTitle') : t('auth.registerTitle');
+  const subtitle = variant === 'login' ? t('auth.loginSubtitle') : t('auth.registerSubtitle');
+  const securityBadge = t('auth.securityBadge');
+
   return (
     <div
       className="relative min-h-screen flex items-center justify-center p-4"
@@ -69,7 +77,7 @@ export function AuthShell({ title, subtitle, children }: AuthShellProps) {
           verified_user
         </span>
         <span className="text-[10px] font-semibold tracking-widest uppercase text-[var(--color-on-surface-variant)]">
-          AES-256 Multi-Layer Encryption Active
+          {securityBadge}
         </span>
       </div>
     </div>

@@ -7,6 +7,7 @@ import { z } from 'zod';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/context/ToastContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { registerAction } from '@/actions/auth';
 import { cn } from '@/lib/utils/cn';
 
@@ -60,6 +61,7 @@ export function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const { toast } = useToast();
+  const { t } = useLanguage();
   const router = useRouter();
 
   const {
@@ -74,7 +76,7 @@ export function RegisterForm() {
       toast(result.error, 'error');
       return;
     }
-    toast('Account created! Welcome to APEX.', 'success');
+    toast(t('auth.accountCreated'), 'success');
     router.push('/dashboard');
   }
 
@@ -87,7 +89,7 @@ export function RegisterForm() {
             htmlFor="name"
             className="block ml-1 text-xs font-semibold tracking-widest uppercase text-[var(--color-on-surface-variant)]"
           >
-            Full Name
+            {t('auth.name')}
           </label>
           <FieldWrap icon="person" error={errors.name?.message}>
             <input
@@ -110,7 +112,7 @@ export function RegisterForm() {
             htmlFor="email"
             className="block ml-1 text-xs font-semibold tracking-widest uppercase text-[var(--color-on-surface-variant)]"
           >
-            Email Address
+            {t('auth.email')}
           </label>
           <FieldWrap icon="alternate_email" error={errors.email?.message}>
             <input
@@ -133,7 +135,7 @@ export function RegisterForm() {
             htmlFor="password"
             className="block ml-1 text-xs font-semibold tracking-widest uppercase text-[var(--color-on-surface-variant)]"
           >
-            Password
+            {t('auth.password')}
           </label>
           <FieldWrap icon="lock" error={errors.password?.message}>
             <input
@@ -166,7 +168,7 @@ export function RegisterForm() {
             htmlFor="confirmPassword"
             className="block ml-1 text-xs font-semibold tracking-widest uppercase text-[var(--color-on-surface-variant)]"
           >
-            Confirm Password
+            {t('auth.confirmPassword')}
           </label>
           <FieldWrap icon="lock_reset" error={errors.confirmPassword?.message}>
             <input
@@ -209,11 +211,11 @@ export function RegisterForm() {
           {isSubmitting ? (
             <>
               <span className="w-4 h-4 border-2 border-[var(--color-on-primary)] border-t-transparent rounded-full animate-spin" />
-              Creating Account...
+              {t('auth.creatingAccount')}
             </>
           ) : (
             <>
-              Create Account
+              {t('auth.createAccount')}
               <span className="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">
                 arrow_forward
               </span>
@@ -224,12 +226,12 @@ export function RegisterForm() {
 
       {/* Footer link */}
       <p className="text-center text-sm text-[var(--color-on-surface-variant)]">
-        Already have an account?{' '}
+        {t('auth.hasAccount')}{' '}
         <Link
           href="/login"
           className="text-[var(--color-primary)] font-semibold hover:underline transition-all"
         >
-          Sign In
+          {t('auth.signIn')}
         </Link>
       </p>
     </div>

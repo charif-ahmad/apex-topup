@@ -2,6 +2,7 @@
 
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useTransition } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 import { cn } from '@/lib/utils/cn';
 
 interface PaginationProps {
@@ -20,6 +21,7 @@ export function Pagination({ page, totalPages }: PaginationProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
+  const { t } = useLanguage();
 
   if (totalPages <= 1) return null;
 
@@ -45,13 +47,13 @@ export function Pagination({ page, totalPages }: PaginationProps) {
     <div className={cn('flex items-center justify-between pt-2 transition-opacity', isPending && 'opacity-60')}>
       <button onClick={() => goTo(page - 1)} disabled={page <= 1} className={btn(page <= 1)}>
         <span className="material-symbols-outlined text-base">chevron_left</span>
-        Prev
+        {t('common.prev')}
       </button>
       <span className="text-xs text-[var(--color-on-surface-variant)]">
-        Page {page} of {totalPages}
+        {t('common.pageOf', { page, total: totalPages })}
       </span>
       <button onClick={() => goTo(page + 1)} disabled={page >= totalPages} className={btn(page >= totalPages)}>
-        Next
+        {t('common.next')}
         <span className="material-symbols-outlined text-base">chevron_right</span>
       </button>
     </div>

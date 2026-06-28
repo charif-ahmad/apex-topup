@@ -1,8 +1,11 @@
+'use client';
+
 import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils/formatCurrency';
 import { formatDate } from '@/lib/utils/formatDate';
 import { StatusBadge } from '@/components/ui/Badge';
 import { SkeletonTable } from '@/components/ui/Skeleton';
+import { useLanguage } from '@/context/LanguageContext';
 import type { Transaction } from '@/types/models';
 
 interface RecentTransactionsProps {
@@ -11,6 +14,7 @@ interface RecentTransactionsProps {
 }
 
 export function RecentTransactions({ transactions, loading }: RecentTransactionsProps) {
+  const { t } = useLanguage();
   return (
     <div
       className="glass-card rounded-[var(--radius-lg)] p-6 flex flex-col gap-4"
@@ -18,13 +22,13 @@ export function RecentTransactions({ transactions, loading }: RecentTransactions
     >
       <div className="flex items-center justify-between">
         <h2 className="text-base font-semibold text-[var(--color-on-surface)]" style={{ fontFamily: 'var(--font-outfit)' }}>
-          Recent Transactions
+          {t('dashboard.recentTransactions')}
         </h2>
         <Link
           href="/transactions"
           className="text-xs font-semibold text-[var(--color-primary)] hover:underline"
         >
-          View all
+          {t('dashboard.viewAll')}
         </Link>
       </div>
 
@@ -33,7 +37,7 @@ export function RecentTransactions({ transactions, loading }: RecentTransactions
       ) : transactions.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-10 gap-2 text-[var(--color-on-surface-variant)]">
           <span className="material-symbols-outlined text-4xl opacity-40">receipt_long</span>
-          <p className="text-sm">No transactions yet</p>
+          <p className="text-sm">{t('dashboard.noTransactions')}</p>
         </div>
       ) : (
         <div className="flex flex-col divide-y" style={{ borderColor: 'rgba(60,74,66,0.3)' }}>
@@ -63,7 +67,7 @@ export function RecentTransactions({ transactions, loading }: RecentTransactions
               {/* Label */}
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-[var(--color-on-surface)] truncate">
-                  {tx.service?.name ?? (tx.type === 'credit' ? 'Wallet Top-up' : 'Purchase')}
+                  {tx.service?.name ?? (tx.type === 'credit' ? t('tx.walletTopup') : t('tx.purchase'))}
                 </p>
                 <p className="text-xs text-[var(--color-on-surface-variant)]">
                   {formatDate(tx.createdAt)}

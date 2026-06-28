@@ -1,6 +1,7 @@
 'use client';
 
 import { formatCurrency } from '@/lib/utils/formatCurrency';
+import { useLanguage } from '@/context/LanguageContext';
 import type { Service } from '@/types/models';
 
 const CATEGORY_ICONS: Record<string, string> = {
@@ -15,6 +16,7 @@ interface ServiceCardProps {
 }
 
 export function ServiceCard({ service, onSelect }: ServiceCardProps) {
+  const { t } = useLanguage();
   const icon = CATEGORY_ICONS[service.category.toLowerCase()] ?? 'bolt';
 
   return (
@@ -59,7 +61,7 @@ export function ServiceCard({ service, onSelect }: ServiceCardProps) {
           className="flex items-center gap-1 px-3 py-1 rounded-[var(--radius-sm)] text-xs font-semibold transition-all"
           style={{ background: 'rgba(78,222,163,0.1)', color: 'var(--color-primary)' }}
         >
-          Buy
+          {t('services.buy')}
           <span className="material-symbols-outlined text-base group-hover:translate-x-0.5 transition-transform">
             arrow_forward
           </span>

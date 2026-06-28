@@ -2,6 +2,7 @@
 
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useTransition } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 import { cn } from '@/lib/utils/cn';
 
 const SELECT_CLASS =
@@ -17,6 +18,7 @@ export function TransactionFilters() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
+  const { t } = useLanguage();
 
   const type = searchParams.get('type') ?? '';
   const status = searchParams.get('status') ?? '';
@@ -38,9 +40,9 @@ export function TransactionFilters() {
         value={type}
         onChange={(e) => setParam('type', e.target.value)}
       >
-        <option value="">All Types</option>
-        <option value="credit">Credit</option>
-        <option value="debit">Debit</option>
+        <option value="">{t('transactions.allTypes')}</option>
+        <option value="credit">{t('tx.credit')}</option>
+        <option value="debit">{t('tx.debit')}</option>
       </select>
 
       <select
@@ -48,10 +50,10 @@ export function TransactionFilters() {
         value={status}
         onChange={(e) => setParam('status', e.target.value)}
       >
-        <option value="">All Statuses</option>
-        <option value="success">Success</option>
-        <option value="pending">Pending</option>
-        <option value="failed">Failed</option>
+        <option value="">{t('transactions.allStatuses')}</option>
+        <option value="success">{t('tx.success')}</option>
+        <option value="pending">{t('tx.pending')}</option>
+        <option value="failed">{t('tx.failed')}</option>
       </select>
     </div>
   );

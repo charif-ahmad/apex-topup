@@ -3,6 +3,7 @@
 import { useOptimistic, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/context/ToastContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { blockUserAction, deleteUserAction } from '@/actions/admin';
 import { formatCurrency } from '@/lib/utils/formatCurrency';
 import { formatDateShort } from '@/lib/utils/formatDate';
@@ -31,6 +32,7 @@ type OptimisticAction = { type: 'block'; id: string } | { type: 'delete'; id: st
  */
 export function UsersTable({ users }: { users: AdminUser[] }) {
   const { toast } = useToast();
+  const { t } = useLanguage();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [confirmDelete, setConfirmDelete] = useState<AdminUser | null>(null);
@@ -54,10 +56,10 @@ export function UsersTable({ users }: { users: AdminUser[] }) {
       applyOptimistic({ type: 'block', id: user.id });
       const res = await blockUserAction(user.id, !user.isBlocked);
       if (res.error) {
-        toast('Action failed', 'error');
+        toast(t('admin.actionFailed'), 'error');
         return; // optimistic toggle auto-reverts
       }
-      toast(`User ${user.isBlocked ? 'unblocked' : 'blocked'} successfully`, 'success');
+      toast(user.isBlocked ? t('admin.userUnblocked') : t('admin.userBlocked'), 'success');
       router.refresh();
     });
   }
@@ -68,10 +70,10 @@ export function UsersTable({ users }: { users: AdminUser[] }) {
       applyOptimistic({ type: 'delete', id: user.id });
       const res = await deleteUserAction(user.id);
       if (res.error) {
-        toast('Delete failed', 'error');
+        toast(t('admin.deleteFailed'), 'error');
         return; // removed row is restored on revert
       }
-      toast('User deleted', 'success');
+      toast(t('admin.userDeleted'), 'success');
       router.refresh();
     });
   }
@@ -82,7 +84,7 @@ export function UsersTable({ users }: { users: AdminUser[] }) {
         <button
           onClick={() => handleBlock(user)}
           disabled={user.pending}
-          title={user.isBlocked ? 'Unblock user' : 'Block user'}
+          title={user.isBlocked ? t('admin.unblockUser') : t('admin.blockUser')}
           className="p-2 rounded-[var(--radius-sm)] text-[var(--color-on-surface-variant)] hover:text-[var(--color-tertiary)] hover:bg-[rgba(255,185,95,0.1)] transition-all disabled:opacity-40"
         >
           <span className="material-symbols-outlined text-xl">
@@ -92,7 +94,7 @@ export function UsersTable({ users }: { users: AdminUser[] }) {
         <button
           onClick={() => setConfirmDelete(user)}
           disabled={user.pending}
-          title="Delete user"
+          title={t('admin.deleteUser')}
           className="p-2 rounded-[var(--radius-sm)] text-[var(--color-on-surface-variant)] hover:text-[var(--color-error)] hover:bg-[rgba(255,180,171,0.1)] transition-all disabled:opacity-40"
         >
           <span className="material-symbols-outlined text-xl">delete_forever</span>
@@ -105,7 +107,7 @@ export function UsersTable({ users }: { users: AdminUser[] }) {
     return (
       <div className="flex flex-col items-center justify-center py-16 gap-2 text-[var(--color-on-surface-variant)]">
         <span className="material-symbols-outlined text-4xl opacity-40">manage_accounts</span>
-        <p className="text-sm">No users found</p>
+        <p className="text-sm">{t('admin.noUsers')}</p>
       </div>
     );
   }
@@ -117,7 +119,15 @@ export function UsersTable({ users }: { users: AdminUser[] }) {
         <table className="w-full text-sm border-separate" style={{ borderSpacing: '0 6px' }}>
           <thead>
             <tr>
-              {['User', 'Email', 'Balance', 'Role', 'Joined', 'Status', 'Actions'].map((h) => (
+              {[
+                t('admin.colUser'),
+                t('admin.colEmail'),
+                t('admin.colBalance'),
+                t('admin.colRole'),
+                t('admin.colJoined'),
+                t('admin.colStatus'),
+                t('admin.colActions'),
+              ].map((h) => (
                 <th
                   key={h}
                   className="px-4 py-2 text-left text-[10px] font-bold tracking-widest uppercase text-[var(--color-on-surface-variant)]"
@@ -157,14 +167,14 @@ export function UsersTable({ users }: { users: AdminUser[] }) {
                   {formatCurrency(user.balance ?? 0)}
                 </td>
                 <td className="px-4 py-3">
-                  <Badge variant={user.role === 'admin' ? 'info' : 'neutral'}>{user.role}</Badge>
+                  <Badge variant={user.role === 'admin' ? 'info' : 'neutral'}>{user.role === 'admin' ? t('common.admin') : t('common.user')}</Badge>
                 </td>
                 <td className="px-4 py-3 text-[var(--color-on-surface-variant)] whitespace-nowrap">
                   {formatDateShort(user.createdAt)}
                 </td>
                 <td className="px-4 py-3">
                   <Badge variant={user.isBlocked ? 'error' : 'success'}>
-                    {user.isBlocked ? 'Blocked' : 'Active'}
+                    {user.isBlocked ? t('admin.blocked') : t('admin.active2')}
                   </Badge>
                 </td>
                 <td className="px-4 py-3 rounded-r-[var(--radius-md)]">
@@ -211,9 +221,9 @@ export function UsersTable({ users }: { users: AdminUser[] }) {
 
             <div className="flex items-center justify-between gap-2 flex-wrap">
               <div className="flex items-center gap-2">
-                <Badge variant={user.role === 'admin' ? 'info' : 'neutral'}>{user.role}</Badge>
+                <Badge variant={user.role === 'admin' ? 'info' : 'neutral'}>{user.role === 'admin' ? t('common.admin') : t('common.user')}</Badge>
                 <Badge variant={user.isBlocked ? 'error' : 'success'}>
-                  {user.isBlocked ? 'Blocked' : 'Active'}
+                  {user.isBlocked ? t('admin.blocked') : t('admin.active2')}
                 </Badge>
                 <span className="text-xs text-[var(--color-on-surface-variant)]">
                   {formatDateShort(user.createdAt)}
@@ -239,19 +249,17 @@ export function UsersTable({ users }: { users: AdminUser[] }) {
               >
                 warning
               </span>
-              <h3 className="font-semibold text-[var(--color-on-surface)]">Delete User</h3>
+              <h3 className="font-semibold text-[var(--color-on-surface)]">{t('admin.deleteUserTitle')}</h3>
             </div>
             <p className="text-sm text-[var(--color-on-surface-variant)] mb-6">
-              Are you sure you want to permanently delete{' '}
-              <strong className="text-[var(--color-on-surface)]">{confirmDelete.name}</strong>? This
-              cannot be undone.
+              {t('admin.deleteUserConfirm', { name: confirmDelete.name })}
             </p>
             <div className="flex gap-3">
               <button
                 onClick={() => setConfirmDelete(null)}
                 className="flex-1 py-2 rounded-[var(--radius-md)] text-sm font-semibold border border-[var(--color-outline-variant)] text-[var(--color-on-surface)] hover:bg-[var(--color-surface-container-high)] transition-colors"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 onClick={() => handleDelete(confirmDelete)}
@@ -259,7 +267,7 @@ export function UsersTable({ users }: { users: AdminUser[] }) {
                 className="flex-1 py-2 rounded-[var(--radius-md)] text-sm font-semibold transition-colors disabled:opacity-50"
                 style={{ background: 'var(--color-error-container)', color: 'var(--color-error)' }}
               >
-                Delete
+                {t('common.delete')}
               </button>
             </div>
           </div>

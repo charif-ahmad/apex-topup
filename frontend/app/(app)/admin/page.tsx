@@ -37,7 +37,7 @@ export default async function AdminPage({
     <div className="min-h-screen">
       {/* Sticky header */}
       <header
-        className="lg:sticky lg:top-0 z-20 px-4 sm:px-6 md:px-8 py-3 md:py-4 flex items-center justify-between gap-3 flex-wrap"
+        className="lg:sticky lg:top-0 z-20 px-4 sm:px-6 md:px-8 lg:pe-32 py-3 md:py-4 flex items-center justify-between gap-3 flex-wrap"
         style={{
           background: 'rgba(21,29,48,0.85)',
           backdropFilter: 'blur(12px)',

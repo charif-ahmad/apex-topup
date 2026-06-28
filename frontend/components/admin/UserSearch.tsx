@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { useLanguage } from '@/context/LanguageContext';
 
 /**
  * Debounced, URL-driven search. The input mirrors the `search` param and writes
@@ -15,6 +16,7 @@ export function UserSearch() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [, startTransition] = useTransition();
+  const { t } = useLanguage();
 
   const current = searchParams.get('search') ?? '';
   const [value, setValue] = useState(current);
@@ -44,7 +46,7 @@ export function UserSearch() {
       </span>
       <input
         type="text"
-        placeholder="Search by name, email or ID..."
+        placeholder={t('admin.searchPlaceholder')}
         value={value}
         onChange={(e) => setValue(e.target.value)}
         className="w-full pl-10 pr-4 py-2.5 rounded-[var(--radius-md)] text-sm bg-[var(--color-surface-container-high)] border border-[var(--color-outline-variant)] text-[var(--color-on-surface)] placeholder:text-[var(--color-on-surface-variant)]/50 focus:outline-none focus:border-[var(--color-primary)] transition-colors"

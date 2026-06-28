@@ -2,12 +2,14 @@
 
 import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils/formatCurrency';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface WalletCardProps {
   balance: number;
 }
 
 export function WalletCard({ balance }: WalletCardProps) {
+  const { t } = useLanguage();
   return (
     <div
       className="glass-card rounded-[var(--radius-lg)] p-6 relative overflow-hidden"
@@ -44,7 +46,7 @@ export function WalletCard({ balance }: WalletCardProps) {
               className="text-lg font-semibold text-[var(--color-on-surface)]"
               style={{ fontFamily: 'var(--font-outfit)' }}
             >
-              Main Wallet
+              {t('dashboard.mainWallet')}
             </span>
           </div>
           {/* Decorative chip */}
@@ -65,7 +67,7 @@ export function WalletCard({ balance }: WalletCardProps) {
         {/* Balance */}
         <div>
           <span className="text-xs font-semibold tracking-widest uppercase text-[var(--color-on-surface-variant)]">
-            Available Balance
+            {t('dashboard.availableBalance')}
           </span>
           <div className="flex items-baseline gap-3 mt-2">
             <span
@@ -92,7 +94,7 @@ export function WalletCard({ balance }: WalletCardProps) {
             }}
           >
             <span className="material-symbols-outlined text-xl">add_circle</span>
-            Add Funds
+            {t('dashboard.addFunds')}
           </Link>
           <Link
             href="/transactions"
@@ -100,7 +102,7 @@ export function WalletCard({ balance }: WalletCardProps) {
             style={{ border: '1px solid var(--color-outline-variant)' }}
           >
             <span className="material-symbols-outlined text-xl">receipt_long</span>
-            History
+            {t('dashboard.history')}
           </Link>
         </div>
       </div>

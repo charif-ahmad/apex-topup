@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { updateProfileAction } from '@/actions/user';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -20,6 +21,7 @@ type FormData = z.infer<typeof schema>;
 export default function ProfilePage() {
   const { user, updateUser } = useAuth();
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [saved, setSaved] = useState(false);
 
   const {
@@ -39,7 +41,7 @@ export default function ProfilePage() {
     }
     if (result.data) {
       updateUser(result.data);
-      toast('Profile updated successfully', 'success');
+      toast(t('profile.updatedToast'), 'success');
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     }
@@ -60,10 +62,10 @@ export default function ProfilePage() {
           className="text-2xl sm:text-3xl font-semibold text-[var(--color-on-surface)]"
           style={{ fontFamily: 'var(--font-outfit)' }}
         >
-          Profile Settings
+          {t('profile.title')}
         </h1>
         <p className="text-[var(--color-on-surface-variant)] mt-1">
-          Manage your account information and preferences.
+          {t('profile.subtitle')}
         </p>
       </header>
 
@@ -97,7 +99,7 @@ export default function ProfilePage() {
                     user?.role === 'admin' ? 'var(--color-secondary)' : 'var(--color-primary)',
                 }}
               >
-                {user?.role}
+                {user?.role === 'admin' ? t('common.admin') : t('common.user')}
               </span>
             </div>
           </div>
@@ -107,16 +109,16 @@ export default function ProfilePage() {
             style={{ background: 'rgba(21,29,48,0.75)' }}
           >
             <h3 className="text-xs font-semibold tracking-widest uppercase text-[var(--color-on-surface-variant)]">
-              Account Details
+              {t('profile.accountDetails')}
             </h3>
             {[
               {
-                label: 'Member Since',
+                label: t('profile.memberSince'),
                 value: user ? formatDateShort(user.createdAt) : '—',
                 icon: 'calendar_today',
               },
-              { label: 'Account ID', value: user?.id.slice(0, 8).toUpperCase() ?? '—', icon: 'tag' },
-              { label: 'Email Verified', value: 'Yes', icon: 'verified' },
+              { label: t('profile.accountId'), value: user?.id.slice(0, 8).toUpperCase() ?? '—', icon: 'tag' },
+              { label: t('profile.emailVerified'), value: t('profile.yes'), icon: 'verified' },
             ].map(({ label, value, icon }) => (
               <div key={label} className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-[var(--color-on-surface-variant)] text-xl">
@@ -141,15 +143,15 @@ export default function ProfilePage() {
               className="text-base font-semibold text-[var(--color-on-surface)] mb-6"
               style={{ fontFamily: 'var(--font-outfit)' }}
             >
-              Personal Information
+              {t('profile.personalInfo')}
             </h2>
 
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-              <Input label="Full Name" error={errors.name?.message} {...register('name')} />
+              <Input label={t('profile.fullName')} error={errors.name?.message} {...register('name')} />
 
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-semibold tracking-widest uppercase text-[var(--color-on-surface-variant)]">
-                  Email Address
+                  {t('profile.email')}
                 </label>
                 <div
                   className="px-4 py-2.5 rounded-[var(--radius-md)] text-sm text-[var(--color-on-surface-variant)]"
@@ -161,7 +163,7 @@ export default function ProfilePage() {
                   {user?.email}
                 </div>
                 <p className="text-xs text-[var(--color-on-surface-variant)]">
-                  Email cannot be changed after registration.
+                  {t('profile.emailNote')}
                 </p>
               </div>
 
@@ -181,10 +183,10 @@ export default function ProfilePage() {
                       >
                         check_circle
                       </span>
-                      Saved
+                      {t('profile.saved')}
                     </>
                   ) : (
-                    'Save Changes'
+                    t('profile.saveChanges')
                   )}
                 </Button>
               </div>
@@ -199,7 +201,7 @@ export default function ProfilePage() {
               className="text-base font-semibold text-[var(--color-on-surface)] mb-4"
               style={{ fontFamily: 'var(--font-outfit)' }}
             >
-              Security
+              {t('profile.security')}
             </h2>
             <div className="flex items-center justify-between gap-3 flex-wrap">
               <div className="flex items-center gap-3">
@@ -207,14 +209,14 @@ export default function ProfilePage() {
                   lock
                 </span>
                 <div>
-                  <p className="text-sm font-medium text-[var(--color-on-surface)]">Password</p>
+                  <p className="text-sm font-medium text-[var(--color-on-surface)]">{t('profile.passwordLabel')}</p>
                   <p className="text-xs text-[var(--color-on-surface-variant)]">
-                    Last changed: unknown
+                    {t('profile.passwordChanged')}
                   </p>
                 </div>
               </div>
               <Button variant="secondary" size="sm" disabled>
-                Change Password
+                {t('profile.changePassword')}
               </Button>
             </div>
           </div>

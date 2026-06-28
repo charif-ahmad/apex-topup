@@ -2,6 +2,7 @@
 
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useTransition } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 import { cn } from '@/lib/utils/cn';
 
 /** Status filter for the audit ledger — sole writer of `?status=`, resets page. */
@@ -10,6 +11,7 @@ export function AuditFilters({ total }: { total: number }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
+  const { t } = useLanguage();
 
   const status = searchParams.get('status') ?? '';
 
@@ -30,12 +32,12 @@ export function AuditFilters({ total }: { total: number }) {
         value={status}
         onChange={(e) => setStatus(e.target.value)}
       >
-        <option value="">All Statuses</option>
-        <option value="success">Success</option>
-        <option value="pending">Pending</option>
-        <option value="failed">Failed</option>
+        <option value="">{t('transactions.allStatuses')}</option>
+        <option value="success">{t('tx.success')}</option>
+        <option value="pending">{t('tx.pending')}</option>
+        <option value="failed">{t('tx.failed')}</option>
       </select>
-      <span className="ml-auto text-xs text-[var(--color-on-surface-variant)]">{total} records</span>
+      <span className="ml-auto text-xs text-[var(--color-on-surface-variant)]">{t('admin.recordsCount', { count: total })}</span>
     </div>
   );
 }

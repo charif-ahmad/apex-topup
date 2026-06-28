@@ -1,12 +1,15 @@
+'use client';
+
 import Link from 'next/link';
+import { useLanguage } from '@/context/LanguageContext';
 import { cn } from '@/lib/utils/cn';
 
 export type AdminTab = 'users' | 'services' | 'audit';
 
-const TABS: { id: AdminTab; label: string; icon: string }[] = [
-  { id: 'users', label: 'User Administration', icon: 'manage_accounts' },
-  { id: 'services', label: 'Service Management', icon: 'account_tree' },
-  { id: 'audit', label: 'Platform Audit Ledger', icon: 'policy' },
+const TABS: { id: AdminTab; labelKey: 'admin.tabUsers' | 'admin.tabServices' | 'admin.tabAudit'; icon: string }[] = [
+  { id: 'users', labelKey: 'admin.tabUsers', icon: 'manage_accounts' },
+  { id: 'services', labelKey: 'admin.tabServices', icon: 'account_tree' },
+  { id: 'audit', labelKey: 'admin.tabAudit', icon: 'policy' },
 ];
 
 /**
@@ -16,6 +19,7 @@ const TABS: { id: AdminTab; label: string; icon: string }[] = [
  * linking to a bare `?tab=` (drops the previous tab's filters/page).
  */
 export function AdminTabs({ activeTab, children }: { activeTab: AdminTab; children: React.ReactNode }) {
+  const { t } = useLanguage();
   return (
     <div
       className="glass-panel rounded-[var(--radius-lg)] overflow-hidden flex flex-col"
@@ -41,7 +45,7 @@ export function AdminTabs({ activeTab, children }: { activeTab: AdminTab; childr
             )}
           >
             <span className="material-symbols-outlined text-base">{tab.icon}</span>
-            {tab.label}
+            {t(tab.labelKey)}
           </Link>
         ))}
       </div>

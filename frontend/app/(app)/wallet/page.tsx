@@ -58,7 +58,7 @@ export default async function WalletPage({
 
   return (
     <div className="page-container py-6 md:py-8">
-      <header className="mb-6 md:mb-8">
+      {/* <header className="mb-6 md:mb-8">
         <h1
           className="text-2xl sm:text-3xl font-semibold text-[var(--color-on-surface)]"
           style={{ fontFamily: 'var(--font-outfit)' }}
@@ -68,7 +68,7 @@ export default async function WalletPage({
         <p className="text-[var(--color-on-surface-variant)] mt-1">
           Manage your digital assets and funding history.
         </p>
-      </header>
+      </header> */}
 
       <Suspense fallback={<WalletContentSkeleton />}>
         <WalletContentSection page={page} />

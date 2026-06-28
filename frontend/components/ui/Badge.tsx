@@ -1,4 +1,7 @@
+'use client';
+
 import { cn } from '@/lib/utils/cn';
+import { useLanguage } from '@/context/LanguageContext';
 import type { TransactionStatus, TransactionType } from '@/types/models';
 
 type BadgeVariant = 'success' | 'error' | 'warning' | 'info' | 'neutral';
@@ -32,20 +35,20 @@ export function Badge({ variant = 'neutral', children, className }: BadgeProps) 
 }
 
 export function StatusBadge({ status }: { status: TransactionStatus }) {
-  const map: Record<TransactionStatus, { label: string; variant: BadgeVariant }> = {
-    success: { label: 'Success', variant: 'success' },
-    failed: { label: 'Failed', variant: 'error' },
-    pending: { label: 'Pending', variant: 'warning' },
+  const { t } = useLanguage();
+  const map: Record<TransactionStatus, BadgeVariant> = {
+    success: 'success',
+    failed: 'error',
+    pending: 'warning',
   };
-  const { label, variant } = map[status];
-  return <Badge variant={variant}>{label}</Badge>;
+  return <Badge variant={map[status]}>{t(`tx.${status}`)}</Badge>;
 }
 
 export function TypeBadge({ type }: { type: TransactionType }) {
-  const map: Record<TransactionType, { label: string; variant: BadgeVariant }> = {
-    credit: { label: 'Credit', variant: 'success' },
-    debit: { label: 'Debit', variant: 'info' },
+  const { t } = useLanguage();
+  const map: Record<TransactionType, BadgeVariant> = {
+    credit: 'success',
+    debit: 'info',
   };
-  const { label, variant } = map[type];
-  return <Badge variant={variant}>{label}</Badge>;
+  return <Badge variant={map[type]}>{t(`tx.${type}`)}</Badge>;
 }

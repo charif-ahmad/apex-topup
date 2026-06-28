@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useToast } from '@/context/ToastContext';
+import { useLanguage } from '@/context/LanguageContext';
 import {
   createServiceAction,
   updateServiceAction,
@@ -58,8 +59,22 @@ interface ServiceManagerProps {
  * after a mutation (the actions call revalidatePath). The status/category filters
  * are written to the URL so the server re-filters; only modal/form state is local.
  */
+const STATUS_FILTER_KEYS: Record<string, 'admin.filterAll' | 'admin.filterActive' | 'admin.filterInactive'> = {
+  all: 'admin.filterAll',
+  active: 'admin.filterActive',
+  inactive: 'admin.filterInactive',
+};
+
+const CATEGORY_FILTER_KEYS: Record<string, 'admin.filterAll' | 'admin.catMobile' | 'admin.catInternet' | 'admin.catGiftcard'> = {
+  all: 'admin.filterAll',
+  mobile: 'admin.catMobile',
+  internet: 'admin.catInternet',
+  giftcard: 'admin.catGiftcard',
+};
+
 export function ServiceManager({ services, filteredCount, totalCount }: ServiceManagerProps) {
   const { toast } = useToast();
+  const { t } = useLanguage();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -155,7 +170,7 @@ export function ServiceManager({ services, filteredCount, totalCount }: ServiceM
         toast(result.error, 'error');
         return; // optimistic insert/update auto-reverts
       }
-      toast(editingId != null ? 'Service updated' : 'Service created', 'success');
+      toast(editingId != null ? t('admin.serviceUpdated') : t('admin.serviceCreated'), 'success');
       router.refresh();
     });
   }
@@ -165,10 +180,10 @@ export function ServiceManager({ services, filteredCount, totalCount }: ServiceM
       applyOptimistic({ type: 'delete', id });
       const result = await deleteServiceAction(id);
       if (result.error) {
-        toast('Delete failed', 'error');
+        toast(t('admin.deleteFailed'), 'error');
         return; // removed card is restored on revert
       }
-      toast('Service deleted', 'success');
+      toast(t('admin.serviceDeleted'), 'success');
       router.refresh();
     });
   }
@@ -177,11 +192,11 @@ export function ServiceManager({ services, filteredCount, totalCount }: ServiceM
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <span className="text-xs text-[var(--color-on-surface-variant)]">
-          {filteredCount} / {totalCount} services
+          {t('admin.servicesCount', { filtered: filteredCount, total: totalCount })}
         </span>
         <Button variant="primary" size="sm" onClick={openCreate}>
           <span className="material-symbols-outlined text-xl">add</span>
-          New Service
+          {t('admin.newService')}
         </Button>
       </div>
 
@@ -197,7 +212,7 @@ export function ServiceManager({ services, filteredCount, totalCount }: ServiceM
                 : 'border-[var(--color-outline-variant)] text-[var(--color-on-surface-variant)] hover:border-[var(--color-primary)] hover:text-[var(--color-on-surface)]'
             }`}
           >
-            {s}
+            {t(STATUS_FILTER_KEYS[s])}
           </button>
         ))}
         <div className="w-px bg-[var(--color-outline-variant)] mx-1" />
@@ -211,7 +226,7 @@ export function ServiceManager({ services, filteredCount, totalCount }: ServiceM
                 : 'border-[var(--color-outline-variant)] text-[var(--color-on-surface-variant)] hover:border-[var(--color-primary)] hover:text-[var(--color-on-surface)]'
             }`}
           >
-            {c}
+            {t(CATEGORY_FILTER_KEYS[c])}
           </button>
         ))}
       </div>
@@ -219,7 +234,7 @@ export function ServiceManager({ services, filteredCount, totalCount }: ServiceM
       {optimisticServices.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 gap-2 text-[var(--color-on-surface-variant)]">
           <span className="material-symbols-outlined text-4xl opacity-40">account_tree</span>
-          <p className="text-sm">{totalCount === 0 ? 'No services yet' : 'No services match the filter'}</p>
+          <p className="text-sm">{totalCount === 0 ? t('admin.noServicesYet') : t('admin.noServicesMatch')}</p>
         </div>
       ) : (
         <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 transition-opacity ${isPending ? 'opacity-60' : ''}`}>
@@ -241,7 +256,7 @@ export function ServiceManager({ services, filteredCount, totalCount }: ServiceM
                 <div className="flex items-center gap-2">
                   <p className="font-semibold text-[var(--color-on-surface)] text-sm truncate">{svc.name}</p>
                   <Badge variant={svc.isActive ? 'success' : 'neutral'}>
-                    {svc.isActive ? 'Active' : 'Off'}
+                    {svc.isActive ? t('admin.serviceActive') : t('admin.serviceOff')}
                   </Badge>
                 </div>
                 <p className="text-xs text-[var(--color-on-surface-variant)]">
@@ -256,7 +271,7 @@ export function ServiceManager({ services, filteredCount, totalCount }: ServiceM
                   onClick={() => openEdit(svc)}
                   disabled={svc.pending}
                   className="p-2 rounded-[var(--radius-sm)] text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)] hover:bg-[rgba(78,222,163,0.1)] transition-all disabled:opacity-40"
-                  title="Edit"
+                  title={t('admin.editService')}
                 >
                   <span className="material-symbols-outlined text-xl">edit</span>
                 </button>
@@ -264,7 +279,7 @@ export function ServiceManager({ services, filteredCount, totalCount }: ServiceM
                   onClick={() => handleDelete(svc.id)}
                   disabled={svc.pending}
                   className="p-2 rounded-[var(--radius-sm)] text-[var(--color-on-surface-variant)] hover:text-[var(--color-error)] hover:bg-[rgba(255,180,171,0.1)] transition-all disabled:opacity-40"
-                  title="Delete"
+                  title={t('common.delete')}
                 >
                   <span className="material-symbols-outlined text-xl">
                     {svc.pending ? 'hourglass_empty' : 'delete_forever'}
@@ -276,28 +291,28 @@ export function ServiceManager({ services, filteredCount, totalCount }: ServiceM
         </div>
       )}
 
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={editing ? 'Edit Service' : 'New Service'}>
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={editing ? t('admin.editService') : t('admin.newService')}>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-          <Input label="Service Name" error={errors.name?.message} {...register('name')} />
+          <Input label={t('admin.serviceName')} error={errors.name?.message} {...register('name')} />
 
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-semibold tracking-widest uppercase text-[var(--color-on-surface-variant)]">
-              Category
+              {t('admin.category')}
             </label>
             <select
               className="w-full px-4 py-2.5 text-sm rounded-[var(--radius-md)] bg-[var(--color-surface-container-high)] border border-[var(--color-outline-variant)] text-[var(--color-on-surface)] focus:outline-none focus:border-[var(--color-primary)]"
               {...register('category')}
             >
-              <option value="mobile">Mobile</option>
-              <option value="internet">Internet</option>
-              <option value="giftcard">Gift Card</option>
+              <option value="mobile">{t('admin.catMobile')}</option>
+              <option value="internet">{t('admin.catInternet')}</option>
+              <option value="giftcard">{t('admin.catGiftcard')}</option>
             </select>
             {errors.category && <p className="text-xs text-[var(--color-error)]">{errors.category.message}</p>}
           </div>
 
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-semibold tracking-widest uppercase text-[var(--color-on-surface-variant)]">
-              Price (MYR)
+              {t('admin.priceMyr')}
             </label>
             <input
               type="number"
@@ -309,19 +324,19 @@ export function ServiceManager({ services, filteredCount, totalCount }: ServiceM
             {errors.price && <p className="text-xs text-[var(--color-error)]">{errors.price.message}</p>}
           </div>
 
-          <Input label="Provider" error={errors.provider?.message} {...register('provider')} />
+          <Input label={t('admin.provider')} error={errors.provider?.message} {...register('provider')} />
 
           <label className="flex items-center gap-3 cursor-pointer">
             <input type="checkbox" className="w-4 h-4 accent-[var(--color-primary)]" {...register('isActive')} />
-            <span className="text-sm text-[var(--color-on-surface)]">Active (visible to users)</span>
+            <span className="text-sm text-[var(--color-on-surface)]">{t('admin.activeVisible')}</span>
           </label>
 
           <div className="flex gap-3 pt-2">
             <Button variant="secondary" className="flex-1" type="button" onClick={() => setModalOpen(false)}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button variant="primary" className="flex-1" isLoading={isSubmitting} type="submit">
-              {editing ? 'Update' : 'Create'}
+              {editing ? t('admin.update') : t('admin.create')}
             </Button>
           </div>
         </form>

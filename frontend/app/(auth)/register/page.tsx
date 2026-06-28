@@ -5,7 +5,7 @@ export const metadata = { title: 'Create Account | APEX' };
 
 export default function RegisterPage() {
   return (
-    <AuthShell title="Create your account" subtitle="Join APEX — secure digital top-up platform">
+    <AuthShell variant="register">
       <RegisterForm />
     </AuthShell>
   );

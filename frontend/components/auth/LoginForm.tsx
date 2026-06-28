@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import Link from 'next/link';
 import { useToast } from '@/context/ToastContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { loginAction } from '@/actions/auth';
 import { cn } from '@/lib/utils/cn';
 
@@ -19,6 +20,7 @@ type FormData = z.infer<typeof schema>;
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const {
     register,
@@ -42,7 +44,7 @@ export function LoginForm() {
             htmlFor="email"
             className="block ml-1 text-xs font-semibold tracking-widest uppercase text-[var(--color-on-surface-variant)]"
           >
-            Email Address
+            {t('auth.email')}
           </label>
           <div
             className={cn(
@@ -77,7 +79,7 @@ export function LoginForm() {
               htmlFor="password"
               className="text-xs font-semibold tracking-widest uppercase text-[var(--color-on-surface-variant)]"
             >
-              Password
+              {t('auth.password')}
             </label>
             {/* <span className="text-xs text-[var(--color-primary)] font-semibold cursor-default opacity-40">
               Forgot?
@@ -133,11 +135,11 @@ export function LoginForm() {
           {isSubmitting ? (
             <>
               <span className="w-4 h-4 border-2 border-[var(--color-on-primary)] border-t-transparent rounded-full animate-spin" />
-              Authenticating...
+              {t('auth.authenticating')}
             </>
           ) : (
             <>
-              Sign In
+              {t('auth.signIn')}
               <span className="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">
                 arrow_forward
               </span>
@@ -175,12 +177,12 @@ export function LoginForm() {
 
       {/* Footer link */}
       <p className="text-center text-sm text-[var(--color-on-surface-variant)]">
-        Don&apos;t have an account?{' '}
+        {t('auth.noAccount')}{' '}
         <Link
           href="/register"
           className="text-[var(--color-primary)] font-semibold hover:underline transition-all"
         >
-          Register
+          {t('auth.register')}
         </Link>
       </p>
     </div>

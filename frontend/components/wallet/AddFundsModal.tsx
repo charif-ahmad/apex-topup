@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
+import { useLanguage } from '@/context/LanguageContext';
 import { cn } from '@/lib/utils/cn';
 
 const schema = z.object({
@@ -28,6 +29,7 @@ interface AddFundsModalProps {
 }
 
 export function AddFundsModal({ onClose, onAddFunds }: AddFundsModalProps) {
+  const { t } = useLanguage();
   const {
     register,
     handleSubmit,
@@ -43,12 +45,12 @@ export function AddFundsModal({ onClose, onAddFunds }: AddFundsModalProps) {
   }
 
   return (
-    <Modal open onClose={onClose} title="Add Funds">
+    <Modal open onClose={onClose} title={t('wallet.addFundsTitle')}>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
           {/* Quick select amounts */}
           <div>
             <p className="text-xs font-semibold tracking-widest uppercase text-[var(--color-on-surface-variant)] mb-3">
-              Select Amount
+              {t('wallet.selectAmount')}
             </p>
             <div className="grid grid-cols-4 gap-2">
               {QUICK_AMOUNTS.map((amt) => (
@@ -72,7 +74,7 @@ export function AddFundsModal({ onClose, onAddFunds }: AddFundsModalProps) {
           {/* Custom input */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-semibold tracking-widest uppercase text-[var(--color-on-surface-variant)]">
-              Custom Amount (MYR)
+              {t('wallet.customAmount')}
             </label>
             <div
               className={cn(
@@ -102,16 +104,15 @@ export function AddFundsModal({ onClose, onAddFunds }: AddFundsModalProps) {
           </div>
 
           <p className="text-xs text-[var(--color-on-surface-variant)]">
-            Simulated payment — 80% success rate. The top-up shows as pending, then
-            confirms once the payment clears.
+            {t('wallet.simulatedNote')}
           </p>
 
           <div className="flex gap-3">
             <Button variant="secondary" className="flex-1" onClick={onClose} type="button">
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button variant="primary" className="flex-1" type="submit">
-              Add Funds
+              {t('wallet.addFunds')}
             </Button>
           </div>
         </form>

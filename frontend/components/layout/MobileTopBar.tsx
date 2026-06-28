@@ -28,7 +28,9 @@ export function MobileTopBar() {
   return (
     <>
       {/* Top bar */}
-      <header className="lg:hidden sticky top-0 z-30 flex items-center justify-between px-4 h-14 border-b border-[var(--color-outline-variant)] bg-[var(--color-surface-container-low)]/90 backdrop-blur-md safe-pt">
+      {/* Trailing padding (pe-28) reserves room in the top-trailing corner for the
+          global FloatingLanguageSwitcher so the hamburger never sits under it. */}
+      <header className="lg:hidden sticky top-0 z-30 flex items-center justify-between ps-4 pe-28 h-14 border-b border-[var(--color-outline-variant)] bg-[var(--color-surface-container-low)]/90 backdrop-blur-md safe-pt">
         <span className="text-lg font-bold font-[var(--font-outfit)] text-[var(--color-primary)]">
           APEX
         </span>
@@ -36,7 +38,7 @@ export function MobileTopBar() {
           onClick={() => setOpen(true)}
           aria-label="Open menu"
           aria-expanded={open}
-          className="flex items-center justify-center w-10 h-10 -mr-2 rounded-[var(--radius-md)] text-[var(--color-on-surface-variant)] hover:text-[var(--color-on-surface)] hover:bg-[var(--color-surface-container)] transition-colors"
+          className="flex items-center justify-center w-10 h-10 rounded-[var(--radius-md)] text-[var(--color-on-surface-variant)] hover:text-[var(--color-on-surface)] hover:bg-[var(--color-surface-container)] transition-colors"
         >
           <span className="material-symbols-outlined text-2xl">menu</span>
         </button>

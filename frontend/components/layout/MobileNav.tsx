@@ -3,27 +3,30 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { cn } from '@/lib/utils/cn';
-
-const USER_NAV = [
-  { label: 'Home', href: '/dashboard', icon: 'dashboard' },
-  { label: 'Wallet', href: '/wallet', icon: 'account_balance_wallet' },
-  { label: 'Services', href: '/services', icon: 'apps' },
-  { label: 'History', href: '/transactions', icon: 'receipt_long' },
-  { label: 'Profile', href: '/profile', icon: 'manage_accounts' },
-];
-
-const ADMIN_NAV = [
-  { label: 'Home', href: '/dashboard', icon: 'dashboard' },
-  { label: 'Admin', href: '/admin', icon: 'admin_panel_settings' },
-  { label: 'Wallet', href: '/wallet', icon: 'account_balance_wallet' },
-  { label: 'Profile', href: '/profile', icon: 'manage_accounts' },
-];
 
 export function MobileNav() {
   const pathname = usePathname();
   const { user } = useAuth();
-  const nav = user?.role === 'admin' ? ADMIN_NAV : USER_NAV;
+  const { t } = useLanguage();
+
+  const userNav = [
+    { label: t('navMobile.home'), href: '/dashboard', icon: 'dashboard' },
+    { label: t('navMobile.wallet'), href: '/wallet', icon: 'account_balance_wallet' },
+    { label: t('navMobile.services'), href: '/services', icon: 'apps' },
+    { label: t('navMobile.history'), href: '/transactions', icon: 'receipt_long' },
+    { label: t('navMobile.profile'), href: '/profile', icon: 'manage_accounts' },
+  ];
+
+  const adminNav = [
+    { label: t('navMobile.home'), href: '/dashboard', icon: 'dashboard' },
+    { label: t('navMobile.admin'), href: '/admin', icon: 'admin_panel_settings' },
+    { label: t('navMobile.wallet'), href: '/wallet', icon: 'account_balance_wallet' },
+    { label: t('navMobile.profile'), href: '/profile', icon: 'manage_accounts' },
+  ];
+
+  const nav = user?.role === 'admin' ? adminNav : userNav;
 
   return (
     <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 border-t border-[var(--color-outline-variant)] bg-[var(--color-surface-container-low)]">

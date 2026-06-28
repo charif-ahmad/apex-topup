@@ -3,6 +3,7 @@
 import { useOptimistic, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { executeTopupAction } from '@/actions/topup';
 import { QuickTopupList } from '@/components/dashboard/QuickTopupList';
 import { RecentTransactions } from '@/components/dashboard/RecentTransactions';
@@ -23,6 +24,7 @@ interface DashboardActivityProps {
  */
 export function DashboardActivity({ services, walletBalance, transactions }: DashboardActivityProps) {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const router = useRouter();
   const [, startTransition] = useTransition();
 
@@ -64,7 +66,7 @@ export function DashboardActivity({ services, walletBalance, transactions }: Das
           style={{ fontFamily: 'var(--font-outfit)' }}
         >
           <span className="material-symbols-outlined text-[var(--color-primary)] text-xl">bolt</span>
-          Quick Top-up
+          {t('dashboard.quickTopup')}
         </h2>
         <QuickTopupList services={services} walletBalance={walletBalance} onConfirm={handleConfirm} />
       </div>

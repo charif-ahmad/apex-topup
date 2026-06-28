@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { cn } from '@/lib/utils/cn';
 
 interface NavItem {
@@ -10,23 +11,6 @@ interface NavItem {
   href: string;
   icon: string;
 }
-
-const USER_NAV: NavItem[] = [
-  { label: 'Dashboard', href: '/dashboard', icon: 'dashboard' },
-  { label: 'My Wallet', href: '/wallet', icon: 'account_balance_wallet' },
-  { label: 'Services', href: '/services', icon: 'apps' },
-  { label: 'Transactions', href: '/transactions', icon: 'receipt_long' },
-  { label: 'Profile', href: '/profile', icon: 'manage_accounts' },
-];
-
-const ADMIN_NAV: NavItem[] = [
-  { label: 'Dashboard', href: '/dashboard', icon: 'dashboard' },
-  { label: 'Admin Panel', href: '/admin', icon: 'admin_panel_settings' },
-  { label: 'My Wallet', href: '/wallet', icon: 'account_balance_wallet' },
-  { label: 'Services', href: '/services', icon: 'apps' },
-  { label: 'Transactions', href: '/transactions', icon: 'receipt_long' },
-  { label: 'Profile', href: '/profile', icon: 'manage_accounts' },
-];
 
 /**
  * The inner content of the sidebar (logo, nav, user/logout). Shared between the
@@ -36,7 +20,26 @@ const ADMIN_NAV: NavItem[] = [
 export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const { user, logout } = useAuth();
-  const nav = user?.role === 'admin' ? ADMIN_NAV : USER_NAV;
+  const { t } = useLanguage();
+
+  const userNav: NavItem[] = [
+    { label: t('nav.dashboard'), href: '/dashboard', icon: 'dashboard' },
+    { label: t('nav.wallet'), href: '/wallet', icon: 'account_balance_wallet' },
+    { label: t('nav.services'), href: '/services', icon: 'apps' },
+    { label: t('nav.transactions'), href: '/transactions', icon: 'receipt_long' },
+    { label: t('nav.profile'), href: '/profile', icon: 'manage_accounts' },
+  ];
+
+  const adminNav: NavItem[] = [
+    { label: t('nav.dashboard'), href: '/dashboard', icon: 'dashboard' },
+    { label: t('nav.adminPanel'), href: '/admin', icon: 'admin_panel_settings' },
+    { label: t('nav.wallet'), href: '/wallet', icon: 'account_balance_wallet' },
+    { label: t('nav.services'), href: '/services', icon: 'apps' },
+    { label: t('nav.transactions'), href: '/transactions', icon: 'receipt_long' },
+    { label: t('nav.profile'), href: '/profile', icon: 'manage_accounts' },
+  ];
+
+  const nav = user?.role === 'admin' ? adminNav : userNav;
 
   return (
     <>
@@ -86,7 +89,7 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-[var(--radius-md)] text-sm font-medium text-[var(--color-on-surface-variant)] hover:text-[var(--color-error)] hover:bg-[color-mix(in_srgb,var(--color-error)_10%,transparent)] transition-colors"
         >
           <span className="material-symbols-outlined text-xl">logout</span>
-          Sign Out
+          {t('nav.signOut')}
         </button>
       </div>
     </>

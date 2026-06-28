@@ -5,6 +5,7 @@ import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { ServiceCard } from '@/components/services/ServiceCard';
 import { executeTopupAction } from '@/actions/topup';
+import { useLanguage } from '@/context/LanguageContext';
 import { cn } from '@/lib/utils/cn';
 import type { Service } from '@/types/models';
 
@@ -22,7 +23,15 @@ interface ServicesClientProps {
   walletBalance: number;
 }
 
+const CATEGORY_KEYS: Record<string, 'services.all' | 'services.mobile' | 'services.internet' | 'services.giftcard'> = {
+  All: 'services.all',
+  mobile: 'services.mobile',
+  internet: 'services.internet',
+  giftcard: 'services.giftcard',
+};
+
 export function ServicesClient({ initialServices, walletBalance }: ServicesClientProps) {
+  const { t } = useLanguage();
   const [selected, setSelected] = useState<Service | null>(null);
   const router = useRouter();
   const pathname = usePathname();
@@ -65,10 +74,10 @@ export function ServicesClient({ initialServices, walletBalance }: ServicesClien
           className="text-2xl sm:text-3xl font-semibold text-[var(--color-on-surface)]"
           style={{ fontFamily: 'var(--font-outfit)' }}
         >
-          Services Directory
+          {t('services.title')}
         </h1>
         <p className="text-[var(--color-on-surface-variant)] mt-1">
-          Select a service to top up instantly from your wallet.
+          {t('services.subtitle')}
         </p>
       </header>
 
@@ -85,11 +94,11 @@ export function ServicesClient({ initialServices, walletBalance }: ServicesClien
                 : 'border-[var(--color-outline-variant)] text-[var(--color-on-surface-variant)] hover:text-[var(--color-on-surface)] hover:border-[var(--color-primary)]',
             )}
           >
-            {cat}
+            {t(CATEGORY_KEYS[cat])}
           </button>
         ))}
         <span className="ml-auto text-xs text-[var(--color-on-surface-variant)] self-center">
-          {filtered.length} services
+          {t('services.count', { count: filtered.length })}
         </span>
       </div>
 
@@ -97,7 +106,7 @@ export function ServicesClient({ initialServices, walletBalance }: ServicesClien
       {filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 gap-3 text-[var(--color-on-surface-variant)]">
           <span className="material-symbols-outlined text-5xl opacity-30">apps</span>
-          <p className="text-sm">No services in this category</p>
+          <p className="text-sm">{t('services.empty')}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">

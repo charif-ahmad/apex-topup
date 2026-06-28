@@ -1,5 +1,8 @@
+'use client';
+
 import { formatCurrency } from '@/lib/utils/formatCurrency';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { useLanguage } from '@/context/LanguageContext';
 import type { Analytics } from '@/types/models';
 
 interface AnalyticsCardsProps {
@@ -7,49 +10,51 @@ interface AnalyticsCardsProps {
   loading: boolean;
 }
 
-const CARDS = [
-  {
-    key: 'totalRevenue' as const,
-    label: 'Total Revenue',
-    icon: 'payments',
-    bgIcon: 'payments',
-    accent: 'var(--color-primary)',
-    accentBg: 'rgba(78,222,163,0.1)',
-    trend: '+12.4%',
-    trendIcon: 'trending_up',
-    suffix: '',
-    format: (v: number) => formatCurrency(v),
-    progress: 75,
-  },
-  {
-    key: 'totalUsers' as const,
-    label: 'Total Users',
-    icon: 'group',
-    bgIcon: 'group',
-    accent: 'var(--color-secondary)',
-    accentBg: 'rgba(173,198,255,0.1)',
-    trend: '+4.2%',
-    trendIcon: 'trending_up',
-    suffix: 'Active',
-    format: (v: number) => v.toLocaleString(),
-    progress: 60,
-  },
-  {
-    key: 'totalTransactions' as const,
-    label: 'Transactions',
-    icon: 'swap_horiz',
-    bgIcon: 'swap_horiz',
-    accent: 'var(--color-tertiary)',
-    accentBg: 'rgba(255,185,95,0.1)',
-    trend: '0.0%',
-    trendIcon: 'trending_flat',
-    suffix: 'Processed',
-    format: (v: number) => v.toLocaleString(),
-    progress: 90,
-  },
-];
-
 export function AnalyticsCards({ analytics, loading }: AnalyticsCardsProps) {
+  const { t } = useLanguage();
+
+  const CARDS = [
+    {
+      key: 'totalRevenue' as const,
+      label: t('admin.totalRevenue'),
+      icon: 'payments',
+      bgIcon: 'payments',
+      accent: 'var(--color-primary)',
+      accentBg: 'rgba(78,222,163,0.1)',
+      trend: '+12.4%',
+      trendIcon: 'trending_up',
+      suffix: '',
+      format: (v: number) => formatCurrency(v),
+      progress: 75,
+    },
+    {
+      key: 'totalUsers' as const,
+      label: t('admin.totalUsers'),
+      icon: 'group',
+      bgIcon: 'group',
+      accent: 'var(--color-secondary)',
+      accentBg: 'rgba(173,198,255,0.1)',
+      trend: '+4.2%',
+      trendIcon: 'trending_up',
+      suffix: t('admin.active'),
+      format: (v: number) => v.toLocaleString(),
+      progress: 60,
+    },
+    {
+      key: 'totalTransactions' as const,
+      label: t('admin.transactions'),
+      icon: 'swap_horiz',
+      bgIcon: 'swap_horiz',
+      accent: 'var(--color-tertiary)',
+      accentBg: 'rgba(255,185,95,0.1)',
+      trend: '0.0%',
+      trendIcon: 'trending_flat',
+      suffix: t('admin.processed'),
+      format: (v: number) => v.toLocaleString(),
+      progress: 90,
+    },
+  ];
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
       {CARDS.map((card) => (

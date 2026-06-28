@@ -5,6 +5,7 @@ import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { formatCurrency } from '@/lib/utils/formatCurrency';
 import { useToast } from '@/context/ToastContext';
+import { useLanguage } from '@/context/LanguageContext';
 import type { Service } from '@/types/models';
 
 interface PurchaseModalProps {
@@ -23,6 +24,7 @@ interface PurchaseModalProps {
 
 export function PurchaseModal({ service, walletBalance, onClose, onConfirm, onSuccess }: PurchaseModalProps) {
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<'success' | 'failed' | null>(null);
 
@@ -35,16 +37,16 @@ export function PurchaseModal({ service, walletBalance, onClose, onConfirm, onSu
 
     if (ok) {
       setResult('success');
-      toast(`${service.name} purchased successfully!`, 'success');
+      toast(t('services.purchasedToast', { name: service.name }), 'success');
       onSuccess();
     } else {
       setResult('failed');
-      toast('Transaction failed. Please try again.', 'error');
+      toast(t('services.failedToast'), 'error');
     }
   }
 
   return (
-    <Modal open onClose={onClose} title="Confirm Purchase">
+    <Modal open onClose={onClose} title={t('services.confirmPurchase')}>
       <div className="flex flex-col gap-5">
         {/* Service summary */}
         <div
@@ -75,7 +77,7 @@ export function PurchaseModal({ service, walletBalance, onClose, onConfirm, onSu
 
         {/* Balance info */}
         <div className="flex items-center justify-between text-sm">
-          <span className="text-[var(--color-on-surface-variant)]">Your balance</span>
+          <span className="text-[var(--color-on-surface-variant)]">{t('services.yourBalance')}</span>
           <span
             className="font-semibold"
             style={{ color: insufficient ? 'var(--color-error)' : 'var(--color-primary)' }}
@@ -85,7 +87,7 @@ export function PurchaseModal({ service, walletBalance, onClose, onConfirm, onSu
         </div>
         {insufficient && (
           <p className="text-xs text-[var(--color-error)] -mt-3">
-            Insufficient balance. Please top up your wallet first.
+            {t('services.insufficient')}
           </p>
         )}
 
@@ -107,7 +109,7 @@ export function PurchaseModal({ service, walletBalance, onClose, onConfirm, onSu
               {result === 'success' ? 'check_circle' : 'cancel'}
             </span>
             <span className="text-sm text-[var(--color-on-surface)]">
-              {result === 'success' ? 'Purchase successful!' : 'Transaction failed'}
+              {result === 'success' ? t('services.purchaseSuccess') : t('services.transactionFailed')}
             </span>
           </div>
         )}
@@ -115,7 +117,7 @@ export function PurchaseModal({ service, walletBalance, onClose, onConfirm, onSu
         {/* Actions */}
         <div className="flex gap-3">
           <Button variant="secondary" className="flex-1" onClick={onClose}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button
             variant="primary"
@@ -124,7 +126,7 @@ export function PurchaseModal({ service, walletBalance, onClose, onConfirm, onSu
             isLoading={loading}
             disabled={insufficient || result !== null}
           >
-            {result ? 'Done' : 'Confirm Purchase'}
+            {result ? t('services.done') : t('services.confirmPurchase')}
           </Button>
         </div>
       </div>
