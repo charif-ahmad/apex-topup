@@ -9,9 +9,15 @@ const getWallet = asyncHandler(async (req, res) => {
 
 const addFunds = asyncHandler(async (req, res) => {
   const result = await walletService.addFunds(req.user.id, req.body.amount);
-  const message =
-    result.paymentStatus === 'success' ? 'Funds added successfully' : 'Payment failed';
+  return sendSuccess(res, 200, result, 'Stripe checkout session created successfully');
+});
+
+const verifySession = asyncHandler(async (req, res) => {
+  const { sessionId } = req.body;
+  const result = await walletService.verifySession(req.user.id, sessionId);
+  const isSuccess = result.transaction.status === 'success';
+  const message = isSuccess ? 'Funds added successfully' : 'Payment was not successful';
   return sendSuccess(res, 200, result, message);
 });
 
-module.exports = { getWallet, addFunds };
+module.exports = { getWallet, addFunds, verifySession };

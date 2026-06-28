@@ -9,4 +9,10 @@ const addFundsSchema = z.object({
   }),
 });
 
-module.exports = { addFundsSchema };
+const verifySessionSchema = z.object({
+  body: z.object({
+    sessionId: z.string({ required_error: 'Session ID is required' }).min(1, 'Session ID cannot be empty'),
+  }),
+});
+
+module.exports = { addFundsSchema, verifySessionSchema };

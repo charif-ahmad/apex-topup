@@ -31,7 +31,15 @@ function WalletContentSkeleton() {
   );
 }
 
-async function WalletContentSection({ page }: { page: number }) {
+async function WalletContentSection({
+  page,
+  sessionId,
+  paymentStatus,
+}: {
+  page: number;
+  sessionId?: string;
+  paymentStatus?: string;
+}) {
   const [balance, transactions] = await Promise.all([
     getWalletAction().catch(() => 0),
     listTransactionsAction({ page, limit: 10 }),
@@ -43,6 +51,8 @@ async function WalletContentSection({ page }: { page: number }) {
       transactions={transactions.items}
       page={page}
       totalPages={transactions.totalPages}
+      sessionId={sessionId}
+      paymentStatus={paymentStatus}
     />
   );
 }
@@ -56,22 +66,17 @@ export default async function WalletPage({
   const pageParam = Array.isArray(sp.page) ? sp.page[0] : sp.page;
   const page = Math.max(1, Number(pageParam) || 1);
 
+  const sessionIdParam = Array.isArray(sp.session_id) ? sp.session_id[0] : sp.session_id;
+  const statusParam = Array.isArray(sp.status) ? sp.status[0] : sp.status;
+
   return (
     <div className="page-container py-6 md:py-8">
-      {/* <header className="mb-6 md:mb-8">
-        <h1
-          className="text-2xl sm:text-3xl font-semibold text-[var(--color-on-surface)]"
-          style={{ fontFamily: 'var(--font-outfit)' }}
-        >
-          Wallet Management
-        </h1>
-        <p className="text-[var(--color-on-surface-variant)] mt-1">
-          Manage your digital assets and funding history.
-        </p>
-      </header> */}
-
       <Suspense fallback={<WalletContentSkeleton />}>
-        <WalletContentSection page={page} />
+        <WalletContentSection
+          page={page}
+          sessionId={sessionIdParam}
+          paymentStatus={statusParam}
+        />
       </Suspense>
     </div>
   );

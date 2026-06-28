@@ -9,47 +9,101 @@ async function getWallet(userId) {
   return serializeWallet(wallet);
 }
 
-// Add funds via the simulated payment gateway (credit flow, randomized).
-// Always logs a transaction (success or failed). Balance only changes on success.
+// Initiate Stripe Checkout: creates a pending transaction and returns checkout URL
 async function addFunds(userId, amount) {
-  const payment = paymentService.processPayment(amount);
+  // First, create the pending transaction in our database
+  const transaction = await prisma.transaction.create({
+    data: {
+      userId,
+      type: 'credit',
+      amount,
+      status: 'pending',
+    },
+  });
+
+  try {
+    // Create the Stripe checkout session
+    const session = await paymentService.createCheckoutSession(userId, amount, transaction.id);
+
+    // Update the transaction with the session ID as reference
+    const updatedTransaction = await prisma.transaction.update({
+      where: { id: transaction.id },
+      data: { reference: session.id },
+    });
+
+    return {
+      checkoutUrl: session.url,
+      transaction: serializeTransaction(updatedTransaction),
+    };
+  } catch (error) {
+    // If Stripe fails, mark transaction as failed
+    await prisma.transaction.update({
+      where: { id: transaction.id },
+      data: { status: 'failed' },
+    });
+    throw error;
+  }
+}
+
+// Verify Stripe Checkout Session: checks status with Stripe and updates user wallet/transaction
+async function verifySession(userId, sessionId) {
+  const session = await paymentService.retrieveCheckoutSession(sessionId);
+  const transactionIdStr = session.metadata.transactionId;
+  const transactionId = transactionIdStr ? parseInt(transactionIdStr, 10) : null;
+
+  if (!transactionId) {
+    throw ApiError.badRequest('Transaction ID not found in session metadata');
+  }
+
+  // Retrieve the transaction
+  const transaction = await prisma.transaction.findUnique({
+    where: { id: transactionId },
+  });
+
+  if (!transaction) {
+    throw ApiError.notFound('Transaction not found');
+  }
+
+  // Ensure transaction belongs to the requesting user
+  if (transaction.userId !== userId) {
+    throw ApiError.forbidden('Access denied');
+  }
+
+  // If the transaction is already processed, return it
+  if (transaction.status !== 'pending') {
+    const wallet = await prisma.wallet.findUnique({ where: { userId } });
+    return {
+      transaction: serializeTransaction(transaction),
+      balance: wallet ? Number(wallet.balance) : undefined,
+    };
+  }
+
+  const isPaid = session.payment_status === 'paid';
+  const newStatus = isPaid ? 'success' : 'failed';
 
   const result = await prisma.$transaction(async (tx) => {
-    if (payment.status === 'failed') {
-      const transaction = await tx.transaction.create({
-        data: {
-          userId,
-          type: 'credit',
-          amount,
-          status: 'failed',
-          reference: payment.reference,
-        },
+    let wallet = null;
+    if (isPaid) {
+      wallet = await tx.wallet.update({
+        where: { userId },
+        data: { balance: { increment: transaction.amount } },
       });
-      const wallet = await tx.wallet.findUnique({ where: { userId } });
-      return { transaction, wallet };
+    } else {
+      wallet = await tx.wallet.findUnique({ where: { userId } });
     }
 
-    const wallet = await tx.wallet.update({
-      where: { userId },
-      data: { balance: { increment: amount } },
+    const updatedTransaction = await tx.transaction.update({
+      where: { id: transactionId },
+      data: { status: newStatus },
     });
-    const transaction = await tx.transaction.create({
-      data: {
-        userId,
-        type: 'credit',
-        amount,
-        status: 'success',
-        reference: payment.reference,
-      },
-    });
-    return { transaction, wallet };
+
+    return { transaction: updatedTransaction, wallet };
   });
 
   return {
-    paymentStatus: payment.status,
     transaction: serializeTransaction(result.transaction),
     balance: result.wallet ? Number(result.wallet.balance) : undefined,
   };
 }
 
-module.exports = { getWallet, addFunds };
+module.exports = { getWallet, addFunds, verifySession };

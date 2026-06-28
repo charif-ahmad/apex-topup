@@ -65,7 +65,7 @@
     "selectAmount": "اختر المبلغ",
     "customAmount": "مبلغ مخصص (رينغيت)",
     "amountPlaceholder": "0.00",
-    "simulatedNote": "دفع محاكى — نسبة نجاح 80%. يظهر الشحن كمعلّق ثم يتأكد بمجرد إتمام الدفع.",
+    "simulatedNote": "دفع آمن معالج بواسطة Stripe. سيتم إضافة الرصيد إلى محفظتك فوراً بمجرد إتمام الدفع بنجاح.",
     "infoCurrency": "العملة",
     "infoCurrencyValue": "الرينغيت الماليزي (MYR)",
     "infoAccountType": "نوع الحساب",
@@ -74,7 +74,9 @@
     "infoSecurityValue": "مشفّر بـ AES-256",
     "transactionHistory": "سجل المعاملات",
     "addedSuccess": "تمت إضافة {amount} رينغيت بنجاح!",
-    "paymentFailed": "فشلت محاكاة الدفع. حاول مرة أخرى."
+    "paymentFailed": "فشلت عملية الدفع. حاول مرة أخرى.",
+    "paymentCancelled": "تم إلغاء عملية الدفع.",
+    "verifyingPayment": "جارٍ التحقق من عملية الدفع، يرجى الانتظار..."
   },
   "services": {
     "title": "دليل الخدمات",
