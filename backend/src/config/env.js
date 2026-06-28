@@ -17,6 +17,8 @@ const env = {
   paymentSuccessRate: Number(process.env.PAYMENT_SUCCESS_RATE || '0.8'),
   corsOrigin: process.env.CORS_ORIGIN || '*',
   nodeEnv: process.env.NODE_ENV || 'development',
+  stripeSecretKey: process.env.STRIPE_SECRET_KEY,
+  frontendUrl: process.env.FRONTEND_URL || 'http://localhost:3000',
 };
 
 module.exports = env;

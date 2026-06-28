@@ -1,13 +1,13 @@
 'use client';
 
-import { useOptimistic, useState, useTransition } from 'react';
+import { useOptimistic, useState, useTransition, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { formatCurrency } from '@/lib/utils/formatCurrency';
-import { addFundsAction } from '@/actions/wallet';
+import { addFundsAction, verifySessionAction } from '@/actions/wallet';
 import { TransactionTable } from '@/components/transactions/TransactionTable';
 import { Pagination } from '@/components/ui/Pagination';
 import type { Transaction } from '@/types/models';
@@ -24,15 +24,26 @@ interface WalletPageClientProps {
   transactions: Transaction[];
   page: number;
   totalPages: number;
+  sessionId?: string;
+  paymentStatus?: string;
 }
 
-export function WalletPageClient({ initialBalance, transactions, page, totalPages }: WalletPageClientProps) {
+export function WalletPageClient({
+  initialBalance,
+  transactions,
+  page,
+  totalPages,
+  sessionId,
+  paymentStatus,
+}: WalletPageClientProps) {
   const { user } = useAuth();
   const { toast } = useToast();
   const { t } = useLanguage();
   const [showAdd, setShowAdd] = useState(false);
   const router = useRouter();
   const [, startTransition] = useTransition();
+  const [isVerifying, setIsVerifying] = useState(false);
+  const verificationAttempted = useRef(false);
 
   // Optimistic ledger: a top-up appends a `pending` credit row instantly. On
   // server confirmation router.refresh() supplies the real (reconciled) row; on
@@ -41,6 +52,34 @@ export function WalletPageClient({ initialBalance, transactions, page, totalPage
     transactions,
     (state, pending: Transaction) => [pending, ...state],
   );
+
+  useEffect(() => {
+    if (paymentStatus === 'cancelled') {
+      toast(t('wallet.paymentCancelled') || 'Payment was cancelled', 'warning');
+      router.replace('/wallet');
+      return;
+    }
+
+    if (sessionId && !verificationAttempted.current) {
+      verificationAttempted.current = true;
+      setIsVerifying(true);
+
+      startTransition(async () => {
+        const res = await verifySessionAction(sessionId);
+        setIsVerifying(false);
+        if (res.error) {
+          toast(res.error, 'error');
+        } else if (res.data?.transaction.status === 'success') {
+          const amount = res.data.transaction.amount;
+          toast(t('wallet.addedSuccess', { amount }) || `Successfully added MYR ${amount}`, 'success');
+        } else {
+          toast(t('wallet.paymentFailed') || 'Payment failed. Please try again.', 'error');
+        }
+        router.replace('/wallet');
+        router.refresh();
+      });
+    }
+  }, [sessionId, paymentStatus, router, toast, t]);
 
   function handleAddFunds(amount: number) {
     setShowAdd(false); // close the input modal at 0ms; the pending row is the feedback
@@ -63,20 +102,34 @@ export function WalletPageClient({ initialBalance, transactions, page, totalPage
         toast(res.error, 'error');
         return;
       }
-      // The backend records every attempt (success OR failed) as a real
-      // transaction, so we reconcile in both cases: refresh swaps the optimistic
-      // `pending` row for the recorded row. Balance only moves on success.
-      if (res.data?.paymentStatus === 'failed') {
-        toast(t('wallet.paymentFailed'), 'error');
+      
+      if (res.data?.checkoutUrl) {
+        // Redirect to Stripe Checkout Page
+        window.location.href = res.data.checkoutUrl;
       } else {
-        toast(t('wallet.addedSuccess', { amount }), 'success');
+        toast('Failed to generate checkout session', 'error');
       }
-      router.refresh(); // optimistic pending holds until the reconciled data paints
     });
   }
 
   return (
     <div className="page-container py-6 md:py-8">
+      {isVerifying && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[rgba(10,15,30,0.85)] backdrop-blur-md">
+          <div className="relative flex flex-col items-center p-8 rounded-2xl border border-[rgba(255,255,255,0.08)] bg-[rgba(21,29,48,0.7)] shadow-2xl max-w-md text-center">
+            <div className="w-16 h-16 rounded-full border-4 border-t-[var(--color-primary)] border-r-transparent border-b-transparent border-l-transparent animate-spin mb-6 relative">
+              <div className="absolute inset-0 rounded-full border-4 border-[rgba(78,222,163,0.1)]"></div>
+            </div>
+            <h3 className="text-lg font-semibold text-[var(--color-on-surface)] mb-2" style={{ fontFamily: 'var(--font-outfit)' }}>
+              {t('wallet.verifyingPayment')}
+            </h3>
+            <p className="text-sm text-[var(--color-on-surface-variant)]">
+              Please do not refresh the page or click back.
+            </p>
+          </div>
+        </div>
+      )}
+
       <header className="mb-6 md:mb-8">
         <h1
           className="text-2xl sm:text-3xl font-semibold text-[var(--color-on-surface)]"

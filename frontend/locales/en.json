@@ -65,7 +65,7 @@
     "selectAmount": "Select Amount",
     "customAmount": "Custom Amount (MYR)",
     "amountPlaceholder": "0.00",
-    "simulatedNote": "Simulated payment — 80% success rate. The top-up shows as pending, then confirms once the payment clears.",
+    "simulatedNote": "Secure payment processed via Stripe. Your funds will be credited instantly upon successful checkout.",
     "infoCurrency": "Currency",
     "infoCurrencyValue": "Malaysian Ringgit (MYR)",
     "infoAccountType": "Account Type",
@@ -74,7 +74,9 @@
     "infoSecurityValue": "AES-256 Encrypted",
     "transactionHistory": "Transaction History",
     "addedSuccess": "MYR {amount} added successfully!",
-    "paymentFailed": "Payment simulation failed. Please try again."
+    "paymentFailed": "Payment failed. Please try again.",
+    "paymentCancelled": "Payment was cancelled.",
+    "verifyingPayment": "Verifying your payment, please wait..."
   },
   "services": {
     "title": "Services Directory",
