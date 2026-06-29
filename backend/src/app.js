@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const env = require('./config/env');
 const routes = require('./routes');
+const { globalLimiter } = require('./middleware/rateLimit.middleware');
 const notFound = require('./middleware/notFound.middleware');
 const errorHandler = require('./middleware/error.middleware');
 
@@ -20,7 +21,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use('/api', routes);
+// Apply global rate limiting to all /api routes
+app.use('/api', globalLimiter, routes);
 
 app.use(notFound);
 app.use(errorHandler);
