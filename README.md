@@ -236,6 +236,3 @@ All backend REST API endpoints are prefixed with `/api`.
 | `GET` | `/api/admin/analytics` | Admin | Retrieve platform financial and usage stats |
 
 ---
-
-## 📄 License
-This project is proprietary and confidential.
