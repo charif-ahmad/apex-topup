@@ -4,12 +4,6 @@ An enterprise-level full-stack digital top-up web platform built with a modern d
 
 ---
 
-## 📌 System Use Case Diagram
-
-![Apex Top-Up System Use Case Diagram](docs/use_case_diagram_topup_platform.png)
-
----
-
 ## 🚀 Features
 
 ### 👤 Authentication & User Management
