@@ -22,7 +22,11 @@ dist/
 .env.production.local
 *.env
 **/.env*
+!.env.example
+!**/.env.example
 
 # Logs and system files
 *.log
 .DS_Store
+
+.claude/
