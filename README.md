@@ -198,3 +198,7 @@ Follow these instructions to set up the project locally.
    The Next.js application will run on `http://localhost:3000`.
 
 ---
+
+## 📡 API Documentation
+
+For detailed REST API endpoints reference and access permissions, see [docs/API.md](docs/API.md).
