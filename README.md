@@ -1,27 +1,34 @@
 # ⚡ APEX Top-Up Platform
 
-An enterprise-level full-stack digital top-up web platform built with a modern dark theme and high-tech financial aesthetic. It enables users to purchase mobile recharges, internet packages, and gaming gift cards using an internal wallet system.
+An enterprise-level full-stack digital top-up web platform built with a modern dark theme and high-tech financial aesthetic. It enables users to purchase mobile recharges, internet packages, and gaming gift cards using an internal wallet system integrated with Stripe checkout.
+
+---
+
+## 📌 System Use Case Diagram
+
+![Apex Top-Up System Use Case Diagram](docs/use_case_diagram_topup_platform.png)
 
 ---
 
 ## 🚀 Features
-.
+
 ### 👤 Authentication & User Management
 - **Role-Based Access Control (RBAC):** Distinct permissions for `user` and `admin` roles.
 - **Secure Auth:** JWT session management with HTTP-only cookies and password hashing using `bcrypt`.
 - **User Profiles:** Authenticated users can view and update their profile details.
 
-### 💰 Wallet System & Payment Simulation
+### 💳 Wallet System & Stripe Payment Integration
 - **Auto-created Wallet:** A digital wallet is generated automatically for each user upon registration.
-- **Simulated Payment Gateway:** Users can add funds to their wallet via a checkout modal with randomized approval rate configured from the backend.
-- **Atomic Transactions:** Deducts funds on purchases with full integrity verification to prevent negative balances.
+- **Stripe Checkout Gateway:** Secure hosted checkout powered by **Stripe API** for funding user wallets with credit/debit card processing.
+- **Automated Payment Verification:** Verification of Stripe session IDs to credit wallet balances instantly upon successful payment.
+- **Atomic Transactions:** Deducts funds on purchases with full database integrity verification to prevent negative balances.
 
 ### 🛍️ Services & Recharge
 - **Service Categories:** Mobile recharge, internet packs, and digital gift cards.
 - **Interactive Directory:** Live searching, category filtering, and single-click purchase confirmation flows.
 
 ### 📊 Transaction Ledger
-- **History Tracking:** Comprehensive transaction records of credits (funding) and debits (purchases).
+- **History Tracking:** Comprehensive transaction records of credits (funding via Stripe) and debits (purchases).
 - **Advanced Filtering & Pagination:** Filter by transaction type, status, and date ranges.
 
 ### 🛡️ Admin Control Panel
@@ -37,12 +44,14 @@ An enterprise-level full-stack digital top-up web platform built with a modern d
 ### Frontend
 - **Framework:** Next.js (App Router) & React
 - **Styling:** CSS Variables, Tailwind CSS, & custom modern UI elements
-- **State Management:** React Context API (`AuthContext`, `WalletContext`, `ThemeContext`)
+- **Payments:** Stripe Client SDK / Publishable Key Integration
+- **State Management:** React Context API (`AuthContext`, `ToastContext`, `LanguageContext`)
 - **Form Handling:** React Hook Form & Zod validation
 
 ### Backend
 - **Runtime:** Node.js
 - **Framework:** Express.js (REST API architecture)
+- **Payment Processing:** **Stripe Node.js SDK** (`stripe` npm package)
 - **Database ORM:** Prisma ORM
 - **Database Engine:** PostgreSQL
 
@@ -57,26 +66,27 @@ An enterprise-level full-stack digital top-up web platform built with a modern d
 
 ```text
 /apex-topup
-├── backend/                  # Express REST API
+├── backend/                  # Express REST API & Stripe Integration
 │   ├── prisma/               # Prisma Schema & Database Seeds
 │   └── src/
 │       ├── config/           # Database connections and Env variables
 │       ├── controllers/      # API logic and route handlers
-│       ├── middleware/       # Auth, validation, & error handling
+│       ├── middleware/       # Auth, validation, & rate limiting
 │       ├── routes/           # REST Route endpoints
-│       ├── services/         # Business logic layer
+│       ├── services/         # Business logic & Payment (Stripe) services
 │       ├── utils/            # Shared utility functions
 │       └── validators/       # Request body validator schemas
 │
 ├── frontend/                 # Next.js App Router UI
-│   ├── actions/              # Server Actions for API communications
+│   ├── actions/              # Server Actions for API & Payment communications
 │   ├── app/                  # Pages, routes and layouts
 │   ├── components/           # Reusable UI components
-│   ├── context/              # Authentication & Wallet contexts
+│   ├── context/              # Authentication & Language contexts
 │   ├── lib/                  # Shared helper tools
 │   └── types/                # TypeScript type definitions
 │
 └── docs/                     # Project Specifications & Diagrams
+    └── use_case_diagram_topup_platform.png
 ```
 
 ---
@@ -94,8 +104,9 @@ JWT_EXPIRES_IN="1d"
 BCRYPT_SALT_ROUNDS=10
 PORT=4000
 
-# Probability (0..1) that a simulated add-funds payment succeeds
-PAYMENT_SUCCESS_RATE=0.8
+# Stripe Payment Gateway Configuration
+STRIPE_SECRET_KEY="sk_test_your_stripe_secret_key_here"
+FRONTEND_URL="http://localhost:3000"
 CORS_ORIGIN="http://localhost:3000"
 
 # Default seed admin credentials
@@ -107,7 +118,8 @@ ADMIN_NAME="Apex Admin"
 ### Frontend (`/frontend/.env.local`)
 
 ```ini
-API_URL=http://localhost:4000
+API_URL="http://localhost:4000"
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_your_stripe_publishable_key_here"
 ```
 
 ---
@@ -120,6 +132,7 @@ Follow these instructions to set up the project locally.
 - **Node.js** (v18 or higher recommended)
 - **npm** or **yarn**
 - Running **PostgreSQL** instance
+- **Stripe Account** (for test keys)
 
 ---
 
@@ -139,7 +152,7 @@ Follow these instructions to set up the project locally.
    ```bash
    cp .env.example .env
    ```
-   *(Update database credentials and secrets inside `.env`)*
+   *(Add your `STRIPE_SECRET_KEY` and database credentials inside `.env`)*
 
 4. **Initialize Database & Run Migrations:**
    ```bash
@@ -173,10 +186,10 @@ Follow these instructions to set up the project locally.
    ```
 
 3. **Configure environment variables:**
-   Create a `.env.local` file in `/frontend` directory:
    ```bash
-   echo "API_URL=http://localhost:4000" > .env.local
+   cp .env.example .env.local
    ```
+   *(Add your `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` inside `.env.local`)*
 
 4. **Start the web app:**
    ```bash
@@ -202,11 +215,12 @@ All backend REST API endpoints are prefixed with `/api`.
 | `GET` | `/api/user/profile` | User | Get profile details |
 | `PUT` | `/api/user/profile` | User | Update user profile |
 
-### 💰 Wallet
+### 💰 Wallet & Stripe Payments
 | Method | Endpoint | Access | Description |
 | :--- | :--- | :--- | :--- |
 | `GET` | `/api/wallet` | User | Retrieve wallet balance |
-| `POST` | `/api/wallet/add` | User | Add funds to wallet (Simulated Payment) |
+| `POST` | `/api/wallet/add` | User | Create a Stripe Checkout session for funding |
+| `POST` | `/api/wallet/verify-session` | User | Verify Stripe session and credit wallet balance |
 
 ### 🛍️ Services
 | Method | Endpoint | Access | Description |
